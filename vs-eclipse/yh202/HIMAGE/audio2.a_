@@ -1,0 +1,136 @@
+PollInputs:
+			CPB (var_bPlayingSound),0
+			JR Z,L1619
+			RET ; reference (PollInputs)
+
+L1619:
+			BIT 0,(var_328)
+			JR Z,L1620
+			RET ; reference (PollInputs)
+
+L1620:
+        SEND_EYES 30H ; special
+L1622:
+			BIT 0,(var_321)
+			JR NZ,L1622
+			LDB A,(mirrorPD)
+			RES 5,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDB (var_localPollInput10Count),0
+			LDB (var_bInputs0),0
+			LDB (var_bInputs1),0
+			LDL XIZ,0BF7B9H ; timeout
+L1624:
+			LDB A,(P9)
+			BIT 4,A
+			JR NZ,L1623
+			SUB XIZ,1
+			JR NZ,L1624
+L1634:
+			CALL DiddleP5
+			RET ; reference (PollInputs)
+
+L1623:
+			LDB A,(mirrorPD)
+			SET 6,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDW WA,5
+			CALL L1173
+			LDB A,(mirrorPD)
+			RES 6,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDW WA,000AH
+			CALL L1173
+L1630:
+			EI 07H
+			LDB A,(mirrorPD)
+			SET 5,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDB C,(P9)
+			AND C,10H
+			SRLB 4,C
+			LDB A,(var_localPollInput10Count)
+			CP A,8
+			JR NC,L1625
+			CP A,0
+			JR Z,L1626
+			SLL A,C
+L1626:
+			OR (var_bInputs0),C
+			JR L1627 ; reference (PollInputs)
+
+L1625:
+			SUB A,8
+			CP A,0
+			JR Z,L1628
+			SLL A,C
+L1628:
+			OR (var_bInputs1),C
+L1627:
+			INCB 1,(var_localPollInput10Count)
+			CPB (var_localPollInput10Count),0AH
+			JR Z,L1629
+			LDB A,(mirrorPD)
+			RES 5,A
+			LD (mirrorPD),A
+			LD (PD),A
+			EI 00H
+			LDW WA,1
+			CALL L1173
+			EI 07H
+			JP L1630 ; reference (PollInputs)
+
+L1629:
+			LDB A,(mirrorPD)
+			RES 5,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDL XIX,255
+			CALL L1631
+			LDB A,(mirrorPD)
+			SET 6,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDL XIZ,0BF7B9H ; timeout
+L1633:
+			LDB A,(P9)
+			BIT 4,A
+			JR NZ,L1632
+			SUB XIZ,1
+			JR NZ,L1633
+			JP L1634 ; reference (PollInputs)
+
+L1632:
+			LDB A,(mirrorPD)
+			RES 6,A
+			LD (mirrorPD),A
+			LD (PD),A
+			LDL XIZ,0BF7B9H ; timout
+L1636:
+			LDB A,(P9)
+			BIT 4,A
+			JR Z,L1635
+			SUB XIZ,1
+			JR NZ,L1636
+			JP L1634 ; reference (PollInputs)
+
+L1635:
+			EI 00H
+			RET ; reference (PollInputs)
+
+; ------------------------------
+
+
+L1631:
+			DEC 1,XIX
+			CP XIX,0
+			JR NZ,L1631
+			RET ; reference (L1631)
+
+; ------------------------------
+
+

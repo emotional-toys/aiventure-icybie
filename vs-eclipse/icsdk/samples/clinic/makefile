@@ -1,0 +1,6 @@
+APPNAME=clinic
+OBJS=$(APPNAME).o
+
+SDKROOT=..\..
+
+INCLUDE ..\..\INC\ICSTD.MAK

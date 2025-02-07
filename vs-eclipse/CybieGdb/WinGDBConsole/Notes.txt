@@ -1,0 +1,7 @@
+1. Build a wrapper for GDB, implement set and delete breakpoint commands,
+2. Build in a stdout,
+3. Write in a manner that allows synchronous communication between C# and GDB,
+4. Think of the structure of the output parser: breakpoint number, address confirmation.
+
+Sample coming from Klaus a week from Monday (08.10.12).
+

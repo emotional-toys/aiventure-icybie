@@ -1,0 +1,472 @@
+L0602:
+			PUSH WA
+			PUSH E
+			PUSH XIX
+			LDB E,0BH
+L0526:
+			CALL L0525
+			SUB E,1
+			JR NC,L0526
+			POP XIX
+			POP E
+			POP WA
+			RET ; reference (L0602)
+
+; ------------------------------
+
+
+L1661:
+			BIT 1,(var_077)
+			JR Z,L0527
+			PUSH WA
+			PUSH BC
+			PUSH DE
+			PUSH XIX
+			PUSH XIY
+			BIT 0,(var_2E3)
+			JR NZ,L0528
+			CALL L0529
+			CPB (var_2B4),0AH
+			JR NC,L0528
+			INCB 1,(var_2B4)
+			JR L0530 ; reference (L1661)
+
+L0528:
+			LDB (var_2B4),0
+			LDB E,0BH
+L0532:
+			PUSH E
+			CALL L0531
+			POP E
+			SUB E,1
+			JR NC,L0532
+L0530:
+			CALL L0533
+			POP XIY
+			POP XIX
+			POP DE
+			POP BC
+			POP WA
+L0527:
+			RET ; reference (L1661)
+
+; ------------------------------
+
+
+L0533:
+			LDB E,0BH
+			LDL XIX,varlegs_mode
+L0535:
+			CPB (XIX+E),4
+			JR Z,L0534
+			SUB E,1
+			JR NC,L0535
+			LDW WA,(var_legctrl0)
+			AND WA,0FFFH
+			CP WA,0FFFH
+			JR NZ,L0534
+			SET 0,(var_02D)
+			LDB E,0BH
+L0536:
+			CALL L0525
+			SUB E,1
+			JR NC,L0536
+L0534:
+			RET ; reference (L0533)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F1H,38H,10H,51H,0D8H,0A1H,0D9H,0AH,14H,0,22H,00H,0D9H,80H,0F1H,33H
+	DB 10H,50H,0D9H,80H,0D1H,38H,10H,0A8H,0D1H,38H,10H,21H,0E9H,0CCH,0FFH,0FFH
+	DB 00H,0,0F1H,2DH,10H,0CAH,6EH,06H,0D9H,0AH,3EH,00H,68H,04H,0D9H,0AH
+	DB 1FH,0,0CBH,0D8H,6EH,02H,23H,1,0F1H,35H,10H,43H,0EH
+ ENDIF
+
+L0531:
+			BIT 0,(var_2E3)
+			JR Z,L0537
+			LDB D,E
+			SLLB 1,D
+			LDL XIX,d0538
+			LDW WA,(XIX+D)
+			AND WA,(var_legctrl0)
+			JP NZ,L0525
+			LDL XIY,varlegs2_cur_prev
+			LDB A,(XIY+D)
+			INC 1,XIY
+			LD (XIY+D),A
+			LDL XIY,var_legdat_0
+			LDB W,(XIY+E)
+			LDL XIY,legpos_0
+			LDB A,(XIY+E)
+			LDL XIY,varlegs2_cur_prev
+			LD (XIY+D),A
+			JP L0539 ; reference (L0531)
+
+L0537:
+			LDL XIX,varlegs_mode
+			CPB (XIX+E),0
+			JP Z,L0525
+			CPB (XIX+E),4
+			JR C,L0540
+			RET ; reference (L0531)
+
+L0540:
+			LDB D,E
+			SLLB 1,D
+			LDL XIX,d0538
+			LDW WA,(XIX+D)
+			AND WA,(var_legctrl0)
+			JP NZ,L0525
+			LDL XIX,varlegs_mode
+			CPB (XIX+E),1
+			JR NZ,L0541
+			LDL XIY,varlegs_count2
+			INCB 1,(XIY+E)
+			CPB (XIY+E),1
+			JR C,L0541
+			LDL XIY,var_legspeed_0
+			LDB (XIY+E),08H
+			LDB (XIX+E),02H
+L0541:
+			LDL XIY,varlegs2_cur_prev
+			LDB A,(XIY+D)
+			INC 1,XIY
+			LD (XIY+D),A
+			LDL XIY,var_legdat_0
+			LDB W,(XIY+E)
+			LDL XIY,legpos_0
+			LDB A,(XIY+E)
+			LDL XIY,varlegs2_cur_prev
+			LD (XIY+D),A
+			SUB A,W
+			JP NC,L0542
+			XOR A,0FFH
+			INC 1,A
+L0542:
+			CP A,1EH
+			JR NC,L0543
+			LDB (XIX+E),03H
+L0543:
+			CPB (XIX+E),1
+			JR NZ,L0544
+			LDL XIY,var_legspeed_0
+			LDB (XIY+E),0AH
+			JR L0539 ; reference (L0531)
+
+L0544:
+			LDL XIY,varlegs2_cur_prev
+			LDW WA,(XIY+D)
+			LDL XIY,d0545
+			LDB C,(XIY+E)
+			CALL L0546
+			LDL XIY,var_legspeed_0
+			LDB W,(XIY+E)
+			JR NC,L0547
+			SUB W,C
+			JR NC,L0548
+			DB 020H,0 ; FAKE OP LDB W,0
+			JR L0548 ; reference (L0531)
+
+L0547:
+			ADD W,C
+			CP W,0AH
+			JR C,L0548
+			LDB W,0AH
+L0548:
+			LD (XIY+E),W
+L0539:
+			LDL XIX,var_legdat_0
+			LDL XIY,varlegs2_cur_prev
+			LDB A,(XIY+D)
+			SUB A,(XIX+E)
+			LDL XIX,var_legwhat_0
+			JR C,L0549
+			BIT 0,(var_2E3)
+			JR Z,L0550
+			CP A,6
+			JP C,L0525
+L0550:
+			CP E,0
+			JR Z,L0551
+			CP E,3
+			JR Z,L0551
+			CP E,7
+			JR Z,L0551
+			CP E,8
+			JR Z,L0551
+			CP E,9
+			JR Z,L0551
+			CP E,0AH
+			JR Z,L0551
+			JR L0552 ; reference (L0531)
+
+L0549:
+			BIT 0,(var_2E3)
+			JR Z,L0553
+			XOR A,0FFH
+			INC 1,A
+			CP A,6
+			JP C,L0525
+L0553:
+			CP E,0
+			JR Z,L0552
+			CP E,3
+			JR Z,L0552
+			CP E,7
+			JR Z,L0552
+			CP E,8
+			JR Z,L0552
+			CP E,9
+			JR Z,L0552
+			CP E,0AH
+			JR Z,L0552
+			JR L0551 ; reference (L0531)
+
+L0551:
+			SET 1,(XIX+E)
+			RES 0,(XIX+E)
+			RET ; reference (L0531)
+
+L0552:
+			SET 0,(XIX+E)
+			RES 1,(XIX+E)
+			RET ; reference (L0531)
+
+; ------------------------------
+
+
+d0545:
+	DB 00H,04H,08H,0,04H,08H,00H,04H,08H,00H,04H,08H
+L0529:
+			LDB E,0BH
+L0565:
+			LDL XIX,varlegs_mode
+			CPB (XIX+E),0
+			JP Z,L0554
+			CPB (XIX+E),4
+			JR Z,L0555
+			CPB (XIX+E),5
+			JP Z,L0556
+			LDL XIX,var_legdat_0
+			LDB W,(XIX+E)
+			LDL XIX,legpos_0
+			LDB A,(XIX+E)
+			SUB W,A
+			JR NC,L0557
+			XOR W,0FFH
+			INC 1,W
+L0557:
+			CP W,6
+			JP NC,L0554
+			LDL XIX,varlegs_mode
+			LDB (XIX+E),04H
+			LDL XIX,var_legwhat_0
+			LDB A,(XIX+E)
+			LDL XIX,varlegs_save_legwhat
+			LD (XIX+E),A
+			CALL L0558
+			JP L0554 ; reference (L0529)
+
+L0555:
+			LDL XIX,varlegs_countmode4
+			INCB 1,(XIX+E)
+			CPB (XIX+E),1
+			JP C,L0554
+			LDB (XIX+E),0
+			LDL XIX,varlegs_mode
+			LDB (XIX+E),05H
+			LDL XIX,varlegs_save_legwhat
+			LDB A,(XIX+E)
+			CHG 0,A
+			CHG 1,A
+			LDL XIX,var_legwhat_0
+			LD (XIX+E),A
+			SLLB 1,E
+			LDL XIX,d0559
+			LDW WA,(XIX+E)
+			AND (var_legctrl0),WA
+			SRLB 1,E
+			LDL XIX,var_legspeed_0
+			LDB A,(XIX+E)
+			LDL XIX,d0560
+			LDB W,(XIX+A)
+			LDL XIX,var_legspeed_0
+			LD (XIX+E),W
+			JP L0554 ; reference (L0529)
+
+L0556:
+			LDL XIX,varlegs_countmode5
+			INCB 1,(XIX+E)
+			CPB (XIX+E),3
+			JP C,L0554
+			LDB (XIX+E),0
+			LDL XIX,var_legdat_0
+			LDB W,(XIX+E)
+			LDL XIX,legpos_0
+			LDB A,(XIX+E)
+			SUB W,A
+			JR NC,L0561
+			XOR W,0FFH
+			INC 1,W
+L0561:
+			CP W,6
+			JR C,L0562
+			LDL XIX,varlegs_mode
+			CP W,1EH
+			JR NC,L0563
+			LDB (XIX+E),03H
+			JR L0564 ; reference (L0529)
+
+L0563:
+			LDB (XIX+E),02H
+L0564:
+			JP L0554 ; reference (L0529)
+
+L0562:
+			LDL XIX,varlegs_mode
+			LDB (XIX+E),0
+			SLLB 1,E
+			LDL XIX,varlegs2_cur_prev
+			LDB W,(XIX+E)
+			INC 1,XIX
+			LD (XIX+E),W
+			DEC 1,XIX
+			LD (XIX+E),A
+			SRLB 1,E
+			CALL L0525
+L0554:
+			SUB E,1
+			JP NC,L0565
+			RET ; reference (L0529)
+
+; ------------------------------
+
+
+L0525:
+			LDL XIX,varlegs_mode
+			LDB (XIX+E),0
+L0558:
+			LDL XIX,var_legwhat_0
+			ANDB (XIX+E),0FCH
+			SET 2,(XIX+E)
+			LDL XIX,d0538
+			SLLB 1,E
+			LDW WA,(XIX+E)
+			OR (var_legctrl0),WA
+			SRLB 1,E
+			CP E,1
+			JR Z,L0566
+			CP E,2
+			JR Z,L0567
+			CP E,3
+			JR Z,L0568
+			CP E,4
+			JR Z,L0569
+			CP E,5
+			JP Z,L0570
+			CP E,6
+			JP Z,L0571
+			CP E,7
+			JP Z,L0572
+			CP E,8
+			JP Z,L0573
+			CP E,9
+			JP Z,L0574
+			CP E,0AH
+			JP Z,L0575
+			CP E,0BH
+			JP Z,L0576
+			LDB A,(mirrorPA)
+			OR A,3
+			LD (mirrorPA),A
+			LD (PA),A
+			RET ; reference (L0525)
+
+L0566:
+			LDB A,(mirrorPA)
+			OR A,0CH
+			LD (mirrorPA),A
+			LD (PA),A
+			RET ; reference (L0525)
+
+L0567:
+			LDB A,(mirrorPA)
+			OR A,30H
+			LD (mirrorPA),A
+			LD (PA),A
+			RET ; reference (L0525)
+
+L0568:
+			LDB A,(mirrorPA)
+			OR A,0C0H
+			LD (mirrorPA),A
+			LD (PA),A
+			RET ; reference (L0525)
+
+L0569:
+			LDB A,(mirrorPB)
+			OR A,9
+			LD (mirrorPB),A
+			LD (PB),A
+			RET ; reference (L0525)
+
+L0570:
+			LDB A,(mirrorPB)
+			OR A,30H
+			LD (mirrorPB),A
+			LD (PB),A
+			RET ; reference (L0525)
+
+L0571:
+			LDB A,(mirrorPB)
+			SET 6,A
+			LD (mirrorPB),A
+			LD (PB),A
+			LDB A,(mirrorPC)
+			SET 3,A
+			LD (mirrorPC),A
+			LD (PC),A
+			RET ; reference (L0525)
+
+L0572:
+			LDB A,(mirrorPD)
+			SET 0,A
+			LD (mirrorPD),A
+			LD (PD),A
+			RET ; reference (L0525)
+
+L0573:
+			LDB A,(mirrorPD)
+			OR A,6
+			LD (mirrorPD),A
+			LD (PD),A
+			RET ; reference (L0525)
+
+L0574:
+			LDB A,(mirrorPD)
+			OR A,18H
+			LD (mirrorPD),A
+			LD (PD),A
+			RET ; reference (L0525)
+
+L0575:
+			LDB A,(mirrorP6)
+			OR A,18H
+			LD (mirrorP6),A
+			LD (P6),A
+			RET ; reference (L0525)
+
+L0576:
+			LDB A,(mirrorP6)
+			OR A,60H
+			LD (mirrorP6),A
+			LD (P6),A
+			RET ; reference (L0525)
+
+; ------------------------------
+
+
+

@@ -1,0 +1,285 @@
+L1647:
+			PUSH C
+			INCB 1,(var_bPWMCount)
+			CPB (var_bPWMCount),0AH
+			JR C,L0488
+			LDB (var_bPWMCount),0
+L0488:
+			LDB W,(mirrorPA)
+			CPB (var_legwhat_0),4
+			JR Z,L0489
+			LDB A,(var_legspeed_0)
+			CP (var_bPWMCount),A
+			JR NC,L0489
+			BIT 0,(var_legwhat_0)
+			JR NZ,L0490
+			SET 1,W
+			RES 0,W
+			JR L0491 ; reference (L1647)
+
+L0490:
+			RES 1,W
+			SET 0,W
+			JR L0491 ; reference (L1647)
+
+L0489:
+			OR W,3
+L0491:
+			LD (mirrorPA),W
+			LD (PA),W
+			LDB W,(mirrorPA)
+			CPB (var_legwhat_1),4
+			JR Z,L0492
+			LDB A,(var_legspeed_1)
+			CP (var_bPWMCount),A
+			JR NC,L0492
+			BIT 0,(var_legwhat_1)
+			JR NZ,L0493
+			SET 2,W
+			RES 3,W
+			JR L0494 ; reference (L1647)
+
+L0493:
+			RES 2,W
+			SET 3,W
+			JR L0494 ; reference (L1647)
+
+L0492:
+			OR W,0CH
+L0494:
+			LD (mirrorPA),W
+			LD (PA),W
+			LDB W,(mirrorPA)
+			CPB (var_legwhat_2),4
+			JR Z,L0495
+			LDB A,(var_legspeed_2)
+			CP (var_bPWMCount),A
+			JR NC,L0495
+			BIT 0,(var_legwhat_2)
+			JR NZ,L0496
+			SET 5,W
+			RES 4,W
+			JR L0497 ; reference (L1647)
+
+L0496:
+			RES 5,W
+			SET 4,W
+			JR L0497 ; reference (L1647)
+
+L0495:
+			OR W,30H
+L0497:
+			LD (mirrorPA),W
+			LD (PA),W
+			LDB W,(mirrorPA)
+			CPB (var_legwhat_3),4
+			JR Z,L0498
+			LDB A,(var_legspeed_3)
+			CP (var_bPWMCount),A
+			JR NC,L0498
+			BIT 0,(var_legwhat_3)
+			JR NZ,L0499
+			SET 6,W
+			RES 7,W
+			JR L0500 ; reference (L1647)
+
+L0499:
+			RES 6,W
+			SET 7,W
+			JR L0500 ; reference (L1647)
+
+L0498:
+			OR W,0C0H
+L0500:
+			LD (mirrorPA),W
+			LD (PA),W
+			LDB W,(mirrorPB)
+			CPB (var_legwhat_4),4
+			JR Z,L0501
+			LDB A,(var_legspeed_4)
+			CP (var_bPWMCount),A
+			JR NC,L0501
+			BIT 0,(var_legwhat_4)
+			JR NZ,L0502
+			SET 3,W
+			RES 0,W
+			JR L0503 ; reference (L1647)
+
+L0502:
+			RES 3,W
+			SET 0,W
+			JR L0503 ; reference (L1647)
+
+L0501:
+			OR W,9
+L0503:
+			LD (mirrorPB),W
+			LD (PB),W
+			LDB W,(mirrorPB)
+			CPB (var_legwhat_5),4
+			JR Z,L0504
+			LDB A,(var_legspeed_5)
+			CP (var_bPWMCount),A
+			JR NC,L0504
+			BIT 0,(var_legwhat_5)
+			JR NZ,L0505
+			SET 4,W
+			RES 5,W
+			JR L0506 ; reference (L1647)
+
+L0505:
+			RES 4,W
+			SET 5,W
+			JR L0506 ; reference (L1647)
+
+L0504:
+			OR W,30H
+L0506:
+			LD (mirrorPB),W
+			LD (PB),W
+			LDB W,(mirrorPB)
+			LDB C,(mirrorPC)
+			CPB (var_legwhat_6),4
+			JR Z,L0507
+			LDB A,(var_legspeed_6)
+			CP (var_bPWMCount),A
+			JR NC,L0507
+			BIT 0,(var_legwhat_6)
+			JR NZ,L0508
+			SET 6,W
+			RES 3,C
+			JR L0509 ; reference (L1647)
+
+L0508:
+			RES 6,W
+			SET 3,C
+			JR L0509 ; reference (L1647)
+
+L0507:
+			SET 6,W
+			SET 3,C
+L0509:
+			LD (mirrorPB),W
+			LD (PB),W
+			LD (mirrorPC),C
+			LD (PC),C
+			LDB W,(mirrorPD)
+			LDB C,(mirrorPC)
+			CPB (var_legwhat_7),4
+			JR Z,L0510
+			LDB A,(var_legspeed_7)
+			CP (var_bPWMCount),A
+			JR NC,L0510
+			BIT 0,(var_legwhat_7)
+			JR NZ,L0511
+			SET 0,W
+			RES 5,C
+			JR L0512 ; reference (L1647)
+
+L0511:
+			RES 0,W
+			SET 5,C
+			JR L0512 ; reference (L1647)
+
+L0510:
+			SET 0,W
+			SET 5,C
+L0512:
+			LD (mirrorPD),W
+			LD (PD),W
+			LD (mirrorPC),C
+			LD (PC),C
+			LDB W,(mirrorPD)
+			CPB (var_legwhat_8),4
+			JR Z,L0513
+			LDB A,(var_legspeed_8)
+			CP (var_bPWMCount),A
+			JR NC,L0513
+			BIT 0,(var_legwhat_8)
+			JR NZ,L0514
+			SET 1,W
+			RES 2,W
+			JR L0515 ; reference (L1647)
+
+L0514:
+			RES 1,W
+			SET 2,W
+			JR L0515 ; reference (L1647)
+
+L0513:
+			OR W,6
+L0515:
+			LD (mirrorPD),W
+			LD (PD),W
+			LDB W,(mirrorPD)
+			CPB (var_legwhat_9),4
+			JR Z,L0516
+			LDB A,(var_legspeed_9)
+			CP (var_bPWMCount),A
+			JR NC,L0516
+			BIT 0,(var_legwhat_9)
+			JR NZ,L0517
+			SET 4,W
+			RES 3,W
+			JR L0518 ; reference (L1647)
+
+L0517:
+			RES 4,W
+			SET 3,W
+			JR L0518 ; reference (L1647)
+
+L0516:
+			OR W,18H
+L0518:
+			LD (mirrorPD),W
+			LD (PD),W
+			LDB W,(mirrorP6)
+			CPB (var_legwhat_10),4
+			JR Z,L0519
+			LDB A,(var_legspeed_10)
+			CP (var_bPWMCount),A
+			JR NC,L0519
+			BIT 0,(var_legwhat_10)
+			JR NZ,L0520
+			SET 4,W
+			RES 3,W
+			JR L0521 ; reference (L1647)
+
+L0520:
+			RES 4,W
+			SET 3,W
+			JR L0521 ; reference (L1647)
+
+L0519:
+			OR W,18H
+L0521:
+			LD (mirrorP6),W
+			LD (P6),W
+			LDB W,(mirrorP6)
+			CPB (var_legwhat_11),4
+			JR Z,L0522
+			LDB A,(var_legspeed_11)
+			CP (var_bPWMCount),A
+			JR NC,L0522
+			BIT 0,(var_legwhat_11)
+			JR NZ,L0523
+			SET 6,W
+			RES 5,W
+			JR L0524 ; reference (L1647)
+
+L0523:
+			RES 6,W
+			SET 5,W
+			JR L0524 ; reference (L1647)
+
+L0522:
+			OR W,60H
+L0524:
+			LD (mirrorP6),W
+			LD (P6),W
+			POP C
+			RET ; reference (L1647)
+
+; ------------------------------
+
+

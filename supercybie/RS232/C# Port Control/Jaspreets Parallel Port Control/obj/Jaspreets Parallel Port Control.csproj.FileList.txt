@@ -1,0 +1,8 @@
+bin\Debug\Jaspreets Parallel Port Control.dll
+bin\Debug\Jaspreets Parallel Port Control.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Jaspreets_Parallel_Port_Control.ParallelPort.resources
+obj\Debug\Jaspreets_Parallel_Port_Control.Properties.Resources.resources
+obj\Debug\Jaspreets Parallel Port Control.csproj.GenerateResource.Cache
+obj\Debug\Jaspreets Parallel Port Control.dll
+obj\Debug\Jaspreets Parallel Port Control.pdb

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>HackingLab</title>
+
+
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"> <style type="text/css" media="screen">
+<!-- body {
+margin: 0;
+padding: 0;
+background: white;
+font: 80% verdana, arial, sans-serif;
+}
+dl, dt, dd, ul, li {
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+#menu {
+position: absolute; /* placement du menu */
+top: 0;
+left: 0;
+}
+#menu {
+width: 12em; /* largeur du menu */
+}
+#menu dt { /* menu*/
+color: #FF0000;
+cursor: pointer;
+margin: 4px 0;/*vertical horizontal*/
+height: 20px;
+line-height: 20px;
+text-align: left;
+font-weight: bold;
+/*border: 1px solid red;*/
+background: #CCCCCC; }
+#menu dd {
+/*border: 1px solid gray;*/
+}
+#menu li { /* sous-menu*/
+text-align: left;
+background: #FFFFFF;
+margin: 4px 5;/*vertical horizontal*/
+}
+#menu li a, #menu dt a {
+color: #000000;
+text-decoration: none;
+display: block;
+border: 0 none;
+height: 100%;
+}
+#menu li a:active {
+color: #FF1200; /*rouge*/
+}
+#menu li a:hover, #menu dt a:hover, #menu dt a:active {
+background: #FF1200; /*rouge*/
+color: #FFFFFF; /*blanc*/
+}
+-->
+</style>
+<script type="text/javascript">
+<!--
+window.onload=montre;
+function montre(id) {
+var d = document.getElementById(id);
+for (var i = 1; i<=10; i++) {
+if (document.getElementById('smenu'+i)) {document.getElementById('smenu'+i).style.display='none';}
+}
+if (d) {d.style.display='block';}
+}
+//-->
+</script></head><body><br><dl id="menu">
+<dt onclick="javascript:montre();"><img src="menu_data/logo_small.jpg"></dt><br> <dt onclick="javascript:montre('smenu1');"><a href="http://www.hackinglab.org/home.html" target="mainFrame">HOME</a></dt> <dd style="display: none;" id="smenu1"> <ul> <li><a href="http://www.hackinglab.org/home/about.html" target="mainFrame"><acronym title="Who are we?">About</acronym></a></li>
+<li><a href="http://www.hackinglab.org/home/contact.html" target="mainFrame"><acronym title="Email">Contact</acronym></a></li> <li><a href="http://www.hackinglab.org/home.html#news" target="mainFrame">News</a></li>
+</ul> </dd>
+<dt onclick="javascript:montre('smenu2');"><a href="#">TOYS</a></dt> <dd style="display: none;" id="smenu2">
+<ul>
+<li><a href="http://www.hackinglab.org/icybie/index.html" target="mainFrame">I-Cybie</a></li> <li><a href="http://www.hackinglab.org/real_baby/baby.html" target="mainFrame">My Real Baby</a></li>
+<li><a href="http://www.hackinglab.org/chimp/chimp.html" target="mainFrame">Chimp Head</a></li> </ul> </dd>
+<dt onclick="javascript:montre('smenu4');"><a href="#">WORKSHOP</a></dt>
+<dd style="display: none;" id="smenu4"> <ul>
+<li><a href="http://www.hackinglab.org/wiimote/wii.html" target="mainFrame"><acronym title="Wiimote Harware Hacking">Wiimote hacking</acronym></a></li>
+      <li><a href="http://www.hackinglab.org/mormyre/index.html" target="mainFrame"><acronym title="Electric fishes">Mormyrophone™</acronym></a>
+      </li>
+</ul>
+<li><a href="http://www.hackinglab.org/vision/vision.html" target="mainFrame"><acronym title="Persisitence of vision">Persistence of vision</acronym></a></li>
+    <ul>
+<li><a href="http://www.hackinglab.org/bremen/bremen.html" target="mainFrame"><acronym title="HfK Bremen">Mechatronics</acronym></a></li>
+<li><a href="http://www.hackinglab.org/vida/index.html" target="mainFrame"><acronym title="Hacking I-Cybies">VIDA 9</acronym></a></li>
+<li><a href="http://www.hackinglab.org/GAME/game.html" target="mainFrame"><acronym title="Game Art Multiplex Experiment">GAME</acronym></a></li>
+<li><a href="http://www.hackinglab.org/IDRE/index.htm" target="mainFrame"><acronym title="Intelligence Over the Network">IDRE</acronym></a></li>
+<li><a href="http://www.hackinglab.org/RGV/index.htm" target="mainFrame"><acronym title="Variable Geometry truss">RGV</acronym></a></li>
+    </ul>
+ </dd>
+<dt onclick="javascript:montre('smenu3');"><a href="#">NETWORK</a></dt>
+<dd style="display: none;" id="smenu3"> <ul> <li><a href="http://www.hackinglab.org/picoip/index.html" target="mainFrame">PicoIP</a></li>
+<li><a href="http://www.hackinglab.org/picoip_wifi/index.html" target="mainFrame">PicoIP WIFI</a></li> </ul> </dd>
+<dt onclick="javascript:montre('smenu5');"><a href="#">GATES</a></dt>
+<dd style="display: none;" id="smenu5"> <ul> <li><a href="http://www.hackinglab.org/GATES/whatisgates/whatisgates.html" target="mainFrame"><acronym title="Gates">What is GATES ?</acronym></a></li> </ul> </dd>
+<dt onclick="javascript:montre('smenu8');"><a href="#">ZIGBEE</a></dt>
+<dd style="display: none;" id="smenu8"> <ul> <li><a href="http://www.hackinglab.org/zigbee/index.html" target="mainFrame">Zigbee project</a></li></ul> </dd>
+<dt onclick="javascript:montre('smenu6');"><a href="#">Open Source LAB</a></dt>
+<dd style="display: none;" id="smenu6">
+<ul> <li><a href="http://www.hackinglab.org/lua/luasource.html" target="mainFrame">Lua</a></li>
+<li><a href="http://www.hackinglab.org/construct.html" target="mainFrame">Python</a></li>
+</ul> </dd>
+<dt onclick="javascript:montre('smenu7');"><a href="#">PINGUINO</a></dt>
+<dd style="display: none;" id="smenu7">
+<ul> <li><a href="http://www.hackinglab.org/pinguino/index.html" target="mainFrame">Pinguino Project</a></li>
+<li><a href="http://jpmandon.blogspot.com/" target="blank">Blog</a></li>
+<li><a href="http://sites.google.com/site/pinguinotutorial/home" target="blank">Tutorial</a></li>
+<li><a href="http://groups.google.fr/group/pinguinocard" target="blank">Group on Google</a></li>
+<li><a href="http://identi.ca/group/pinguinoboard" target="blank">Group on identi.ca</a></li>
+
+</ul> </dd>
+</dl>
+</body></html>

@@ -1,0 +1,1793 @@
+;; charger support
+L1156:
+			CPB (varNEW_1C4),1
+			JP Z,L0810
+			CPB (varNEW_1AC),1
+			JP Z,L0811
+			CPB (varNEW_19E),1
+			JR Z,L0812
+			CPB (varNEW_bDisableCharger),0
+			JR Z,L0813
+			LDB (varNEW_1C7),0
+			LDB (varNEW_1C6),0
+L0823:
+			CPB (varNEW_1C8),0
+			JR Z,L0814
+			CALL StretchIt_Head
+			CALL StretchIt_Neck
+			CALL StretchIt_Mouth
+			CALL StretchIt_Tail
+			LDB (varNEW_1C8),0
+L0814:
+			RET ; reference (L1156)
+
+L0812:
+			LDB (varNEW_1AC),1
+			CALL L0819
+			CALL L0820
+			JP L0811 ; reference (L1156)
+
+L0813:
+			CPB (var_258),0
+			JP Z,L0821
+			RET ; reference (L1156)
+
+L0821:
+			BIT 0,(svar_boolBattLow)
+			JR Z,L0822
+			LDB (varNEW_1C7),0
+			LDB (varNEW_1C6),0
+			JR L0823 ; reference (L1156)
+
+L0822:
+			LDB A,(varNEW_1A1)
+			CP (varNEW_1A3),A
+			JP C,L0824
+			LDB (varNEW_1C7),0
+			LDB (varNEW_1C6),0
+			JR L0823 ; reference (L1156)
+
+L0824:
+			CALL YipOnce
+			LDB (var_LEDMode),28H
+			CALL L0820
+L0827:
+			LDB (varNEW_1BB),06H
+			CALL L0825
+L0885:
+			LDB (varNEW_19A),0
+L0848:
+			LDB (varNEW_1C6),0FFH
+			LDB (var_LEDMode),28H
+			CALL L0826
+			CPW (varNEW_1B3),0
+			JR Z,L0827
+L0845:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L0830
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L1156)
+
+L0830:
+			CALL L0831
+			CPB (varNEW_19E),1
+			JP Z,L0832
+			CPB (var_iRemoteButton_1based),0EH
+			JR NZ,L0833
+			CALL L0834
+        SEND_EYES 25H ; RED
+			LDB (countdown590_2Hz),0AH
+L0840:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L0836
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L1156)
+
+L0836:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L0837
+			CALL L0838
+			LDB (countdown590_2Hz),0
+			CPB (varNEW_bDisableCharger),0FFH
+			JR NZ,L0837
+			JP L0839 ; reference (L1156)
+
+L0837:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0840
+			LDB (var_iRemoteButton_1based),0
+L0833:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L0841
+			CALL L0838
+L0841:
+			CPB (varNEW_bDisableCharger),0FFH
+			JP Z,L0839
+			CALL PollInputs
+			CALL L0842
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L0649
+			CALL L0844
+			CALL L0650
+			CALL L0616
+			CALL L0057
+			CPB (var_258),0
+			JP NZ,L0845
+			CPB (varNEW_1A0),0EH
+			JP NC,L0846
+			LDB (varNEW_19A),0
+			LDB (countdown590_2Hz),04H
+L0847:
+			CALL L0057
+			CPB (countdown590_2Hz),0
+			JR NZ,L0847
+			JP L0848 ; reference (L1156)
+
+L0846:
+			LDB (varNEW_1A0),02H
+			LDB A,(var_570)
+			AND A,3
+			ADD A,1
+			LD (varNEW_1B1),A
+L0858:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L0849
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L1156)
+
+L0849:
+			CPB (varNEW_1B1),0
+			JP Z,L0850
+			LDL_ACTION XIX,NEWACTION_24,20
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0857:
+			LDB (var_LEDMode),28H
+			CPB (var_iRemoteButton_1based),0EH
+			JR NZ,L0851
+			CALL L0834
+        SEND_EYES 25H ; RED
+			LDB (countdown590_2Hz),0AH
+L0855:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L0853
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L1156)
+
+L0853:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L0854
+			CALL L0838
+			LDB (countdown590_2Hz),0
+			CPB (varNEW_bDisableCharger),0FFH
+			JR NZ,L0854
+			JP L0839 ; reference (L1156)
+
+L0854:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0855
+			LDB (var_iRemoteButton_1based),0
+L0851:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L0856
+			CALL L0838
+L0856:
+			CPB (varNEW_bDisableCharger),0FFH
+			JP Z,L0839
+			CALL PollInputs
+			CALL L0831
+			CALL L0842
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L0649
+			CALL L0844
+			CALL L0650
+			CALL L0616
+			CALL L0057
+			CPB (var_258),0
+			JP NZ,L0857
+			SUBB (varNEW_1B1),1
+			JP L0858 ; reference (L1156)
+
+L0850:
+			LDL_ACTION XIX,NEWACTION_25,21
+			LDB (varNEW_1B1),0
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			JP L0830 ; reference (L1156)
+
+L0810:
+			LDB (varNEW_1C6),0FFH
+			LDB (varNEW_bSearchCharger),1
+			LDB (countdown590_2Hz),04H
+			LDB (var_LEDMode),29H
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19E),0
+L0859:
+			CALL L0057
+			CPB (countdown590_2Hz),0
+			JR NZ,L0859
+			LDB (varNEW_1BE),14H
+			JR L0860 ; reference (L1156)
+
+L0864:
+			CPB (varNEW_1BE),0
+			JR NZ,L0861
+			LDB (varNEW_1BE),14H
+L0861:
+			LDB (varNEW_1BF),0
+			LDB (var_LEDMode),2FH
+L0860:
+			CALL PollInputs
+			CALL Check_SmallButton
+			CALL L0643
+			CALL L0057
+			CPB (varNEW_1C1),8EH
+			JR Z,L0862
+			CPB (varNEW_19E),1
+			JR Z,L0863
+			CPB (varNEW_1BF),1
+			JR Z,L0864
+			CPB (varNEW_1BE),0
+			JR NZ,L0860
+			LDB (var_LEDMode),21H
+			JR L0860 ; reference (L1156)
+
+L0862:
+			LDB (varNEW_1C4),0
+			JP L0865 ; reference (L1156)
+
+L0863:
+			LDB (varNEW_1AC),1
+			LDB (varNEW_1BF),0
+			JP L0810 ; reference (L1156)
+
+L0832:
+			LDB (varNEW_1B5),0
+			LDB (varNEW_1AC),0
+L0811:
+			LDB (varNEW_bSearchCharger),1
+			LDB (varNEW_1C6),0FFH
+			CALL L0633
+			CALL L0866
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19E),0
+			LDB (var_LEDMode),29H
+			CALL L0867
+			CPB (varNEW_1AC),1
+			JR Z,L0868
+L0873:
+			CALL L0057
+			CPB (varNEW_1A8),0
+			JP Z,L0869
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0870
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0871
+L0870:
+			CPB (varNEW_1C1),8EH
+			JP Z,L0865
+			CPB (varNEW_1C1),8FH
+			JP Z,L0872
+			JR L0873 ; reference (L1156)
+
+L0868:
+			CALL L0057
+			CPB (varNEW_1A8),0
+			JP Z,L0874
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0875
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0871
+L0875:
+			CPB (varNEW_19E),1
+			JP Z,L0832
+			CPB (varNEW_1BF),1
+			JP Z,L0876
+			CPB (varNEW_1C1),8EH
+			JP Z,L0865
+			JR L0868 ; reference (L1156)
+
+L0876:
+			LDB (varNEW_1CA),1
+			RET ; reference (L1156)
+
+L0881:
+			CALL L0877
+			JP L0827 ; reference (L1156)
+
+L0869:
+			CALL L0877
+			JP L0827 ; reference (L1156)
+
+L0874:
+			CALL L0878
+L0896:
+			LDB A,(varNEW_1A1)
+			CP (varNEW_1A3),A
+			JP NC,L0879
+			CPB (varNEW_1C8),1
+			JR NZ,L0880
+			CALL StretchIt_Head
+			CALL StretchIt_Neck
+			CALL StretchIt_Mouth
+			CALL StretchIt_Tail
+L0880:
+			CALL L0839
+			JP L0824 ; reference (L1156)
+
+L0872:
+			LDB (varNEW_1C1),0
+			CALL L0867
+			LDB (varNEW_1A8),28H
+L0882:
+			CPB (varNEW_1A8),0
+			JR Z,L0881
+			LDB (varNEW_1AA),0
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0882
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0871
+			CPB (var_IR_result_byte),8BH
+			JP Z,L0883
+			CPB (var_IR_result_byte),85H
+			JR Z,BeaconDetect1
+			CPB (var_IR_result_byte),87H
+			JR Z,BeaconDetect1
+			CPB (var_IR_result_byte),89H
+			JR Z,BeaconDetect1
+			JR L0882 ; reference (L1156)
+
+L0883:
+			LDB (var_505),0AH
+			LDB (var_506),0AH
+			LDB (var_IR_mode),0
+			LDB (varNEW_19E),1
+			JP L0832 ; reference (L1156)
+
+BeaconDetect1:
+			LDB (var_505),0AH
+			LDB (var_506),0AH
+			LDB (var_IR_mode),0
+			CALL L0884
+			JP L0885 ; reference (L1156)
+
+L0865:
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19F),3CH
+			LDB (var_LEDMode),27H
+			LDB (varNEW_1A8),28H
+			LDW (varNEW_countdown_2or12hours),0A8C0H
+L0890:
+			CPB (varNEW_1A8),0
+			JP Z,L0886
+			LDB A,(varNEW_1AD)
+			CP (varNEW_1A3),A
+			JP NC,L0887
+L0900:
+			CALL CheckWagTailWhenCharging
+			CALL L0057
+			CPB (varNEW_1C1),8CH
+			JP Z,L0879
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0889
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0886
+L0889:
+			CPW (varNEW_countdown_2or12hours),0
+			JP NZ,L0890
+			JP L0891 ; reference (L1156)
+
+L0891:
+			LDB (var_iSoundToPlay_1based),07H
+			CALL L0807
+L0892:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L0892
+			LDB (varNEW_1C2),28H
+L0894:
+			CPB (varNEW_1C2),0
+			JP Z,L0893
+			LDB (varNEW_1AA),0
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0894
+			CPB (var_IR_result_byte),8CH
+			JR NZ,L0894
+			JP L0879 ; reference (L1156)
+
+L0893:
+			CALL L0877
+			JP L0879 ; reference (L1156)
+
+L0886:
+			CPB (varNEW_1AC),1
+			JR Z,L0895
+			CALL L0877
+			JP L0827 ; reference (L1156)
+
+L0895:
+			CALL L0877
+			JP L0896 ; reference (L1156)
+
+L0887:
+			CPB (varNEW_1AC),0
+			JR Z,L0897
+			LDB (varNEW_1C9),3CH
+L0899:
+			CPB (varNEW_1A8),0
+			JP Z,L0886
+			CPB (varNEW_1C1),8CH
+			JP Z,L0879
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0898
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0879
+L0898:
+			CALL CheckWagTailWhenCharging
+			CALL L0057
+			CPB (varNEW_1C9),0
+			JR NZ,L0899
+			LDB A,(varNEW_1AD)
+			CP (varNEW_1A3),A
+			JP C,L0900
+L0897:
+        SEND_EYES 20H ; YELLOW
+			CALL L0867
+			CALL L0884
+			LDW (varNEW_countdown_2or12hours),1C20H
+L0904:
+			CPB (varNEW_1A8),0
+			JP Z,L0902
+			CPB (varNEW_1C1),8CH
+			JP Z,L0879
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L0903
+			CPB (var_IR_result_byte),8CH
+			JP Z,L0879
+L0903:
+			CALL CheckWagTailWhenCharging
+			CALL L0057
+			CPW (varNEW_countdown_2or12hours),0
+			JR NZ,L0904
+			JP L0891 ; reference (L1156)
+
+L0902:
+			CPB (varNEW_1AC),1
+			JR Z,L0905
+			CALL L0877
+			JP L0879 ; reference (L1156)
+
+L0905:
+			CALL L0877
+			JP L0896 ; reference (L1156)
+
+L0879:
+			CALL YipOnce
+L0871:
+			LDW (var_wIdleSecondCount),0
+			CALL L0906
+			JP L0839 ; reference (L1156)
+
+; ------------------------------
+
+
+L1016:
+			CALL YipOnce
+L1006:
+			LDW (var_wIdleSecondCount),0
+			CALL L0906
+			JP L0907 ; reference (L0774)
+
+; ------------------------------
+
+
+L0906:
+			LDL_ACTION XIX,NEWACTION_02,22
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			LDB (var_LEDMode),2AH
+			LDB (varNEW_whereStation),0
+			LDB (varNEW_whereStationOld),0
+			LDB (varNEW_whereStationVeryOld),0
+			LDB (varNEW_1BA_station),0
+			RET ; reference (L0906)
+
+; ------------------------------
+
+
+L0884:
+        SEND_EYES 2FH ; OFF
+			RET ; reference (L0884)
+
+; ------------------------------
+
+
+L0867:
+			LDB (countdown590_2Hz),02H
+L0910:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0910
+			RET ; reference (L0867)
+
+; ------------------------------
+
+
+L0829:
+			LDB A,(varNEW_1A1)
+			CP (varNEW_1A3),A
+			JR NC,L0911
+			CALL L0839
+			JP L0824 ; reference (L1156)
+
+L0911:
+			LDW (var_wIdleSecondCount),0
+			CALL YipOnce
+			LDL_ACTION XIX,NEWACTION_02,23
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			CALL L0057
+			LDB (varNEW_whereStation),0
+			LDB (varNEW_whereStationOld),0
+			LDB (varNEW_whereStationVeryOld),0
+			LDB (varNEW_1BA_station),0
+			JP L0907 ; reference (L1156)
+
+; ------------------------------
+
+
+L0878:
+			LDB (countdown590_2Hz),0AH
+			LDB (var_LEDMode),2BH
+L0912:
+			CALL L0057
+			CPB (countdown590_2Hz),0
+			JR NZ,L0912
+			RET ; reference (L0878)
+
+; ------------------------------
+
+
+L0825:
+			LDW (varNEW_1B3),04CEH
+			LDB (var_505),0BH
+			LDB (var_506),0BH
+			LDB (var_IR_mode),0
+			LDB (varNEW_bSearchCharger),1
+			LDB (varNEW_direction_0),0
+			LDB (varNEW_direction_1),0
+			LDB (varNEW_direction_2),0
+			LDB (varNEW_direction_3),0
+			LDB (varNEW_direction_4),0
+			LDB (varNEW_Flag_Beacon85),0
+			LDB (varNEW_Flag_Beacon87),0
+			LDB (varNEW_Flag_Beacon89),0
+			LDB (varNEW_direction_count),0
+			RET ; reference (L0825)
+
+; ------------------------------
+
+
+YipTwice:
+			LDB (var_iSoundToPlay_1based),02H
+			CALL L0807
+L0913:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L0913
+YipOnce:
+			LDB (var_iSoundToPlay_1based),02H
+			CALL L0807
+L0914:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L0914
+			RET ; reference (YipTwice)
+
+; ------------------------------
+
+
+L1024:
+			LDB (varNEW_1C1),0
+			LDB (varNEW_1AA),0
+			LDB (varNEW_whereStation),0
+			LDB (varNEW_whereStationOld),06H
+			LDB (varNEW_whereStationVeryOld),06H
+			LDB (varNEW_1BA_station),0
+			LDB (var_505),0
+			LDB (var_506),0
+			LDB (var_IR_mode),0
+			LDB (varNEW_1A0),0
+			LDB (varNEW_1BC),0
+			RET ; reference (L1024)
+
+; ------------------------------
+
+
+L0877:
+			CALL L0878
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19E),0
+			LDB (varNEW_1AA),0
+			LDB (varNEW_1A0),0
+			LDB (varNEW_1BC),0
+			LDB (varNEW_whereStationVeryOld),0
+			LDB (varNEW_whereStation),0
+			LDB (varNEW_whereStationOld),0
+			LDB (varNEW_1BA_station),0
+			RET ; reference (L0877)
+
+; ------------------------------
+
+
+L0838:
+			CPB (var_iRemoteButton_1based),0AH
+			JR Z,L0915
+			RET ; reference (L0838)
+
+L0915:
+			LDB (varNEW_1B0),0
+			CALL L0819
+			CALL L0884
+			CALL L0751
+			LDB (var_iRemoteButton_1based),0
+			LDB (countdown590_2Hz),3CH
+L0917:
+			CPB (countdown590_2Hz),0
+			JP Z,L0916
+			CPB (var_iRemoteButton_1based),0
+			JR Z,L0917
+			CPB (var_iRemoteButton_1based),9
+			JR Z,L0918
+			JP L0919 ; reference (L0838)
+
+L0918:
+			CALL L0751
+			LDB (var_iRemoteButton_1based),0
+			LDB (countdown590_2Hz),3CH
+L0920:
+			CPB (countdown590_2Hz),0
+			JP Z,L0916
+			CPB (var_iRemoteButton_1based),0
+			JR Z,L0920
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,L0921
+			JP L0919 ; reference (L0838)
+
+L0921:
+			CALL L0751
+			LDB (var_iRemoteButton_1based),0
+			LDB (countdown590_2Hz),3CH
+L0922:
+			CPB (countdown590_2Hz),0
+			JP Z,L0916
+			CPB (var_iRemoteButton_1based),0
+			JR Z,L0922
+			CPB (var_iRemoteButton_1based),4
+			JR Z,L0923
+			JP L0919 ; reference (L0838)
+
+L0923:
+			CALL L0751
+			LDB (var_iRemoteButton_1based),0
+			LDB (countdown590_2Hz),3CH
+L0924:
+			CPB (countdown590_2Hz),0
+			JP Z,L0916
+			CPB (var_iRemoteButton_1based),0
+			JP Z,L0924
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,L0925
+			JP L0919 ; reference (L0838)
+
+L0925:
+			LDB (varNEW_1B5),0
+			LDB (var_iRemoteButton_1based),0
+			CALL L0751
+			CALL YipTwice
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),2EH
+			LDL_ACTION XIX,NEWACTION_04,24
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0926:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0926
+			LDB (varNEW_bSearchCharger),0
+			LDB (varNEW_bDisableCharger),0FFH
+			LDB (varNEW_1B0),0
+			JR L0927 ; reference (L0838)
+
+L0919:
+			CALL YipTwice
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),29H
+			LDL_ACTION XIX,NEWACTION_04,25
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0928:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0928
+			LDB (varNEW_bSearchCharger),0
+L0916:
+			LDB (varNEW_1B0),0FFH
+L0927:
+			LDB (var_iRemoteButton_1based),0
+			CALL L0884
+			RET ; reference (L0838)
+
+; ------------------------------
+
+
+CheckWagTailWhenCharging:
+			CPB (varNEW_19F),0
+			JR NZ,L0929
+            ;; 30 seconds has elapsed
+ IFDEF NEWFEAT ; tail wag timeout (YICTable)
+			LDB (varNEW_19F),3CH ; 60 /2 = every 30 seconds
+            CPB (byteWagTailUpperCount),0
+            JR Z,do_wag_tail
+            DECB (byteWagTailUpperCount)
+            RET
+do_wag_tail:
+            LDB A,(YD_bWagTime)
+            LDB (byteWagTailUpperCount),A
+ ENDIF
+			LDL_ACTION XIX,NEWACTION_03,26 ; wag tail
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0930:
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0930 ; still wagging
+			LDB (varNEW_19F),3CH ; 60 /2 = every 30 seconds
+L0929:
+			RET ; reference (CheckWagTailWhenCharging)
+
+; ------------------------------
+
+
+L0820:
+			LDL_ACTION XIX,NEWACTION_01,27
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0931:
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0931
+			RET ; reference (L0820)
+
+; ------------------------------
+
+
+L0935:
+			ADDB (varNEW_iFindState),4
+			JR L0932 ; reference (L0826)
+
+L0826:
+			CPB (varNEW_19A),0FFH
+			JP NZ,L0933
+			LDB (varNEW_iFindState),0
+L0932:
+			LDB C,(varNEW_iFindState)
+			CP C,20H
+			JP NC,L0934
+			LDL XIX,dataBeaconFind
+			LDB A,(XIX+C)
+			CP A,(varNEW_Flag_Beacon85)
+			JR NZ,L0935
+			INC 1,C
+			LDB A,(XIX+C)
+			CP A,(varNEW_Flag_Beacon87)
+			JR NZ,L0935
+			INC 1,C
+			LDB A,(XIX+C)
+			CP A,(varNEW_Flag_Beacon89)
+			JR NZ,L0935
+			INC 1,C
+			LDB A,(XIX+C)
+			LD (varNEW_whereStation),A
+			CPB (varNEW_1BB),0
+			JR Z,L0936
+			LDB A,(varNEW_whereStationOld)
+			LD (varNEW_whereStationVeryOld),A
+			LDB A,(varNEW_whereStation)
+			LD (varNEW_whereStationOld),A
+			JP L0933 ; reference (L0826)
+
+L0936:
+			LDB A,(varNEW_whereStationOld)
+			LD (varNEW_whereStationVeryOld),A
+			CPB (varNEW_whereStation),1
+			JP Z,WhereStation_1x
+			CPB (varNEW_whereStation),3
+			JP Z,WhereStation_3x
+			CPB (varNEW_whereStation),4
+			JP Z,WhereStation_4x
+			CPB (varNEW_whereStation),5
+			JP Z,WhereStation_5x
+			CPB (varNEW_whereStation),2
+			JP Z,WhereStation_2x
+			CPB (varNEW_whereStation),6
+			JP Z,WhereStation_6x
+			CPB (varNEW_whereStation),0
+			JP Z,WhereStation_0x
+			JP WhereStation_xx_error ; reference (L0826)
+
+WhereStation_0x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,MoveStation_225
+			CPB (varNEW_whereStationOld),3
+			JP Z,MoveStation_224
+			CPB (varNEW_whereStationOld),4
+			JP Z,MoveStation_V3_01b
+			CPB (varNEW_whereStationOld),5
+			JP Z,MoveStation_V3_02a
+			CPB (varNEW_whereStationOld),2
+			JP Z,MoveStation_V3_03
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_V2_07a
+			CPB (varNEW_whereStationOld),0
+			JP Z,WhereStation_00
+			JP WhereStation_0x_error ; reference (L0826)
+
+MoveTowardsCharger:
+			LDBB varNEW_whereStationOld,varNEW_whereStation
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0934:
+			LDB (varNEW_Flag_Beacon85),0
+			LDB (varNEW_Flag_Beacon87),0
+			LDB (varNEW_Flag_Beacon89),0
+			LDB (varNEW_19A),0
+L0933:
+			RET ; reference (L0826)
+
+WhereStation_6x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,MoveStation_227b
+			CPB (varNEW_whereStationOld),3
+			JP Z,MoveStation_226b
+			CPB (varNEW_whereStationOld),4
+			JP Z,MoveStation_V2_07b
+			CPB (varNEW_whereStationOld),5
+			JP Z,MoveStation_V2_07c
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0937
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_V2_07d
+			CPB (varNEW_whereStationOld),0
+			JP Z,MoveStation_V2_07e
+			JP L0938 ; reference (L0826)
+
+WhereStation_2x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,L0939
+			CPB (varNEW_whereStationOld),3
+			JP Z,L0940
+			CPB (varNEW_whereStationOld),4
+			JP Z,L0941
+			CPB (varNEW_whereStationOld),5
+			JP Z,L0942
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0943
+			CPB (varNEW_whereStationOld),6
+			JP Z,L0944
+			CPB (varNEW_whereStationOld),0
+			JP Z,L0945
+			JP L0946 ; reference (L0826)
+
+WhereStation_5x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,MoveStation_V2_04
+			CPB (varNEW_whereStationOld),3
+			JP Z,L0947
+			CPB (varNEW_whereStationOld),4
+			JP Z,MoveStation_227e
+			CPB (varNEW_whereStationOld),5
+			JP Z,L0948
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0949
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_227a
+			CPB (varNEW_whereStationOld),0
+			JP Z,L0950
+			JP L0951 ; reference (L0826)
+
+WhereStation_4x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,L0952
+			CPB (varNEW_whereStationOld),3
+			JP Z,L0953
+			CPB (varNEW_whereStationOld),4
+			JP Z,L0954
+			CPB (varNEW_whereStationOld),5
+			JP Z,MoveStation_226c
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0955
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_226a
+			CPB (varNEW_whereStationOld),0
+			JP Z,L0956
+			JP L0957 ; reference (L0826)
+
+WhereStation_3x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,MoveStation_V3_01a
+			CPB (varNEW_whereStationOld),3
+			JP Z,L0958
+			CPB (varNEW_whereStationOld),4
+			JP Z,MoveStation_227c
+			CPB (varNEW_whereStationOld),5
+			JP Z,MoveStation_227d
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0959
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_V3_01c
+			CPB (varNEW_whereStationOld),0
+			JP Z,L0960
+			JP L0961 ; reference (L0826)
+
+WhereStation_1x:
+			CPB (varNEW_whereStationOld),1
+			JP Z,L0962
+			CPB (varNEW_whereStationOld),3
+			JP Z,MoveStation_V3_02b
+			CPB (varNEW_whereStationOld),4
+			JP Z,MoveStation_226d
+			CPB (varNEW_whereStationOld),5
+			JP Z,MoveStation_226e
+			CPB (varNEW_whereStationOld),2
+			JP Z,L0963
+			CPB (varNEW_whereStationOld),6
+			JP Z,MoveStation_V3_02c
+			CPB (varNEW_whereStationOld),0
+			JP Z,L0964
+			JP L0965 ; reference (L0826)
+
+L0947:
+			CPB (varNEW_1BA_station),3
+			JP NZ,L0966
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_16,28
+			LDB (varNEW_1BA_station),04H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0940:
+			BIT 0,(varNEW_1BA_station)
+			JR Z,L0968
+			JP L0966 ; reference (L0826)
+
+L0942:
+			BIT 0,(varNEW_1BA_station)
+			JR Z,L0968
+			JP L0966 ; reference (L0826)
+
+L0968:
+			NOP_EXACT
+L0963:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_17,29
+			LDB (varNEW_1BA_station),02H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0952:
+			CPB (varNEW_1BA_station),1
+			JP NZ,L0966
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_17,30
+			LDB (varNEW_1BA_station),02H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0939:
+			BIT 0,(varNEW_1BA_station)
+			JR Z,L0969
+			JP L0966 ; reference (L0826)
+
+L0941:
+			BIT 0,(varNEW_1BA_station)
+			JR Z,L0969
+			JP L0966 ; reference (L0826)
+
+L0969:
+			NOP_EXACT
+L0959:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_16,31
+			LDB (varNEW_1BA_station),04H
+			JP MoveTowardsCharger ; reference (L0826)
+
+WhereStation_xx_error:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_19,32
+			LDB (varNEW_1BA_station),09H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0955:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_21,33
+			LDB (varNEW_1BA_station),1AH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0949:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_20,34
+			LDB (varNEW_1BA_station),18H
+			JP MoveTowardsCharger ; reference (L0826)
+
+WhereStation_0x_error:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_33,35
+			LDB (varNEW_1BA_station),20H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0944:
+			NOP_EXACT
+L0937:
+			NOP_EXACT
+L0945:
+			NOP_EXACT
+L0938:
+			NOP_EXACT
+L0951:
+			NOP_EXACT
+L0957:
+			NOP_EXACT
+L0946:
+			NOP_EXACT
+L0954:
+			NOP_EXACT
+L0948:
+			NOP_EXACT
+L0956:
+			NOP_EXACT
+L0950:
+			NOP_EXACT
+L0943:
+			NOP_EXACT
+L0966:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_24,36
+			LDB (varNEW_1BA_station),06H
+			JP MoveTowardsCharger ; reference (L0826)
+
+MoveStation_V3_01a:
+			NOP_EXACT
+			NOP_EXACT
+MoveStation_V3_01b:
+			NOP_EXACT
+MoveStation_V3_01c:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_14,37
+			LDB (varNEW_1BA_station),03H
+			JP MoveTowardsCharger ; reference (L0826)
+
+WhereStation_00:
+			CPB (varNEW_1BA_station),5
+			JP Z,L0971
+			CPB (varNEW_1BA_station),1
+			JP Z,L0972
+			CPB (varNEW_1BA_station),7
+			JP Z,L0973
+			CPB (varNEW_1BA_station),3
+			JP Z,L0974
+			CPB (varNEW_1BA_station),0EH
+			JP Z,L0975
+			CPB (varNEW_1BA_station),10H
+			JP Z,L0976
+			CPB (varNEW_1BA_station),6
+			JP Z,L0977
+			JP L0978 ; reference (L0826)
+
+L0976:
+			CPB (varNEW_1A0),1
+			JP ULE,L0979
+L0972:
+			CPB (varNEW_1A0),0EH
+			JP NC,L0980
+			JP L0981 ; reference (L0826)
+
+L0977:
+			CPB (varNEW_1A0),0EH
+			JP NC,L0934
+L0978:
+			LDB (varNEW_1A0),02H
+			JP L0979 ; reference (L0826)
+
+L0975:
+			CPB (varNEW_1A0),1
+			JR ULE,L0981
+L0974:
+			CPB (varNEW_1A0),0EH
+			JP NC,L0980
+			JP L0979 ; reference (L0826)
+
+L0981:
+			NOP_EXACT
+L0971:
+			INCB 1,(varNEW_1A0)
+			LDL_ACTION XIX,NEWACTION_15,38
+			LDB (varNEW_1BA_station),10H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0979:
+			NOP_EXACT
+L0973:
+			INCB 1,(varNEW_1A0)
+			LDL_ACTION XIX,NEWACTION_10,39
+			LDB (varNEW_1BA_station),0EH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0980:
+			LDBB varNEW_whereStationOld,varNEW_whereStation
+			LDB (varNEW_1BA_station),06H
+			JP L0934 ; reference (L0826)
+
+; ------------------------------
+
+
+            NOP_EXACT
+MoveStation_227a:
+			NOP_EXACT
+MoveStation_227b:
+			NOP_EXACT
+MoveStation_227c:
+			NOP_EXACT
+MoveStation_227d:
+			NOP_EXACT
+MoveStation_227e:
+			INCB 1,(varNEW_1A0)
+			LDL_ACTION XIX,NEWACTION_23,40
+			LDB (varNEW_1BA_station),0EH
+			JP MoveTowardsCharger ; reference (L0826)
+
+MoveStation_224:
+			BIT 0,(varNEW_1BA_station)
+			JP Z,MoveStation_V3_02b
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_16,41
+			LDB (varNEW_1BA_station),04H
+			JP MoveTowardsCharger ; reference (L0826)
+
+MoveStation_V2_04:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_10,42
+			LDB (varNEW_1BA_station),0EH
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F1H,0A0H,11H,0,00H,44H,13H,39H,23H,00H,0F1H,0BAH,11H,00H,07H,1BH
+	DB 0E2H,5CH,20H
+ ENDIF
+
+L0958:
+			CPB (varNEW_1BA_station),1EH
+			JP Z,MoveStation_V2_05
+			JP L0982 ; reference (L0826)
+
+MoveStation_V2_05:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_12,43
+			LDB (varNEW_1BA_station),0AH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0960:
+			CPB (varNEW_1BA_station),1
+			JP Z,L0983
+			CPB (varNEW_1BA_station),0EH
+			JP Z,L0984
+L0982:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_13,44
+			LDB (varNEW_1BA_station),1EH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0983:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_24,45
+			LDB (varNEW_1BA_station),06H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0984:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_10,46
+			LDB (varNEW_1BA_station),0EH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0962:
+			CPB (varNEW_1BA_station),1CH
+			JP Z,L0985
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_07,47
+			LDB (varNEW_1BA_station),1CH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0985:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_06,48
+			LDB (varNEW_1BA_station),08H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0964:
+			CPB (varNEW_1BA_station),3
+			JP Z,L0986
+			CPB (varNEW_1BA_station),10H
+			JP Z,L0987
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_07,49
+			LDB (varNEW_1BA_station),1CH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0986:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_24,50
+			LDB (varNEW_1BA_station),06H
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0987:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_15,51
+			LDB (varNEW_1BA_station),10H
+			JP MoveTowardsCharger ; reference (L0826)
+
+MoveStation_225:
+			BIT 0,(varNEW_1BA_station)
+			JP Z,MoveStation_V3_01a
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_17,52
+			LDB (varNEW_1BA_station),02H
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+
+            NOP_EXACT
+L0953:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_15,53
+			LDB (varNEW_1BA_station),10H
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 00H,0F1H,0A0H,11H,0,00H,44H,0BFH,38H,23H,00H,0F1H,0BAH,11H,00H,05H
+	DB 1BH,0E2H,5CH,20H
+ ENDIF
+MoveStation_V3_03:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_28,54
+			LDB (varNEW_1BA_station),0FH
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+
+			NOP_EXACT
+MoveStation_V3_02a:
+			NOP_EXACT
+MoveStation_V3_02b:
+			NOP_EXACT
+MoveStation_V3_02c:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_09,55
+			LDB (varNEW_1BA_station),1
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0965:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_32,56
+			LDB (varNEW_1BA_station),0BH
+			JP MoveTowardsCharger ; reference (L0826)
+
+L0961:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_31,57
+			LDB (varNEW_1BA_station),0DH
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+			NOP_EXACT
+MoveStation_226a:
+			NOP_EXACT
+MoveStation_226b:
+			NOP_EXACT
+MoveStation_226c:
+			NOP_EXACT
+MoveStation_226d:
+			NOP_EXACT
+MoveStation_226e:
+			NOP_EXACT
+			INCB 1,(varNEW_1A0)
+			LDL_ACTION XIX,NEWACTION_22,58
+			LDB (varNEW_1BA_station),10H
+			JP MoveTowardsCharger ; reference (L0826)
+
+MoveStation_V2_07a:
+			NOP_EXACT
+MoveStation_V2_07b:
+			NOP_EXACT
+MoveStation_V2_07c:
+			NOP_EXACT
+MoveStation_V2_07d:
+			NOP_EXACT
+MoveStation_V2_07e:
+			LDB (varNEW_1A0),0
+			LDL_ACTION XIX,NEWACTION_18,59
+			LDB (varNEW_1BA_station),0CH
+			JP MoveTowardsCharger ; reference (L0826)
+
+; ------------------------------
+
+
+dataBeaconFind:
+	DB 00H,0,00H,00H
+    DB 85H,0,00H,1
+    DB 00H,87H,0,02H
+    DB 00H,0,89H,03H
+	DB 85H,87H,0,04H
+    DB 00H,87H,89H,05H
+    DB 85H,87H,89H,06H
+    DB 85H,0,89H,07H
+
+L0774:
+			LDB (varNEW_1C6),0FFH
+			CALL YipTwice
+			CALL L0820
+			LDB (varNEW_1A4),0
+L0990:
+			CALL L0884
+			LDB (varNEW_1BB),06H
+			CALL L0825
+L1014:
+			LDB (varNEW_19A),0
+L0998:
+			CPB (varNEW_1A4),0AH
+			JP NC,L0907
+			LDB (var_LEDMode),28H
+			CALL L0826
+			CPW (varNEW_1B3),0
+			JR Z,L0990
+L0995:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JR NZ,L0991
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L0774)
+
+L0991:
+			CALL L0831
+			CPB (varNEW_19E),1
+			JP Z,L0992
+			CPB (var_iRemoteButton_1based),0EH
+			JP Z,L0993
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L0994
+			CALL L0838
+			CPB (varNEW_1B0),0FFH
+			JP Z,L0994
+			CPB (varNEW_bDisableCharger),0FFH
+			JP NZ,L0994
+			JP L0907 ; reference (L0774)
+
+L0994:
+			CALL PollInputs
+			CALL L0831
+			CALL L0842
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L0649
+			CALL L0844
+			CALL L0650
+			CALL L0616
+			CALL L0057
+			CPB (var_258),0
+			JP NZ,L0995
+			CPB (varNEW_1A0),0EH
+			JP NC,L0996
+			LDB (varNEW_19A),0
+			LDB (countdown590_2Hz),04H
+L0997:
+			CALL L0057
+			CPB (countdown590_2Hz),0
+			JR NZ,L0997
+			JP L0998 ; reference (L0774)
+
+L0996:
+			LDB (varNEW_1A0),02H
+			LDB A,(var_570)
+			AND A,3
+			ADD A,1
+			LD (varNEW_1B1),A
+			LDB (var_iRemoteButton_1based),0
+L1003:
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L0999
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L0774)
+
+L0999:
+			CPB (varNEW_1B1),0
+			JP Z,L1000
+			LDL_ACTION XIX,NEWACTION_24,60
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1002:
+			CPB (var_iRemoteButton_1based),0EH
+			JP Z,L0993
+			LDB (var_LEDMode),28H
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L1001
+			CALL L0838
+			CPB (varNEW_1B0),0FFH
+			JP Z,L1001
+			CPB (varNEW_bDisableCharger),0FFH
+			JP NZ,L1001
+			JP L0907 ; reference (L0774)
+
+L1001:
+			CALL PollInputs
+			CALL L0831
+			CALL L0842
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L0649
+			CALL L0844
+			CALL L0650
+			CALL L0616
+			CALL L0057
+			CPB (var_258),0
+			JP NZ,L1002
+			SUBB (varNEW_1B1),1
+			JP L1003 ; reference (L0774)
+
+L1000:
+			LDL_ACTION XIX,NEWACTION_25,61
+			LDB (varNEW_1B1),0
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			JP L0991 ; reference (L0774)
+
+L0992:
+			LDB (varNEW_1B5),0
+			LDB (varNEW_bSearchCharger),1
+			CALL L0633
+			CALL L0866
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19E),0
+			LDB (var_LEDMode),29H
+			CALL L0867
+L1009:
+			CALL L0057
+			CPB (varNEW_1A8),0
+			JP Z,L1004
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1005
+			CPB (var_IR_result_byte),8CH
+			JP Z,L1006
+L1005:
+			CPB (varNEW_1C1),8EH
+			JP Z,L1007
+			CPB (varNEW_1C1),8FH
+			JP Z,L1008
+			JR L1009 ; reference (L0774)
+
+L1011:
+			CALL L0877
+			JP L0990 ; reference (L0774)
+
+L1004:
+			CALL L0877
+			JP L0990 ; reference (L0774)
+
+L1008:
+			LDB (varNEW_1C1),0
+			LDB (countdown590_2Hz),02H
+L1010:
+			CPB (countdown590_2Hz),0
+			JR NZ,L1010
+			LDB (varNEW_1A8),28H
+L1013:
+			CPB (varNEW_1A8),0
+			JP Z,L1011
+			LDB (varNEW_1AA),0
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,BeaconDetect2
+			CPB (var_IR_result_byte),8CH
+			JP Z,L1006
+			CPB (var_IR_result_byte),8BH
+			JP Z,L1012
+			CPB (var_IR_result_byte),85H
+			JR Z,BeaconDetect2
+			CPB (var_IR_result_byte),87H
+			JR Z,BeaconDetect2
+			CPB (var_IR_result_byte),89H
+			JR Z,BeaconDetect2
+			JR L1013 ; reference (L0774)
+
+L1012:
+			LDB (var_505),0AH
+			LDB (var_506),0AH
+			LDB (var_IR_mode),0
+			LDB (varNEW_19E),1
+			JP L0992 ; reference (L0774)
+
+BeaconDetect2:
+			LDB (var_505),0AH
+			LDB (var_506),0AH
+			LDB (var_IR_mode),0
+			CALL L0884
+			JP L1014 ; reference (L0774)
+
+L1007:
+			LDB (varNEW_1C1),0
+			LDB (varNEW_19F),1EH
+			LDB (varNEW_1A7),3CH
+			LDB (var_LEDMode),27H
+			LDB (varNEW_1A8),28H
+L1019:
+			CPB (varNEW_1A8),0
+			JP Z,L1015
+			CPB (varNEW_1C1),8CH
+			JP Z,L1016
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1017
+			CPB (var_IR_result_byte),8CH
+			JR Z,L1015
+L1017:
+			CPB (varNEW_1A7),0
+			JR Z,L1018
+			CALL CheckWagTailWhenCharging
+			CALL L0057
+			JR L1019 ; reference (L0774)
+
+L1015:
+			CALL L0877
+			JP L0990 ; reference (L0774)
+
+L1018:
+			LDB (var_iSoundToPlay_1based),07H
+			CALL L0807
+L1020:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L1020
+			LDB (varNEW_1C2),28H
+L1022:
+			CPB (varNEW_1C2),0
+			JP Z,L1021
+			LDB (varNEW_1AA),0
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1022
+			CPB (var_IR_result_byte),8CH
+			JR NZ,L1022
+			JP L1023 ; reference (L0774)
+
+L1021:
+			CALL L0878
+			JR L1023 ; reference (L0774)
+
+L1023:
+			LDW (var_wIdleSecondCount),0
+			CALL L1024
+			CALL YipOnce
+			LDL_ACTION XIX,NEWACTION_02,62
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			LDB (var_iRemoteButton_1based),0
+L1028:
+			LDB (var_LEDMode),2AH
+			LDB (var_24F),0
+			CALL L0831
+			CALL L0842
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L1025
+			LDB (varNEW_1A4),0
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L0774)
+
+L1025:
+			CPB (var_iRemoteButton_1based),0EH
+			JP Z,L0993
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L1026
+			LDB (varNEW_1A4),0
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L0774)
+
+L1026:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L1027
+			CALL L0838
+			CPB (varNEW_1B0),0FFH
+			JP Z,L1027
+			CPB (varNEW_bDisableCharger),0FFH
+			JP NZ,L1027
+			JP L0907 ; reference (L0774)
+
+L1027:
+			CALL L0057
+			CALL PollInputs
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L0649
+			CALL L0844
+			CALL L0650
+			CALL L0616
+			CPB (var_258),0
+			JP NZ,L1028
+			CPB (varNEW_1A4),0AH
+			JP NC,L0907
+			LDB (varNEW_19E),0
+			LDB (varNEW_whereStationOld),0
+			LDB (varNEW_whereStationVeryOld),0
+			CALL L0884
+			LDB (var_iRemoteButton_1based),0
+			LDB (countdown590_2Hz),78H
+L1031:
+			CALL PollInputs
+			CALL L0842
+			CALL L0643
+			CALL L0828
+			CPB (varNEW_1C3),1
+			JP Z,L0829
+			CPB (varNEW_1AC),1
+			JP NZ,L1029
+			LDB (varNEW_1A4),0
+			LDW (varNEW_1B3),0
+			JP L0811 ; reference (L0774)
+
+L1029:
+			CPB (var_iRemoteButton_1based),0EH
+			JP Z,L0993
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L1030
+			CALL L0838
+			CPB (varNEW_1B0),0FFH
+			JR Z,L1030
+			CPB (varNEW_bDisableCharger),0FFH
+			JR NZ,L1030
+			JP L0907 ; reference (L0774)
+
+L1030:
+			CPB (countdown590_2Hz),0
+			JR NZ,L1031
+			INCB 1,(varNEW_1A4)
+			JP L0990 ; reference (L0774)
+
+; ------------------------------
+
+
+L0907:
+			LDB (varNEW_1B0),0
+			LDB (varNEW_1A4),0
+L0839:
+			LDB (varNEW_bSearchCharger),0
+			LDB (varNEW_19E),0
+			LDB (varNEW_1C1),0
+			LDB (var_505),0
+			LDB (var_506),0
+			LDB (var_IR_mode),0
+			LDB (varNEW_1A0),0
+			LDB (varNEW_1BC),0
+			LDB (varNEW_1BF),0
+			LDB (varNEW_1C3),0
+			LDB (varNEW_19A),0
+			LDB (varNEW_1AA),0
+			LDB (varNEW_1B5),0
+			LDB (varNEW_1BA_station),0
+			LDB (varNEW_1AC),0
+			LDW (varNEW_1B3),0
+			LDB (var_iRemoteButton_1based),0
+			RET ; reference (L1156)
+
+
+; ------------------------------
+
+
+L0993:
+			LDB (varNEW_1C7),1
+			CALL L0633
+			CALL L0866
+			JP L0907 ; reference (L0774)
+
+; ------------------------------
+
+
+L0844:
+			CPB (varNEW_1BC),2
+			JR NZ,L1032
+			LDB (varNEW_1BC),0
+			CALL L0866
+			CALL L0820
+			CPB (varNEW_whereStationOld),0
+			JR Z,L1033
+			CPB (varNEW_whereStationOld),1
+			JR Z,L1034
+			CPB (varNEW_whereStationOld),4
+			JR Z,L1034
+			CPB (varNEW_whereStationOld),3
+			JR Z,L1035
+			CPB (varNEW_whereStationOld),5
+			JR Z,L1035
+			CPB (varNEW_whereStationOld),7
+			JR Z,L1036
+L1032:
+			RET ; reference (L0844)
+
+L1033:
+			CPB (varNEW_whereStationVeryOld),1
+			JR Z,L1034
+			CPB (varNEW_whereStationVeryOld),4
+			JR Z,L1034
+			CPB (varNEW_whereStationVeryOld),3
+			JR Z,L1035
+			CPB (varNEW_whereStationVeryOld),5
+			JR Z,L1035
+			CPB (varNEW_whereStationVeryOld),7
+			JR Z,L1036
+			RET ; reference (L0844)
+
+L1036:
+			LDL_ACTION XIX,NEWACTION_30,63
+L1037:
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			LDB (varNEW_1A0),0
+			JP L0934 ; reference (L0844)
+
+L1034:
+			LDL_ACTION XIX,NEWACTION_17,64
+			JR L1037 ; reference (L0844)
+
+L1035:
+			LDL_ACTION XIX,NEWACTION_16,65
+			JR L1037 ; reference (L0844)
+
+; ------------------------------
+

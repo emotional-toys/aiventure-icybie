@@ -1,0 +1,115 @@
+ IFNDEF NEWFEAT
+    fatal "bad include"
+ ENDIF
+
+AdjustSitStandLie: ; my version
+            CPW (YD_wSslSkipCount),0FFFFH
+            JR Z,do_adjust_ssl_posture
+            CPW (wSslSkipCounter),0
+            JR Z,do_adjust_ssl
+            DECW (wSslSkipCounter) ; word count
+            RET
+do_adjust_ssl:
+            LD WA,(YD_wSslSkipCount) ;; YICTABLE - reset count
+            LD (wSslSkipCounter),WA
+
+			LD XIX,SIT_STAND_NEW_DATA ; 2*7 bytes YICTABLE
+            LD A,(g_bMode)
+			SLLB 1,A
+            LD BC,(XIX+A)   ; C = sit percent, B = stand percent
+			LD A,(tmp_valScramble)
+            LD W,1 ; sit ?
+            SUB A,C
+            JR C,got_it
+            LD W,2 ; stand ?
+            SUB A,B
+            JR C,got_it
+            LD W,3 ; lie
+got_it:
+			LD A,(var_modeSit1Stand2Lie3) ; old value
+			LD (var_modeSit1Stand2Lie3),W
+ IFDEF SERIAL_VERBOSE
+            CP A,W
+            CALL NZ,ReportSSL
+ ENDIF
+			RET ; reference (AdjustSitStandLie)
+
+do_adjust_ssl_posture:
+    ;; use posture to determine SSL
+	LD A,(var_posture)
+	LD W,2 ; 2=sit for SSL
+	CP A,2 ; 2=sit for posture
+    JR Z,got_it
+	LD W,3 ; 3=lie for SSL
+	CP A,7 ; 7=lie for posture
+    JR Z,got_it
+    LD W,1  ; 1=stand for SSL
+    JR got_it
+
+; ------------------------------
+
+SIT_STAND_NEW_DATA: ; 2*7 bytes YICTABLE
+    ; sit percent, stand percent (not additive)
+    ;  lie percent = 100 - (sit + stand)
+;SitStandLiePercent_Hyper:
+	DB 55,33
+;SitStandLiePercent_Happy:
+	DB 60,20
+;SitStandLiePercent_Sleepy:
+	DB 77,6
+;SitStandLiePercent_Sad: ; proper order
+	DB 77,6
+;SitStandLiePercent_Sick:
+	DB 84,1
+;; mode 5
+    DB 0,0
+;SitStandLiePercent_Guard:
+	DB 94,0
+
+
+; ------------------------------
+
+    ;; Patterned after Wade's dual boot version
+    ;; but direct implementation - no storage mucking
+
+
+Smart_Boot_Nose_Press:
+Boot_Builtin_Personality:
+	EI 0
+	CALL printf
+        	DB "Nose", 13, 10
+            DB "Press Head to start SysROM", 13, 10
+            DB "(no further tracing)", 13, 10
+            DB 0
+
+	SEND_EYES 2EH ; 1101 - OFF + GREEN
+
+	WAIT_1SEC ; wait for it to flush
+	JP 0FC0234H ; middle of System ROM init code (still requires head press)
+            ;; should work with all known system ROMs
+
+Smart_Boot_Back_Press:
+    ; recalibrate (using cartridge version)
+    CALL printf
+        	DB "Back", 13, 10
+            DB "Force leg calibrate", 13, 10, 0
+    CALL CalibrateLegs1
+    CALL printf
+        	DB "Legs calibrated - starting normal", 13, 10, 0
+    JP RegularStartup ;; jump back in middle
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ResetIdleTimer:
+			LDB A,(YD_bIdleDelay)
+            CP A,0
+            JR Z,old_idle_timer_logic
+			LDB (var_bIdleTimer),A
+            RET
+old_idle_timer_logic:
+			LDBB var_bIdleTimer,var_bIdleTimeout
+            RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

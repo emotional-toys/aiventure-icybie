@@ -1,0 +1,429 @@
+;;; Audio playback
+
+L1616:
+			CPB (var_cbitUpperSend),0
+			JR NZ,L1581
+			BIT 0,(var_328)
+			JR NZ,L1581
+			BIT 0,(var_321)
+			JR Z,L1582
+			RET ; reference (L1616)
+
+L1582:
+        SEND_EYES 10H ; special
+
+ IFDEF SERIAL_VERBOSE
+            CALL TraceAudio
+ ENDIF
+			LDB A,(var_iSoundToPlay)
+ IFDEF NEWFEAT ; pick sysrom or user audio
+			AND WA,03FH ; 0->29 => sysrom, 30->59 => user
+			LDL XIY,SYSROM_AUDIO_POINTERS
+            CP  A,30
+            JR  C,use_this_pointer
+			LDL XIY,EXTRA_AUDIO_POINTERS-30*4
+use_this_pointer:
+ ELSE
+			AND WA,0FFH
+			LDL XIY,CARTRIDGE_AUDIO_POINTERS
+ ENDIF
+
+			MUL WA,4
+			AND XWA,0FFFFH
+			ADD XIY,XWA
+			LDL XIX,(XIY)
+ IFDEF NEWFEAT ; check null audio pointer
+            ; if pointer is NULL - play system beep
+            CP XIX,0
+            JR NZ,good_sound
+			LDL XIX,(SYSROM_AUDIO_POINTERS+0*4) ; NULL=>first sound
+good_sound:
+ ENDIF
+			LDL XIY,(XIX+) ; long count
+			LD (var_lcbAudioTodo),XIY
+			LDB A,(var_lcbAudioTodo_plus2)
+L1584:
+			CALL SendAudioByteToDaughter
+			JR NC,L1584
+			LDB A,(var_lcbAudioTodo_plus1)
+L1585:
+			CALL SendAudioByteToDaughter
+			JR NC,L1585
+			LDB A,(var_lcbAudioTodo)
+L1586:
+			CALL SendAudioByteToDaughter
+			JR NC,L1586
+			LD (var_pbSoundData),XIX
+			SET 0,(var_328)
+L1581:
+			RET ; reference (L1616)
+
+; ------------------------------
+
+
+L1776:
+			BIT 0,(var_328)
+			JR NZ,L1587
+			RET ; reference (L1776)
+
+L1587:
+			CALL L1588
+			LDL XIX,(var_pbSoundData)
+			LDB A,(XIX+)
+			CALL SendAudioByteToDaughter
+			JR NC,L1589
+			LD (var_pbSoundData),XIX
+			LDL XIX,(var_lcbAudioTodo)
+			DEC 1,XIX
+			CP XIX,0
+			JR NZ,L1590
+L1591:
+			CALL L1588
+			BIT 0,(var_321)
+			JR NZ,L1591
+			RES 0,(var_328)
+			LDL XIX,0
+L1592:
+			NOP ; NOP timing
+			INC 1,XIX
+			CP XIX,000041FAH ; 0041FAH
+			JR C,L1592
+L1590:
+			LD (var_lcbAudioTodo),XIX
+L1589:
+			CALL L1588
+			RET ; reference (L1776)
+
+; ------------------------------
+
+
+SendAudioByteToDaughter:
+			CPB (var_cbitUpperSend),0
+			JR Z,L1593
+L1594:
+			RCF
+			RET ; reference (SendAudioByteToDaughter)
+
+L1593:
+			BIT 0,(var_321)
+			JR NZ,L1594
+			LD (var_bUpperSend1),A
+			SLLB 4,A
+			LD (var_bUpperSend0),A
+			ANDB (var_bUpperSend0),0F0H
+			ANDB (var_bUpperSend1),0F0H
+			LDB (var_cbitUpperSend),04H
+			SET 0,(var_321)
+			CPB (var_bPlayingSound),1
+			JR Z,L1595
+			LDB (var_timer64_a),02H
+L1595:
+			SCF
+			RET ; reference (SendAudioByteToDaughter)
+
+; ------------------------------
+
+
+L1597:
+			RET ; reference (L1588)
+
+; ------------------------------
+
+
+L1638:
+			PUSH A
+			BIT 5,(PD)
+			JR Z,L1596
+			LDB A,(P9)
+			BIT 4,A
+			JR Z,L1596
+			LDB A,(mirrorPD)
+			AND A,0DFH
+			LD (mirrorPD),A
+			LD (PD),A
+L1596:
+			POP A
+			RET ; reference (L1638)
+
+; ------------------------------
+
+
+L1588:
+			BIT 0,(var_321)
+			JR Z,L1597
+			LDB A,(P9)
+			BIT 4,A
+			JR Z,L1598
+			LDB A,(mirrorPD)
+			AND A,0DFH
+			LD (mirrorPD),A
+			LD (PD),A
+L1600:
+			RET ; reference (L1588)
+
+L1598:
+			BIT 1,(var_321)
+			JR Z,L1599
+			ANDB (var_321),0FCH
+			RET ; reference (L1588)
+
+L1599:
+			BIT 5,(PD)
+			JR NZ,L1600
+L1610:
+			DB 021H,0 ; FAKE OP LDB A,0
+			SLLB (var_bUpperSend0)
+			RRB 1,A
+			SLLB (var_bUpperSend1)
+			RRB 1,A
+			LDB B,(mirrorPD)
+			AND B,3FH
+			OR B,A
+			OR B,20H
+			LD (mirrorPD),B
+			LD (PD),B
+			DECB 1,(var_cbitUpperSend)
+			JR NZ,L1601
+			LDL XIZ,0BF7B9H
+L1603:
+			LDB A,(P9)
+			BIT 4,A
+			JR NZ,L1602
+			SUB XIZ,1
+			JR NZ,L1603
+			JR L1604 ; reference (L1588)
+
+L1602:
+			LDB A,(mirrorPD)
+			AND A,0DFH
+			LD (mirrorPD),A
+			LD (PD),A
+			ANDB (var_321),0FCH
+			RET ; reference (L1588)
+
+L1601:
+			LDL XIZ,0BF7B9H
+L1606:
+			LDB A,(P9)
+			BIT 4,A
+			JR NZ,L1605
+			SUB XIZ,1
+			JR NZ,L1606
+			JR L1604 ; reference (L1588)
+
+L1604:
+			LDB (var_cbitUpperSend),0
+			LDB A,(mirrorPD)
+			AND A,0DFH
+			LD (mirrorPD),A
+			LD (PD),A
+			ANDB (var_321),0FCH
+			CALL DiddleP5
+			RET ; reference (L1588)
+
+L1605:
+			LDB A,(mirrorPD)
+			AND A,0DFH
+			LD (mirrorPD),A
+			LD (PD),A
+			BIT 0,(var_328)
+			JR NZ,L1607
+			RET ; reference (L1588)
+
+L1607:
+			LDL XIZ,0BF7B9H
+L1609:
+			LDB A,(P9)
+			BIT 4,A
+			JR Z,L1608
+			SUB XIZ,1
+			JR NZ,L1609
+			JR L1604 ; reference (L1588)
+
+L1608:
+			JP L1610 ; reference (L1588)
+
+; ------------------------------
+
+
+L1062:
+			LDL XIX,var_300
+L1611:
+			LDW (XIX),0
+			ADD XIX,2
+			CP XIX,00001400H ; (var_400)
+			JR NZ,L1611
+			RET ; reference (L1062)
+
+; ------------------------------
+
+
+L1720:
+			CPB (var_bCountdownSeconds_UNUSED),0
+			JR Z,L1612
+			DECB 1,(var_bCountdownSeconds_UNUSED)
+L1612:
+			RET ; reference (L1720)
+
+; ------------------------------
+
+
+L0807: ; PlaySound
+
+			CPB (var_boolMute),1
+			JR NZ,L1613
+			RET ; reference (L0807)
+
+L1613:
+			LDL XBC,0
+			LDB C,(var_iSoundToPlay_1based) ; 1 based 1->30 regular
+                    ;; 31->60 extended, 0x80 => no lookup
+			DEC 1,C ; zero based (0->29 or 0->59)
+ IFDEF NEWFEAT ; lookup audio, map to custom
+            LD A,C ; if upper bit is set -> skips lookup
+            AND A,07FH      ; proper value 0->59 (I hope)
+            CP C,30
+            JR C,lookup_system_sound
+            JR got_sound_index
+lookup_system_sound:    ; C = index (0->29)
+            CPB (boolNoSubstitute),0
+            JR NZ,got_sound_index ;; no substitute/lookup
+            ;; substitute standard sound with custom sound
+			LDL XIX,NEW30_AUDIO_LOOKUP_TABLE
+			LDB A,(XIX+C)
+got_sound_index:
+			LD (var_iNextSoundSequence),A
+			LD (var_iSoundToPlay),A
+			LD (var_nSoundSequence),1
+ ELSE
+            ;; old code
+			SLLB 1,C
+			LDL XIX,OLD_AUDIO_LOOKUP_TABLE
+			LDW WA,(XIX+C)
+			LD (var_iNextSoundSequence),A
+			LD (var_iSoundToPlay),A
+			LD (var_nSoundSequence),W ; always 1
+ ENDIF
+			LDB (var_bPlayingSound),1
+
+L1615:
+			CPB (var_timer64_a),0
+			JR NZ,L1615
+			CALL L1616
+			RET ; reference (L0807)
+
+; ------------------------------
+
+
+L0792:
+			CPB (var_bPlayingSound),1
+			JR NZ,L1617
+			BIT 0,(var_328)
+			JR NZ,L1617
+			DECB 1,(var_nSoundSequence)
+			INCB 1,(var_iNextSoundSequence)
+			CPB (var_nSoundSequence),0
+			JR Z,L1618
+			LDB A,(var_iNextSoundSequence)
+			LD (var_iSoundToPlay),A
+			CALL L1616
+			RET ; reference (L0792)
+
+L1618:
+			LDB (var_bPlayingSound),0
+			LDB (var_iNextSoundSequence),0
+			CALL DiddleP5
+L1617:
+			RET ; reference (L0792)
+
+; ------------------------------
+
+ IFDEF NEWFEAT ; new audio lookup table
+NEW30_AUDIO_LOOKUP_TABLE:
+    ;; system ROM entries can be replaced
+    DB 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+    DB 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+    DB 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+
+SYSROM_AUDIO_POINTERS EQU 0FED975H
+    ;; we get the original 30 sounds from system ROM
+    ;; fortunately all 3 known versions (OldRom, RevK, NewRom)
+    ;;  have the audio pointer table at the same location
+
+EXTRA_AUDIO_POINTERS:
+    ;;  room for 30 user audio
+    DD 0,0,0,0,0
+    DD 0,0,0,0,0
+    DD 0,0,0,0,0
+    DD 0,0,0,0,0
+    DD 0,0,0,0,0
+    DD 0,0,0,0,0
+
+ ENDIF ; NEWFEAT
+
+ IFDEF EXACT
+OLD_AUDIO_LOOKUP_TABLE: ;; weird sound indexing
+	DB 0,1
+	DB 1,1
+	DB 2,1
+	DB 3,1
+	DB 4,1
+	DB 5,1
+	DB 6,1
+	DB 7,1
+	DB 8,1
+	DB 9,1
+	DB 10,1
+	DB 11,1
+	DB 12,1
+	DB 13,1
+	DB 14,1
+	DB 15,1
+	DB 16,1
+	DB 17,1
+	DB 18,1
+	DB 19,1
+	DB 20,1
+	DB 21,1
+	DB 22,1
+	DB 23,1
+	DB 24,1
+	DB 25,1
+	DB 26,1
+	DB 27,1
+	DB 28,1
+	DB 29,1
+
+CARTRIDGE_AUDIO_POINTERS:
+	DD	AUDIO00
+	DD	AUDIO01
+	DD	AUDIO02
+	DD	AUDIO03
+	DD	AUDIO04
+	DD	AUDIO05
+	DD	AUDIO06
+	DD	AUDIO07
+	DD	AUDIO08
+	DD	AUDIO09
+	DD	AUDIO10
+	DD	AUDIO11
+	DD	AUDIO12
+	DD	AUDIO13
+	DD	AUDIO14
+	DD	AUDIO15
+	DD	AUDIO16
+	DD	AUDIO17
+	DD	AUDIO18
+	DD	AUDIO19
+	DD	AUDIO20
+	DD	AUDIO21
+	DD	AUDIO22
+	DD	AUDIO23
+	DD	AUDIO24
+	DD	AUDIO25
+	DD	AUDIO26
+	DD	AUDIO27
+	DD	AUDIO28
+	DD	AUDIO29
+
+ ENDIF

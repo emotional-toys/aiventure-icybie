@@ -1,0 +1,208 @@
+;; rebuild test program
+
+    MAXMODE ON
+	listing off
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; SFRS
+
+    INCLUDE sfr_used.i
+    INCLUDE special.i
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    include vars.i
+
+	listing on
+
+ IFDEF EXACT
+    message "REPORT: EXACT MEMORY IMAGE"
+    IFDEF SERIAL
+        fatal "EXACT is an exclusive option"
+    ENDIF
+    IFDEF SERIAL_VERBOSE
+        fatal "EXACT is an exclusive option"
+    ENDIF
+    IFDEF NEWFEAT
+        fatal "EXACT is an exclusive option"
+    ENDIF
+ ELSE
+    message "REPORT: OPTIMIZED ROM USAGE"
+ ENDIF
+
+ IFDEF SERIAL
+    message "REPORT: SERIAL PORT ENABLED"
+ ENDIF
+ IFDEF SERIAL_VERBOSE
+    message "REPORT: SERIAL VERBOSE MESSAGES"
+    IFNDEF SERIAL
+        fatal "SERIAL_VERBOSE requires SERIAL"
+    ENDIF
+ ENDIF
+ IFDEF NEWFEAT
+    message "REPORT: NEW FEATURES ENABLED"
+ ENDIF
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+
+ IFDEF NEWFEAT
+    include newvar.i
+ ENDIF
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+;;==;; First 64K of ROM ;;==;;
+
+    ORG 0200000H
+
+	DB 0AH,0BFH ; essential tag
+
+  IFDEF EXACT
+CARTRIDGE_OVERHEAD: ; not needed by any known system ROM
+    DB 00H,00H,0FCH,00H,00H,00H,0FDH,00H,00H,01H,0FDH,00H,00H,02H
+	DB 0FDH,00H,00H,03H,0FDH,00H,00H,04H,0FDH,00H,00H,05H,0FDH,00H,00H,06H
+	DB 0FDH,00H,00H,07H,0FDH,00H,00H,08H,0FDH,00H,00H,09H,0FDH,00H,00H,0AH
+	DB 0FDH,00H,00H,0BH,0FDH,00H,00H,0CH,0FDH,00H,00H,10H,0FDH,00H,00H,18H
+	DB 0FDH,00H,00H,20H,0FDH,00H,00H,28H,0FDH,00H,00H,30H,0FDH,00H,00H,40H
+	DB 0FDH,00H,00H,50H,0FDH,00H,00H,58H,0FDH,00H,00H,60H,0FDH,00H,00H,70H
+	DB 0FDH,00H,00H,80H,0FDH,00H,00H,90H,0FDH,00H,00H,98H,0FDH,00H,00H,0A0H
+	DB 0FDH,00H,00H,0B0H,0FDH,00H,00H,0B8H,0FDH,00H,00H,0C0H,0FDH,00H,00H,0C8H
+	DB 0FDH,00H,00H,0D0H,0FDH,00H,00H,0D8H,0FDH,00H,00H,0E0H,0FDH,00H,00H,0E8H
+	DB 0FDH,00H,00H,0F0H,0FDH,00H,00H,0F8H,0FDH,00H
+  ENDIF
+
+    include mood1.a_ ; tenuring
+    include mood2.a_
+    include clap1.a_
+    include legs1.a_
+    include pwm1.a_
+
+    include what1.a_
+    include legs2.a_
+    include legs3.a_
+
+    include motion1.a_ ; including pointer 1->230
+    include legs4.a_
+    include main1.a_    ; some main control
+    include motion2.a_ ; including posture
+    include main2.a_   ; remote etc
+    include main3.a_
+    include timer1.a_   ; timer/WD support
+    include main4.a_
+
+ IFNDEF NEWFEAT
+    include aud1.dat ; original 30 audio on cartridge
+ ENDIF
+    include storage.a_
+    include mot1.dat
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+;;==;; First Gap ;;==;;
+
+
+ IFDEF NEWFEAT ; YICTABLE data
+
+POOL1_START:
+    ;; place to put audio
+    ;; ...
+POOL1_MAXSIZE EQU 20FFFEH - POOL1_START
+
+    ORG 20FFFEH
+    DW  0   ; just in case we keep this tag blank
+
+ ENDIF ; NEWFEAT
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+;;==;; Middle 128K of ROM ;;==;;
+
+    ORG_EXACT 210000H
+;; 210000
+CART_STARTUP:
+	EI 07H
+	JP REAL_CART_STARTUP
+
+    include startup1.a_
+    include startup2.a_
+
+ IFNDEF NEWFEAT
+    include aud2.dat ; original 30 audio on cartridge
+ ENDIF
+    include mot2.dat
+
+    include motion3.a_ ; head+tail etc
+    include motion4.a_ ; head+tail etc
+
+    include int22sup.a_ ; IR
+    include edgedet1.a_
+
+    include prob_table.dat ; table
+ IFDEF EXACT
+    include prob_act1.dat ; PROBACTs - YICT customizable
+ ENDIF
+    include act1.dat        ;; 2nd actions in interrupts.a_
+    include what2.a_
+
+    include audio1.a_
+    include audio2.a_
+    include mot3.dat
+
+ IFDEF NEWFEAT
+    include newfeat.a_
+    include extra_table.dat ; indirected ACTION loads
+
+    ;; new actions/motions
+    ;;  for audio playback (30 + 30)
+    ;;  -127 .. -156 - 30 standard with no-substitute audio
+    ;; LATER: 1xxx - sit down tendency
+    ;; LATER: 2xxx - lie down tendency
+    include new_act.dat    ;; my actions
+    include new_mot.dat    ;; my motions
+ ENDIF
+ IFDEF SERIAL
+    include newserial.a_
+ ENDIF
+
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+;;==;; Second Gap ;;==;;
+
+ IFDEF NEWFEAT
+POOL2_START:
+    ;; place to put more audio
+    ;; ...
+POOL2_MAXSIZE EQU 220000H - POOL2_START
+
+    ORG_EXACT 220000H
+
+POOL3_START:
+    ; PROBACTs - YICT customizable/replacable
+    include prob_act1.dat
+    include prob_act2.dat ; if EXACT => see interrupts.a_
+POOL3_YICTSIZE EQU $ - POOL3_START
+
+POOL3_MAXSIZE EQU (230000H-POOL3_START-1)
+
+    ORG_EXACT 230000H
+ ENDIF
+
+;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;==;;
+;;==;; Last 64K of ROM ;;==;;
+	; special ORG entries, padded with MOTions and ACTIONs
+
+    include interrupts.a_ 
+
+ IFDEF NEWFEAT
+    ORG 23FE00H ; last 512 bytes
+    include yictdata.a_
+ ENDIF
+
+ IFDEF EXACT
+EndOfRom:
+    IF EndOfRom <> 240000H
+        fatal "exact must be exactly 256K"
+    ENDIF
+ ENDIF
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    end

@@ -1,0 +1,152 @@
+
+ IFNDEF SERIAL
+    fatal "bad include"
+ ENDIF
+
+printf: ; call with string after return address
+    POP XIX
+    PUSH XDE
+    LD XDE,XWA
+    CALL _printf_part2
+    POP XDE
+    PUSH XIX
+    RET
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+_printf_byte_decimal:
+    CALL _send_serial_decimal_byte
+    ;; JR _printf_part2
+_printf_part2:
+        ;; XDE = original XWA, BC = BC
+    LD W,(XIX+)
+    CP W,0
+    RET Z
+    LD A,E
+    CP W,PRINTF_A_DECIMAL
+    JR Z,_printf_byte_decimal
+    LD A,D
+    CP W,PRINTF_W_DECIMAL
+    JR Z,_printf_byte_decimal
+    LD A,B
+    CP W,PRINTF_B_DECIMAL
+    JR Z,_printf_byte_decimal
+    LD A,C
+    CP W,PRINTF_C_DECIMAL
+    JR Z,_printf_byte_decimal
+
+    CP W,PRINTF_XWA_HEX
+    JR Z,_printf_xwa_hex
+    LD A,W
+    CALL send_serial_byte
+    JR _printf_part2
+
+_printf_xwa_hex: ; orig XWA is in XDE
+    PUSH XDE
+    POP WA ; low part ignored
+    POP WA ; high part in WA
+    CALL _send_serial_hex_word
+    LD WA,DE    ; lower part
+	CALL _send_serial_hex_word
+    JR _printf_part2
+    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+_send_serial_decimal_byte:
+    LD W,0
+    DIV WA,100 ; A = quot, W = rem
+    CP A,0
+    JR Z,skip_100
+	CALL _send_serial_decimal_digit
+    LD A,W
+; always last two digits
+    LD W,0
+    DIV WA,10
+	CALL _send_serial_decimal_digit
+    LD A,W
+	JR _send_serial_decimal_digit
+
+skip_100:
+    LD A,W
+    LD W,0
+    DIV WA,10
+    CP A,0
+    JR Z,skip_10
+	CALL _send_serial_decimal_digit
+skip_10:
+    LD A,W
+	; JR _send_serial_decimal_digit
+_send_serial_decimal_digit:
+    ADD A,'0'
+    JR send_serial_byte
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+_send_serial_hex_word: ; WA = word
+    PUSH A
+    LD A,W
+    CALL _send_serial_hex_byte
+    POP A
+_send_serial_hex_byte: ; A = byte
+    PUSH A
+    SRL 4,A
+    CALL _send_serial_nib
+    POP A
+_send_serial_nib: ; A = nib
+    AND A,0FH
+    ADD A,'0'
+    CP A,'0'+10
+    JR C,send_serial_byte
+    ADD A,'A'-('0'+10)
+send_serial_byte:   ; A = bute
+    CP (boolSending),0
+    JR NZ,send_serial_byte
+    LDB (boolSending),1
+    LDB (SC0BUF),A
+    RET
+
+printf_eol:
+    CALL    printf
+        DB 13, 10, 0
+    RET
+
+printf_string: ; XIX => string
+    LD A,(XIX+)
+    CP A,0
+    RET Z
+    CALL send_serial_byte
+    JR printf_string
+
+TraceAudio:
+    PUSH XWA
+	LDB A,(var_iSoundToPlay)
+    CALL printf
+	    DB "Audio(", PRINTF_A_DECIMAL, ") ", 0
+    POP XWA
+    RET
+
+;; Report Status
+ReportDogStatus:
+    PUSH XIX
+    PUSH XWA
+    LD A,(g_bMode)
+    LD W,(varNEW_1A3) ;; last calculated battery voltage
+    CALL printf
+        DB "[Dog Status: mood=", PRINTF_A_DECIMAL, ", batt="
+        DB PRINTF_W_DECIMAL, "]", 13, 10, 0
+    POP XWA
+    POP XIX
+    RET
+
+ReportSSL:
+    PUSH XIX
+    PUSH XWA
+    LD A,(var_modeSit1Stand2Lie3)
+    CALL printf
+        DB "[ssl=", PRINTF_A_DECIMAL, "] ", 0
+    POP XWA
+    POP XIX
+    RET
+    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

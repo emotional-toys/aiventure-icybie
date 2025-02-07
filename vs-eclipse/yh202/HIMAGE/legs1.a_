@@ -1,0 +1,2294 @@
+L0146:
+			CALL L0138
+			RET ; reference (L0146)
+
+; ------------------------------
+
+
+L0140:
+			CP (var_5DF),B
+			JR Z,L0139
+			CP (var_5FC),B
+			JR NZ,L0140
+			LDB A,(XIX)
+			LDB W,A
+			JR L0141 ; reference (L0140)
+
+L0139:
+			LDB A,(XIX)
+			LDB W,A
+			SUB A,(var_5DD)
+			JR Z,L0142
+L0141:
+			LDB (var_5FC),0
+			LDB A,W
+			SUB A,(var_5FD)
+			JR C,L0143
+			JR Z,L0143
+			INCB 1,(var_5FE)
+			CPB (var_5FE),5
+			JR NC,L0144
+			CP A,3
+			JR C,L0145
+L0144:
+			LDB (var_5FE),0
+			LDB (var_5DF),0
+			CALL L0146
+			SCF
+			RET ; reference (L0140)
+
+L0143:
+			LDB (var_5FE),0
+L0145:
+			LD (var_5FD),W
+			CP (var_5DF),B
+			JR NZ,L0140
+			LDB (var_5DF),0
+			LD (var_5DD),W
+			LDB (var_5E0),0
+			JR L0140 ; reference (L0140)
+
+L0142:
+			LDB (var_5FC),0
+			LDB (var_5DF),0
+			SUB A,(var_5FD)
+			JR C,L0147
+			CP A,3
+			JR C,L0147
+			CALL L0146
+			SCF
+			RET ; reference (L0140)
+
+L0147:
+			RCF
+			RET ; reference (L0140)
+
+; ------------------------------
+
+
+L0149:
+			CP (var_5DF),B
+			JR Z,L0148
+			CP (var_5FC),B
+			JR NZ,L0149
+			LDB A,(XIX)
+			LDB W,A
+			JR L0150 ; reference (L0149)
+
+L0148:
+			LDB A,(XIX)
+			LDB W,A
+			SUB A,(var_5DD)
+			JR Z,L0151
+L0150:
+			LDB (var_5FC),0
+			LDB A,W
+			SUB A,(var_5FD)
+			JR NC,L0152
+			INCB 1,(var_5FE)
+			CPB (var_5FE),5
+			JR NC,L0153
+			XOR A,0FFH
+			INC 1,A
+			CP A,3
+			JR C,L0154
+L0153:
+			LDB (var_5FE),0
+			LDB (var_5DF),0
+			CALL L0146
+			SCF
+			RET ; reference (L0149)
+
+L0152:
+			LDB (var_5FE),0
+L0154:
+			LD (var_5FD),W
+			CP (var_5DF),B
+			JR NZ,L0149
+			LD (var_5DD),W
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			JR L0149 ; reference (L0149)
+
+L0151:
+			LDB (var_5DF),0
+			LDB (var_5FC),0
+			LDB A,W
+			SUB A,(var_5FD)
+			JR NC,L0155
+			XOR A,0FFH
+			INC 1,A
+			CP A,3
+			JR C,L0155
+			CALL L0146
+			SCF
+			RET ; reference (L0149)
+
+L0155:
+			RCF
+			RET ; reference (L0149)
+
+; ------------------------------
+
+
+L0671:
+			LDB (var_legspeed_0),0AH
+			LDB (var_legdat_0),7FH
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0157:
+			CPB (countdown590_2Hz),0
+			JR Z,L0156
+			BIT 0,(var_legctrl0)
+			JR Z,L0157
+L0156:
+		WAIT_1SEC
+L0166:
+			LDB (var_legspeed_0),05H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_0),1
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_0
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0140
+			JR NC,L0159
+			SET 0,(var_legctrl0)
+		WAIT_1SEC
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0161 ; reference (L0671)
+
+L0159:
+			SET 0,(var_legctrl0)
+		WAIT_1SEC
+			LDBB varret_variousBW,legpos_0
+			LDB (var_legspeed_0),02H
+			LDB (var_legdat_0),0
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0163:
+			CPB (var_timer64_b),0
+			JR NZ,L0163
+			SET 0,(var_legctrl0)
+		WAIT_1SEC
+			LDB A,(legpos_0)
+			SUB A,(varret_variousBW)
+			JR NC,L0165
+			XOR A,0FFH
+			INC 1,A
+L0165:
+			CP A,3
+			JP NC,L0166
+			CALL L0138
+L0161:
+			LDB (var_legspeed_0),0AH
+			LDB (var_legdat_0),7FH
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0168:
+			CPB (countdown590_2Hz),0
+			JR Z,L0167
+			BIT 0,(var_legctrl0)
+			JR Z,L0168
+L0167:
+			LDB (countdown590_2Hz),02H
+L0169:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0169
+L0177:
+			LDB (var_legspeed_0),05H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_0),0FEH
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_0
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0149
+			JR NC,L0170
+			SET 0,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0171:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0171
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0172 ; reference (L0671)
+
+L0170:
+			SET 0,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0173:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0173
+			LDB A,(legpos_0)
+			PUSH A
+			LDB (var_legspeed_0),02H
+			LDB (var_legdat_0),0FFH
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0174:
+			CPB (var_timer64_b),0
+			JR NZ,L0174
+			SET 0,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0175:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0175
+			POP A
+			LDB C,(legpos_0)
+			SUB C,A
+			JR NC,L0176
+			XOR C,0FFH
+			INC 1,C
+L0176:
+			CP C,3
+			JP NC,L0177
+			LDB C,(varret_variousBW)
+			PUSH A
+			PUSH C
+			CALL L0138
+			POP C
+			POP A
+			CP C,A
+			JR UGT,L0172
+			LDB A,C
+			LDB C,(legpos_0)
+L0172:
+			CP A,28H
+			JR C,L0178
+			CP A,42H
+			JR NC,L0178
+			CP C,0E6H
+			JR C,L0178
+			CP C,0FFH
+			JR C,L0179
+L0179:
+			LDL XIX,d0180
+			LDL XIY,d0181
+			CALL L0182
+			LDWW svar_legx0_start_of_stored,varret_variousBW
+			LDBB svar_gain0,varret_bNewGain
+L0178:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0671)
+
+; ------------------------------
+
+
+L0669:
+			BIT 0,(var_2E3)
+			JR NZ,L0183
+			LDB (var_legspeed_0),0AH
+			LDB (var_legspeed_3),0AH
+			LDB (var_legdat_0),0D1H
+			LDB (var_legdat_3),40H
+			SET 1,(var_077)
+			RES 0,(var_legctrl0)
+			RES 3,(var_legctrl0)
+L0184:
+			BIT 0,(var_legctrl0)
+			JR NZ,L0184
+			BIT 3,(var_legctrl0)
+			JR NZ,L0184
+			LDB (countdown590_2Hz),02H
+L0185:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0185
+L0183:
+			LDB (var_legspeed_1),0AH
+			LDB (var_legdat_1),7FH
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0187:
+			CPB (countdown590_2Hz),0
+			JR Z,L0186
+			BIT 1,(var_legctrl0)
+			JR Z,L0187
+L0186:
+			LDB (countdown590_2Hz),02H
+L0188:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0188
+L0196:
+			LDB (var_legspeed_1),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_1),0FEH
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_1
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0149
+			JR NC,L0189
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0190:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0190
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0191 ; reference (L0669)
+
+L0189:
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0192:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0192
+			LDBB varret_variousBW,legpos_1
+			LDB (var_legspeed_1),02H
+			LDB (var_legdat_1),0FFH
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0193:
+			CPB (var_timer64_b),0
+			JR NZ,L0193
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0194:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0194
+			LDB A,(legpos_1)
+			SUB A,(varret_variousBW)
+			JR NC,L0195
+			XOR A,0FFH
+			INC 1,A
+L0195:
+			CP A,3
+			JP NC,L0196
+			CALL L0138
+L0191:
+			LDB (var_legspeed_1),0AH
+			LDB (var_legdat_1),7FH
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0198:
+			CPB (countdown590_2Hz),0
+			JR Z,L0197
+			BIT 1,(var_legctrl0)
+			JR Z,L0198
+L0197:
+			LDB (countdown590_2Hz),02H
+L0199:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0199
+L0207:
+			LDB (var_legspeed_1),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_1),1
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_1
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0140
+			JR NC,L0200
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0201:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0201
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0202 ; reference (L0669)
+
+L0200:
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0203:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0203
+			LDB A,(legpos_1)
+			PUSH A
+			LDB (var_legspeed_1),02H
+			LDB (var_legdat_1),0
+			SET 1,(var_077)
+			RES 1,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0204:
+			CPB (var_timer64_b),0
+			JR NZ,L0204
+			SET 1,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0205:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0205
+			POP A
+			LDB C,(legpos_1)
+			SUB C,A
+			JR NC,L0206
+			XOR C,0FFH
+			INC 1,C
+L0206:
+			CP C,3
+			JP NC,L0207
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0202
+			LDB A,C
+			LDB C,(legpos_1)
+L0202:
+			CP A,3AH
+			JR C,L0208
+			CP A,5EH
+			JR NC,L0208
+			CP C,86H
+			JR C,L0208
+			CP C,0A5H
+			JR C,L0209
+			JR L0208 ; reference (L0669)
+
+L0209:
+			LDL XIX,d0210
+			LDL XIY,d0211
+			CALL L0182
+			LDWW svar_legx1,varret_variousBW
+			LDBB svar_gain1,varret_bNewGain
+L0208:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0669)
+
+; ------------------------------
+
+
+L0673:
+			LDB (var_legspeed_2),0AH
+			LDB (var_legdat_2),7FH
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0213:
+			CPB (countdown590_2Hz),0
+			JR Z,L0212
+			BIT 2,(var_legctrl0)
+			JR Z,L0213
+L0212:
+			LDB (countdown590_2Hz),02H
+L0214:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0214
+L0222:
+			LDB (var_legspeed_2),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_2),1
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_2
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0140
+			JR NC,L0215
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0216:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0216
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0217 ; reference (L0673)
+
+L0215:
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0218:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0218
+			LDBB varret_variousBW,legpos_2
+			LDB (var_legspeed_2),02H
+			LDB (var_legdat_2),0
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0219:
+			CPB (var_timer64_b),0
+			JR NZ,L0219
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0220:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0220
+			LDB A,(legpos_2)
+			SUB A,(varret_variousBW)
+			JR NC,L0221
+			XOR A,0FFH
+			INC 1,A
+L0221:
+			CP A,3
+			JP NC,L0222
+			CALL L0138
+L0217:
+			LDB (var_legspeed_2),0AH
+			LDB (var_legdat_2),7FH
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0224:
+			CPB (countdown590_2Hz),0
+			JR Z,L0223
+			BIT 2,(var_legctrl0)
+			JR Z,L0224
+L0223:
+			LDB (countdown590_2Hz),02H
+L0225:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0225
+L0233:
+			LDB (var_legspeed_2),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_2),0FEH
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_2
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0149
+			JR NC,L0226
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0227:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0227
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0228 ; reference (L0673)
+
+L0226:
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0229:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0229
+			LDB A,(legpos_2)
+			PUSH A
+			LDB (var_legspeed_2),02H
+			LDB (var_legdat_2),0FFH
+			SET 1,(var_077)
+			RES 2,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0230:
+			CPB (var_timer64_b),0
+			JR NZ,L0230
+			SET 2,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0231:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0231
+			POP A
+			LDB C,(legpos_2)
+			SUB C,A
+			JR NC,L0232
+			XOR C,0FFH
+			INC 1,C
+L0232:
+			CP C,3
+			JP NC,L0233
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0228
+			LDB A,C
+			LDB C,(legpos_2)
+L0228:
+			CP A,1AH
+			JR C,L0234
+			CP A,39H
+			JR NC,L0234
+			CP C,0BCH
+			JR C,L0234
+			CP C,0DBH
+			JR C,L0235
+			JR L0234 ; reference (L0673)
+
+L0235:
+			LDL XIX,d0236
+			LDL XIY,d0237
+			CALL L0182
+			LDWW svar_legx2,varret_variousBW
+			LDBB svar_gain2,varret_bNewGain
+L0234:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0673)
+
+; ------------------------------
+
+
+L0656:
+			LDB (var_legspeed_3),0AH
+			LDB (var_legdat_3),7FH
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0239:
+			CPB (countdown590_2Hz),0
+			JR Z,L0238
+			BIT 3,(var_legctrl0)
+			JR Z,L0239
+L0238:
+			LDB (countdown590_2Hz),02H
+L0240:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0240
+L0248:
+			LDB (var_legspeed_3),05H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_3),0FEH
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_3
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0149
+			JR NC,L0241
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0242:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0242
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0243 ; reference (L0656)
+
+L0241:
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0244:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0244
+			LDBB varret_variousBW,legpos_3
+			LDB (var_legspeed_3),02H
+			LDB (var_legdat_3),0FFH
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0245:
+			CPB (var_timer64_b),0
+			JR NZ,L0245
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0246:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0246
+			LDB A,(legpos_3)
+			SUB A,(varret_variousBW)
+			JR NC,L0247
+			XOR A,0FFH
+			INC 1,A
+L0247:
+			CP A,3
+			JP NC,L0248
+			CALL L0138
+L0243:
+			LDB (var_legspeed_3),0AH
+			LDB (var_legdat_3),7FH
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0250:
+			CPB (countdown590_2Hz),0
+			JR Z,L0249
+			BIT 3,(var_legctrl0)
+			JR Z,L0250
+L0249:
+			LDB (countdown590_2Hz),02H
+L0251:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0251
+L0259:
+			LDB (var_legspeed_3),05H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_3),1
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_3
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0140
+			JR NC,L0252
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0253:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0253
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0254 ; reference (L0656)
+
+L0252:
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0255:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0255
+			LDB A,(legpos_3)
+			PUSH A
+			LDB (var_legspeed_3),02H
+			LDB (var_legdat_3),0
+			SET 1,(var_077)
+			RES 3,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0256:
+			CPB (var_timer64_b),0
+			JR NZ,L0256
+			SET 3,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0257:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0257
+			POP A
+			LDB C,(legpos_3)
+			SUB C,A
+			JR NC,L0258
+			XOR C,0FFH
+			INC 1,C
+L0258:
+			CP C,3
+			JP NC,L0259
+			LDB C,(varret_variousBW)
+			PUSH A
+			PUSH C
+			CALL L0138
+			POP C
+			POP A
+			CP C,A
+			JR UGT,L0254
+			LDB A,C
+			LDB C,(legpos_3)
+L0254:
+			CP A,3
+			JR C,L0260
+			CP A,1DH
+			JR NC,L0260
+			CP C,0C0H
+			JR C,L0260
+			CP C,0DAH
+			JR C,L0261
+			JR L0260 ; reference (L0656)
+
+L0261:
+			LDL XIX,d0262
+			LDL XIY,d0263
+			CALL L0182
+			LDWW svar_legx3,varret_variousBW
+			LDBB svar_gain3,varret_bNewGain
+L0260:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0656)
+
+; ------------------------------
+
+
+L0653:
+			LDB (var_legspeed_4),0AH
+			LDB (var_legdat_4),7FH
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0265:
+			CPB (countdown590_2Hz),0
+			JR Z,L0264
+			BIT 4,(var_legctrl0)
+			JR Z,L0265
+L0264:
+			LDB (countdown590_2Hz),02H
+L0266:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0266
+L0274:
+			LDB (var_legspeed_4),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_4),1
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_4
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0140
+			JR NC,L0267
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0268:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0268
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0269 ; reference (L0653)
+
+L0267:
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0270:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0270
+			LDBB varret_variousBW,legpos_4
+			LDB (var_legspeed_4),02H
+			LDB (var_legdat_4),0
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0271:
+			CPB (var_timer64_b),0
+			JR NZ,L0271
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0272:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0272
+			LDB A,(legpos_4)
+			SUB A,(varret_variousBW)
+			JP NC,L0273
+			XOR A,0FFH
+			INC 1,A
+L0273:
+			CP A,3
+			JP NC,L0274
+			CALL L0138
+L0269:
+			LDB (var_legspeed_4),0AH
+			LDB (var_legdat_4),7FH
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0276:
+			CPB (countdown590_2Hz),0
+			JR Z,L0275
+			BIT 4,(var_legctrl0)
+			JR Z,L0276
+L0275:
+			LDB (countdown590_2Hz),02H
+L0277:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0277
+L0285:
+			LDB (var_legspeed_4),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_4),0FEH
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_4
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0149
+			JR NC,L0278
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0279:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0279
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0280 ; reference (L0653)
+
+L0278:
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0281:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0281
+			LDB A,(legpos_4)
+			PUSH A
+			LDB (var_legspeed_4),02H
+			LDB (var_legdat_4),0FFH
+			SET 1,(var_077)
+			RES 4,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0282:
+			CPB (var_timer64_b),0
+			JR NZ,L0282
+			SET 4,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0283:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0283
+			POP A
+			LDB C,(legpos_4)
+			SUB C,A
+			JR NC,L0284
+			XOR C,0FFH
+			INC 1,C
+L0284:
+			CP C,3
+			JP NC,L0285
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0280
+			LDB A,C
+			LDB C,(legpos_4)
+L0280:
+			CP A,61H
+			JR C,L0286
+			CP A,85H
+			JR NC,L0286
+			CP C,0AAH
+			JR C,L0286
+			CP C,0C9H
+			JR C,L0287
+			JR L0286 ; reference (L0653)
+
+L0287:
+			LDL XIX,d0288
+			LDL XIY,d0289
+			CALL L0182
+			LDWW svar_legx4,varret_variousBW
+			LDBB svar_gain4,varret_bNewGain
+L0286:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0653)
+
+; ------------------------------
+
+
+L0658:
+			LDB (var_legspeed_5),0AH
+			LDB (var_legdat_5),7FH
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0291:
+			CPB (countdown590_2Hz),0
+			JR Z,L0290
+			BIT 5,(var_legctrl0)
+			JR Z,L0291
+L0290:
+			LDB (countdown590_2Hz),02H
+L0292:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0292
+L0300:
+			LDB (var_legspeed_5),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_5),0FEH
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_5
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0149
+			JR NC,L0293
+			SET 5,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0294:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0294
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0295 ; reference (L0658)
+
+L0293:
+			SET 5,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0296:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0296
+			LDBB varret_variousBW,legpos_5
+			LDB (var_legspeed_5),02H
+			LDB (var_legdat_5),0FFH
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0297:
+			CPB (var_timer64_b),0
+			JR NZ,L0297
+			SET 5,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0298:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0298
+			LDB A,(legpos_5)
+			SUB A,(varret_variousBW)
+			JP NC,L0299
+			XOR A,0FFH
+			INC 1,A
+L0299:
+			CP A,3
+			JP NC,L0300
+			CALL L0138
+L0295:
+			LDB (var_legspeed_5),0AH
+			LDB (var_legdat_5),7FH
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0302:
+			CPB (countdown590_2Hz),0
+			JR Z,L0301
+			BIT 5,(var_legctrl0)
+			JR Z,L0302
+L0301:
+			LDB (countdown590_2Hz),02H
+L0303:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0303
+L0311:
+			LDB (var_legspeed_5),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_5),1
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_5
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0140
+			JR NC,L0304
+			SET 0,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0305:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0305
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0306 ; reference (L0658)
+
+L0304:
+			SET 5,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0307:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0307
+			LDB A,(legpos_5)
+			PUSH A
+			LDB (var_legspeed_5),02H
+			LDB (var_legdat_5),0
+			SET 1,(var_077)
+			RES 5,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0308:
+			CPB (var_timer64_b),0
+			JR NZ,L0308
+			SET 5,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0309:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0309
+			POP A
+			LDB C,(legpos_5)
+			SUB C,A
+			JR NC,L0310
+			XOR C,0FFH
+			INC 1,C
+L0310:
+			CP C,3
+			JP NC,L0311
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0306
+			LDB A,C
+			LDB C,(legpos_5)
+L0306:
+			CP A,29H
+			JR C,L0312
+			CP A,48H
+			JR NC,L0312
+			CP C,0CCH
+			JR C,L0312
+			CP C,0EBH
+			JR C,L0313
+			JR L0312 ; reference (L0658)
+
+L0313:
+			LDL XIX,d0314
+			LDL XIY,d0315
+			CALL L0182
+			LDWW svar_legx5,varret_variousBW
+			LDBB svar_gain5,varret_bNewGain
+L0312:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0658)
+
+; ------------------------------
+
+
+L0662:
+			LDB (var_legspeed_6),0AH
+			LDB (var_legdat_6),7FH
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0317:
+			CPB (countdown590_2Hz),0
+			JR Z,L0316
+			BIT 6,(var_legctrl0)
+			JR Z,L0317
+L0316:
+			LDB (countdown590_2Hz),02H
+L0318:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0318
+L0326:
+			LDB (var_legspeed_6),05H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_6),1
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_6
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0140
+			JR NC,L0319
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0320:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0320
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0321 ; reference (L0662)
+
+L0319:
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0322:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0322
+			LDBB varret_variousBW,legpos_6
+			LDB (var_legspeed_6),02H
+			LDB (var_legdat_6),0
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0323:
+			CPB (var_timer64_b),0
+			JR NZ,L0323
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0324:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0324
+			LDB A,(legpos_6)
+			SUB A,(varret_variousBW)
+			JP NC,L0325
+			XOR A,0FFH
+			INC 1,A
+L0325:
+			CP A,3
+			JP NC,L0326
+			CALL L0138
+L0321:
+			LDB (var_legspeed_6),0AH
+			LDB (var_legdat_6),7FH
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0328:
+			CPB (countdown590_2Hz),0
+			JR Z,L0327
+			BIT 6,(var_legctrl0)
+			JR Z,L0328
+L0327:
+			LDB (countdown590_2Hz),02H
+L0329:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0329
+L0337:
+			LDB (var_legspeed_6),05H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_6),0FEH
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_6
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0149
+			JR NC,L0330
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0331:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0331
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0332 ; reference (L0662)
+
+L0330:
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0333:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0333
+			LDB A,(legpos_6)
+			PUSH A
+			LDB (var_legspeed_6),02H
+			LDB (var_legdat_6),0FFH
+			SET 1,(var_077)
+			RES 6,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0334:
+			CPB (var_timer64_b),0
+			JR NZ,L0334
+			SET 6,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0335:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0335
+			POP A
+			LDB C,(legpos_6)
+			SUB C,A
+			JR NC,L0336
+			XOR C,0FFH
+			INC 1,C
+L0336:
+			CP C,3
+			JP NC,L0337
+			LDB C,(varret_variousBW)
+			PUSH A
+			PUSH C
+			CALL L0138
+			POP C
+			POP A
+			CP C,A
+			JR UGT,L0332
+			LDB A,C
+			LDB C,(legpos_6)
+L0332:
+			CP A,3
+			JR C,L0338
+			CP A,1DH
+			JR NC,L0338
+			CP C,0BFH
+			JR C,L0338
+			CP C,0D9H
+			JR C,L0339
+			JR L0338 ; reference (L0662)
+
+L0339:
+			LDL XIX,d0340
+			LDL XIY,d0341
+			CALL L0182
+			LDWW svar_legx6,varret_variousBW
+			LDBB svar_gain6,varret_bNewGain
+L0338:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0662)
+
+; ------------------------------
+
+
+L0660:
+			LDB (var_legspeed_7),0AH
+			LDB (var_legdat_7),7FH
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0343:
+			CPB (countdown590_2Hz),0
+			JR Z,L0342
+			BIT 7,(var_legctrl0)
+			JR Z,L0343
+L0342:
+			LDB (countdown590_2Hz),02H
+L0344:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0344
+L0352:
+			LDB (var_legspeed_7),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_7),1
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_7
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0140
+			JR NC,L0345
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0346:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0346
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0347 ; reference (L0660)
+
+L0345:
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0348:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0348
+			LDBB varret_variousBW,legpos_7
+			LDB (var_legspeed_7),02H
+			LDB (var_legdat_7),0
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0349:
+			CPB (var_timer64_b),0
+			JR NZ,L0349
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0350:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0350
+			LDB A,(legpos_7)
+			SUB A,(varret_variousBW)
+			JP NC,L0351
+			XOR A,0FFH
+			INC 1,A
+L0351:
+			CP A,3
+			JP NC,L0352
+			CALL L0138
+L0347:
+			LDB (var_legspeed_7),0AH
+			LDB (var_legdat_7),7FH
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (countdown590_2Hz),0AH
+L0354:
+			CPB (countdown590_2Hz),0
+			JR Z,L0353
+			BIT 7,(var_legctrl0)
+			JR Z,L0354
+L0353:
+			LDB (countdown590_2Hz),02H
+L0355:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0355
+L0363:
+			LDB (var_legspeed_7),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_7),0FEH
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_7
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0149
+			JR NC,L0356
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0357:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0357
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0358 ; reference (L0660)
+
+L0356:
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0359:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0359
+			LDB A,(legpos_7)
+			PUSH A
+			LDB (var_legspeed_7),02H
+			LDB (var_legdat_7),0FFH
+			SET 1,(var_077)
+			RES 7,(var_legctrl0)
+			LDB (var_timer64_b),0AH
+L0360:
+			CPB (var_timer64_b),0
+			JR NZ,L0360
+			SET 7,(var_legctrl0)
+			LDB (countdown590_2Hz),02H
+L0361:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0361
+			POP A
+			LDB C,(legpos_7)
+			SUB C,A
+			JR NC,L0362
+			XOR C,0FFH
+			INC 1,C
+L0362:
+			CP C,3
+			JP NC,L0363
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0358
+			LDB A,C
+			LDB C,(legpos_7)
+L0358:
+			CP A,61H
+			JR C,L0364
+			CP A,85H
+			JR NC,L0364
+			CP C,0A9H
+			JR C,L0364
+			CP C,0C8H
+			JR C,L0365
+			JR L0364 ; reference (L0660)
+
+L0365:
+			LDL XIX,d0366
+			LDL XIY,d0367
+			CALL L0182
+			LDWW svar_legx7,varret_variousBW
+			LDBB svar_gain7,varret_bNewGain
+L0364:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0660)
+
+; ------------------------------
+
+
+L0664:
+			LDB (var_legspeed_8),0AH
+			LDB (var_legdat_8),7FH
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0369:
+			CPB (countdown590_2Hz),0
+			JR Z,L0368
+			BIT 0,(var_legctrl1)
+			JR Z,L0369
+L0368:
+			LDB (countdown590_2Hz),02H
+L0370:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0370
+L0378:
+			LDB (var_legspeed_8),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_8),0FEH
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_8
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0149
+			JR NC,L0371
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0372:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0372
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0373 ; reference (L0664)
+
+L0371:
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0374:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0374
+			LDBB varret_variousBW,legpos_8
+			LDB (var_legspeed_8),02H
+			LDB (var_legdat_8),0FFH
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0375:
+			CPB (var_timer64_b),0
+			JR NZ,L0375
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0376:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0376
+			LDB A,(legpos_8)
+			SUB A,(varret_variousBW)
+			JP NC,L0377
+			XOR A,0FFH
+			INC 1,A
+L0377:
+			CP A,3
+			JP NC,L0378
+			CALL L0138
+L0373:
+			LDB (var_legspeed_8),0AH
+			LDB (var_legdat_8),7FH
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0380:
+			CPB (countdown590_2Hz),0
+			JR Z,L0379
+			BIT 0,(var_legctrl1)
+			JR Z,L0380
+L0379:
+			LDB (countdown590_2Hz),02H
+L0381:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0381
+L0389:
+			LDB (var_legspeed_8),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_8),1
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_8
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0140
+			JR NC,L0382
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0383:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0383
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0384 ; reference (L0664)
+
+L0382:
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0385:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0385
+			LDB A,(legpos_8)
+			PUSH A
+			LDB (var_legspeed_8),02H
+			LDB (var_legdat_8),0
+			SET 1,(var_077)
+			RES 0,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0386:
+			CPB (var_timer64_b),0
+			JR NZ,L0386
+			SET 0,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0387:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0387
+			POP A
+			LDB C,(legpos_8)
+			SUB C,A
+			JR NC,L0388
+			XOR C,0FFH
+			INC 1,C
+L0388:
+			CP C,3
+			JP NC,L0389
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0384
+			LDB A,C
+			LDB C,(legpos_8)
+L0384:
+			CP A,29H
+			JR C,L0390
+			CP A,48H
+			JR NC,L0390
+			CP C,0CCH
+			JR C,L0390
+			CP C,0EBH
+			JR C,L0391
+			JR L0390 ; reference (L0664)
+
+L0391:
+			LDL XIX,d0392
+			LDL XIY,d0393
+			CALL L0182
+			LDWW svar_legx8,varret_variousBW
+			LDBB svar_gain8,varret_bNewGain
+L0390:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0664)
+
+; ------------------------------
+
+
+L0677:
+			LDB (var_legspeed_9),0AH
+			LDB (var_legdat_9),7FH
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0395:
+			CPB (countdown590_2Hz),0
+			JR Z,L0394
+			BIT 1,(var_legctrl1)
+			JR Z,L0395
+L0394:
+			LDB (countdown590_2Hz),02H
+L0396:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0396
+L0404:
+			LDB (var_legspeed_9),05H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_9),0FEH
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_9
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0149
+			JR NC,L0397
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0398:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0398
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0399 ; reference (L0677)
+
+L0397:
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0400:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0400
+			LDBB varret_variousBW,legpos_9
+			LDB (var_legspeed_9),02H
+			LDB (var_legdat_9),0FFH
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0401:
+			CPB (var_timer64_b),0
+			JR NZ,L0401
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0402:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0402
+			LDB A,(legpos_9)
+			SUB A,(varret_variousBW)
+			JP NC,L0403
+			XOR A,0FFH
+			INC 1,A
+L0403:
+			CP A,3
+			JP NC,L0404
+			CALL L0138
+L0399:
+			LDB (var_legspeed_9),0AH
+			LDB (var_legdat_9),7FH
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0406:
+			CPB (countdown590_2Hz),0
+			JR Z,L0405
+			BIT 1,(var_legctrl1)
+			JR Z,L0406
+L0405:
+			LDB (countdown590_2Hz),02H
+L0407:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0407
+L0415:
+			LDB (var_legspeed_9),05H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_9),1
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_9
+			DB 022H, 001H ; FAKE OP LDB B,1
+			CALL L0140
+			JR NC,L0408
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0409:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0409
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0410 ; reference (L0677)
+
+L0408:
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0411:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0411
+			LDB A,(legpos_9)
+			PUSH A
+			LDB (var_legspeed_9),02H
+			LDB (var_legdat_9),0
+			SET 1,(var_077)
+			RES 1,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0412:
+			CPB (var_timer64_b),0
+			JR NZ,L0412
+			SET 1,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0413:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0413
+			POP A
+			LDB C,(legpos_9)
+			SUB C,A
+			JR NC,L0414
+			XOR C,0FFH
+			INC 1,C
+L0414:
+			CP C,3
+			JP NC,L0415
+			LDB C,(varret_variousBW)
+			PUSH A
+			PUSH C
+			CALL L0138
+			POP C
+			POP A
+			CP C,A
+			JR UGT,L0410
+			LDB A,C
+			LDB C,(legpos_9)
+L0410:
+			CP A,28H
+			JR C,L0416
+			CP A,42H
+			JR NC,L0416
+			CP C,0E6H
+			JR C,L0416
+			JR L0417 ; reference (L0677)
+
+L0417:
+			LDL XIX,d0418
+			LDL XIY,d0419
+			CALL L0182
+			LDWW svar_legx9,varret_variousBW
+			LDBB svar_gain9,varret_bNewGain
+L0416:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0677)
+
+; ------------------------------
+
+
+L0675:
+			LDB (var_legspeed_10),0AH
+			LDB (var_legdat_10),7FH
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0421:
+			CPB (countdown590_2Hz),0
+			JR Z,L0420
+			BIT 2,(var_legctrl1)
+			JR Z,L0421
+L0420:
+			LDB (countdown590_2Hz),02H
+L0422:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0422
+L0430:
+			LDB (var_legspeed_10),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_10),0FEH
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_10
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0149
+			JR NC,L0423
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0424:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0424
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0425 ; reference (L0675)
+
+L0423:
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0426:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0426
+			LDBB varret_variousBW,legpos_10
+			LDB (var_legspeed_10),02H
+			LDB (var_legdat_10),0FFH
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0427:
+			CPB (var_timer64_b),0
+			JR NZ,L0427
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0428:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0428
+			LDB A,(legpos_10)
+			SUB A,(varret_variousBW)
+			JP NC,L0429
+			XOR A,0FFH
+			INC 1,A
+L0429:
+			CP A,3
+			JP NC,L0430
+			CALL L0138
+L0425:
+			LDB (var_legspeed_10),0AH
+			LDB (var_legdat_10),7FH
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0432:
+			CPB (countdown590_2Hz),0
+			JR Z,L0431
+			BIT 2,(var_legctrl1)
+			JR Z,L0432
+L0431:
+			LDB (countdown590_2Hz),02H
+L0433:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0433
+L0441:
+			LDB (var_legspeed_10),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_10),1
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_10
+			DB 022H, 002H ; FAKE OP LDB B,02H
+			CALL L0140
+			JR NC,L0434
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0435:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0435
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0436 ; reference (L0675)
+
+L0434:
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0437:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0437
+			LDB A,(legpos_10)
+			PUSH A
+			LDB (var_legspeed_10),02H
+			LDB (var_legdat_10),0
+			SET 1,(var_077)
+			RES 2,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0438:
+			CPB (var_timer64_b),0
+			JR NZ,L0438
+			SET 2,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0439:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0439
+			POP A
+			LDB C,(legpos_10)
+			SUB C,A
+			JR NC,L0440
+			XOR C,0FFH
+			INC 1,C
+L0440:
+			CP C,3
+			JP NC,L0441
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0436
+			LDB A,C
+			LDB C,(legpos_10)
+L0436:
+			CP A,3CH
+			JR C,L0442
+			CP A,60H
+			JR NC,L0442
+			CP C,86H
+			JR C,L0442
+			CP C,0A5H
+			JR C,L0443
+			JR L0442 ; reference (L0675)
+
+L0443:
+			LDL XIX,d0444
+			LDL XIY,d0445
+			CALL L0182
+			LDWW svar_legx10,varret_variousBW
+			LDBB svar_gain10,varret_bNewGain
+L0442:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0675)
+
+; ------------------------------
+
+
+L0679:
+			LDB (var_legspeed_11),0AH
+			LDB (var_legdat_11),7FH
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0447:
+			CPB (countdown590_2Hz),0
+			JR Z,L0446
+			BIT 3,(var_legctrl1)
+			JR Z,L0447
+L0446:
+			LDB (countdown590_2Hz),02H
+L0448:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0448
+L0456:
+			LDB (var_legspeed_11),03H
+			LDB (var_5DD),0FFH
+			LDB (var_5FD),0FFH
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_11),1
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_11
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0140
+			JR NC,L0449
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0450:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0450
+			CALL L0138
+			LDB (varret_variousBW),0
+			JR L0451 ; reference (L0679)
+
+L0449:
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0452:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0452
+			LDBB varret_variousBW,legpos_11
+			LDB (var_legspeed_11),02H
+			LDB (var_legdat_11),0
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0453:
+			CPB (var_timer64_b),0
+			JR NZ,L0453
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0454:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0454
+			LDB A,(legpos_11)
+			SUB A,(varret_variousBW)
+			JP NC,L0455
+			XOR A,0FFH
+			INC 1,A
+L0455:
+			CP A,3
+			JP NC,L0456
+			CALL L0138
+L0451:
+			LDB (var_legspeed_11),0AH
+			LDB (var_legdat_11),7FH
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (countdown590_2Hz),0AH
+L0458:
+			CPB (countdown590_2Hz),0
+			JR Z,L0457
+			BIT 3,(var_legctrl1)
+			JR Z,L0458
+L0457:
+			LDB (countdown590_2Hz),02H
+L0459:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0459
+L0467:
+			LDB (var_legspeed_11),03H
+			LDB (var_5DD),0
+			LDB (var_5FD),0
+			LDB (var_5FC),0
+			LDB (var_5FE),0
+			LDB (var_legdat_11),0FEH
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (var_5DE),0
+			LDB (var_5DF),0
+			LDB (var_5E0),0
+			LDL XIX,legpos_11
+			DB 022H, 003H ; FAKE OP LDB B,03H
+			CALL L0149
+			JR NC,L0460
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0461:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0461
+			CALL L0138
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDB C,(varret_variousBW)
+			JR L0462 ; reference (L0679)
+
+L0460:
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0463:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0463
+			LDB A,(legpos_11)
+			PUSH A
+			LDB (var_legspeed_11),02H
+			LDB (var_legdat_11),0FFH
+			SET 1,(var_077)
+			RES 3,(var_legctrl1)
+			LDB (var_timer64_b),0AH
+L0464:
+			CPB (var_timer64_b),0
+			JR NZ,L0464
+			SET 3,(var_legctrl1)
+			LDB (countdown590_2Hz),02H
+L0465:
+			CPB (countdown590_2Hz),0
+			JR NZ,L0465
+			POP A
+			LDB C,(legpos_11)
+			SUB C,A
+			JR NC,L0466
+			XOR C,0FFH
+			INC 1,C
+L0466:
+			CP C,3
+			JP NC,L0467
+			LDB C,(varret_variousBW)
+			CP C,A
+			JR UGT,L0462
+			LDB A,C
+			LDB C,(legpos_11)
+L0462:
+			CP A,1AH
+			JR C,L0468
+			CP A,39H
+			JR NC,L0468
+			CP C,0BBH
+			JR C,L0468
+			CP C,0DAH
+			JR C,L0469
+			JR L0468 ; reference (L0679)
+
+L0469:
+			LDL XIX,d0470
+			LDL XIY,d0471
+			CALL L0182
+			LDWW svar_legx11,varret_variousBW
+			LDBB svar_gain11,varret_bNewGain
+L0468:
+			LDB (var_077),0
+			CALL L0138
+			RET ; reference (L0679)
+
+; ------------------------------
+
+
+L0546:
+			LDL XIX,varlegs_mode
+			CPB (XIX+E),3
+			JR Z,L0472
+			LDL XIX,other_vector_array2
+			JR L0473 ; reference (L0546)
+
+L0472:
+			LDL XIX,other_vector_array1
+L0473:
+			LDL XIY,(XIX+C)
+			CP A,W
+			JR NC,L0474
+			EX A,W
+L0474:
+			SUB A,W
+			DB 022H, 004H ; FAKE OP LDB B,04H
+L0476:
+			LDB C,(XIY+B)
+			CP A,C
+			JR NC,L0475
+			DJNZ B,L0476
+L0475:
+			LDL XIX,varlegs_mode
+			CPB (XIX+E),3
+			JR Z,L0477
+			LDL XIX,d0478
+			JR L0479 ; reference (L0546)
+
+L0477:
+			LDL XIX,d0480
+L0479:
+			LDB C,(XIX+B)
+			BIT 7,C
+			JR Z,L0481
+			AND C,0FH
+			SCF
+			RET ; reference (L0546)
+
+L0481:
+			RCF
+			RET ; reference (L0546)
+
+; ------------------------------
+
+
+d0478:
+	DB 05H,1,0,81H,82H
+d0480:
+	DB 03H,1,0,81H,82H
+other_vector_array1:
+	DD	d0482
+	DD	d0483
+	DD	d0484
+d0482:
+	DB 00H,1,05H,09H,0EH
+d0483:
+	DB 00H,1,04H,08H,0CH
+d0484:
+	DB 00H,1,05H,09H,0EH
+other_vector_array2:
+	DD	d0485
+	DD	d0486
+	DD	d0487
+d0485:
+	DB 00H,08H,0CH,0FH,14H
+d0486:
+	DB 00H,04H,09H,0CH,0FH
+d0487:
+	DB 00H,08H,0DH,10H,14H
+d0560:
+	DB 02H,02H,03H,04H,05H,06H,05H,04H,03H,02H,02H
+
+

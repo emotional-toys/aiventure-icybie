@@ -1,0 +1,32 @@
+01.08.2013
+a-newCybie Project Notes
+The Image Is
+
+1216: I want to keep notes here for the sic-upgraded Cybies: One gold and two blue.
+	As of now, one gold, one blue ready for upgrade.
+1217: BlueCybie (bC for short):
+	1. Using a second-generation wire harness,
+	2. Will use for CROMINST ROM overwrite of legacy OS,
+	3. Have a gold card (2 marked "Charger" that will be used to overwrite whatever is on the flash. The reason I say 'whatever' is I have no software to read 
+		what is written. After trying a few start-up projects, I was advised by the author of CROM not to bother 'bit-banging' the parallel-port to read the 
+		flash, although I have a driver. Also, I could simply start by following directions, make a CROM image, load it to bC, and see what happens. The bC was 
+		a recent eBay purchase, the second modified for this process. gC (Betix) being the first, using the first-generation wire harness.
+	4. Option today is to follow instructions since I don't have a lot of time but would like to know if I take a robot for study during my time in Munich.
+1257: I am going to place a file in the directory where this file resides of the steps I took.
+2230: I have structured a paper for this process of working with i-Cybie. FYI: don't ask too many questions, eventually you look really stupid... :-(
+2233: I am ready to start with an old charger cartridge and upload the CROM program.
+02.08.2013:
+	904: I have tried both the downloader program and ICBURN from AiboPet and neither can write to the cartridge. The latter gives: "FATAL: can't determine file type 'crominst-l.bin'".
+		Am stopping this project for now until a resolution strategy can be formulated.
+
+16.12.2013
+1809: After catastrophe time vacuum in Munich and graduation out of the way, am now devoting my time to working on Cybies.
+1937: The plan is tomorrow to start with the serial port cable to the blue icybie.
+
+17.12.2013
+1051: Connecting serial cable to blue cybie does nothing in the terminal and the robot simply blinks its eyes. Will try another memory card other than Z2.
+1053: All else fails, I can use the ICBURN utility to format a card with CROMIST.
+1120: Memory card "custom" also does not respond. It would seem there is no bootloader present, or the cable needs diagnosis. One thing, the cable is too short for effective use at the computer.
+1514: I need to start with the CROMNIST card and this needs to be done on dolores.
+2027: Or on the tower too! ;-)
+

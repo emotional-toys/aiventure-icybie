@@ -1,0 +1,6 @@
+APPNAME=test0
+OBJS=$(APPNAME).o
+
+SDKROOT=..\..
+
+INCLUDE ..\..\INC\ICSTD.MAK

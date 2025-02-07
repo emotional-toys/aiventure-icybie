@@ -1,0 +1,398 @@
+; Main1.a_
+
+L1106:
+			EI 07H
+			LDB A,22H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+
+ IFDEF NEWFEAT ; check stretch count (YICTable + trace)
+            PUSH WA
+            LD A,(YD_bStretchCount)
+			EI 00H
+            CALL printf
+                DB "++Stretch count ", PRINTF_W_DECIMAL
+                DB " / ", PRINTF_A_DECIMAL, 13, 10, 0
+            POP WA
+			EI 07H
+            CP W,(YD_bStretchCount) ;; YICTABLE
+ ELSE
+    ;; old reboot count logic
+			CP W,3
+ ENDIF
+			JR NC,L0638
+			INC 1,W
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),22H
+			CALL Storage_Write
+			EI 00H
+
+ IFDEF SERIAL_VERBOSE
+            CALL printf
+                DB "++ not stretching yet", 13, 10, 0
+ ENDIF
+			RCF
+			RET ; reference (L1106)
+
+L0638:
+			LDB E,250
+			LDW BC,0
+L0640:
+			PUSH E
+			PUSH BC
+			LDW (wvar_wBatterySum),0
+			LDB (var_nBattery30Count),0
+			CALL L0639
+			LDB A,(wvar_wBatterySum)
+			DB 020H,0 ; FAKE OP LDB W,0
+			POP BC
+			POP E
+			ADD BC,WA
+			DJNZ E,L0640
+
+			DIV BC,250
+			LDB A,C ; battery level (averaged)
+			PUSH A
+			LDB A,1FH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data) ; W = hi level
+			POP A
+			EI 00H
+			SUB W,4 ; hi level - 4
+			CP A,W
+			JR NC,CalibrateLegs1 ; A > W
+ IFDEF SERIAL_VERBOSE
+            CALL printf
+                DB "++ not stretching - battery too low "
+
+                DB PRINTF_A_DECIMAL, " - ", PRINTF_W_DECIMAL
+                DB 13, 10, 0
+ ENDIF
+			RCF
+			RET ; reference (L1106)
+
+; ------------------------------
+
+ IFDEF EXACT
+	DB 25H,0FAH,0D9H,0A8H,0CDH,04H,29H,0F1H,0DDH,10H,02H,0,00H,0F1H,0DFH,10H
+	DB 00H,0,1DH,0B8H,41H,23H,0C1H,0DDH,10H,21H,20H,00H,49H,0CDH,05H,0D8H
+	DB 81H,0CDH,1CH,0E0H,0CBH,0AH,0FAH,0CBH,89H,14H,21H,1FH,1DH,69H,0FCH,20H
+	DB 0D1H,9CH,10H,20H,15H,06H,0,0C8H,0C8H,1,0C8H,0F1H,6FH,02H,10H,0EH
+ ENDIF
+
+CalibrateLegs1:
+
+ IFDEF NEWFEAT ; BUG FIX: startup performace disable
+        ;; startup performance gets in the way
+			LDB (boolStartupPerformed),1 
+ ENDIF
+
+			LDL_ACTION XIX,STDACTION_202,8
+			LD (var_pAction),XIX
+			LDB (var_258),1
+
+L0651:
+			CALL Check_SmallButton
+			CALL L0643
+			CALL L0644
+			CALL L0645
+			CALL L0646
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0651
+
+			LDB (var_2E3),1
+			CALL L0652
+			CALL L0653
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0654
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0654
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0654:
+			CALL L0656
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0657
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0657
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0657:
+			CALL L0658
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0659
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0659
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0659:
+			CALL L0660
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0661
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0661
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0661:
+			CALL L0662
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0663
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0663
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0663:
+			CALL L0664
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0665
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP NZ,L0665
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,40H
+			JP Z,L0655
+L0665:
+			LDB (var_legspeed_3),0AH
+			LDB (var_legspeed_4),0AH
+			LDB (var_legspeed_5),0AH
+			LDB (var_legspeed_6),0AH
+			LDB (var_legspeed_7),0AH
+			LDB (var_legspeed_8),0AH
+			LDB (var_legdat_3),7FH
+			LDB (var_legdat_4),8CH
+			LDB (var_legdat_5),7FH
+			LDB (var_legdat_6),7FH
+			LDB (var_legdat_7),8CH
+			LDB (var_legdat_8),7FH
+			RES 3,(var_legctrl0)
+			RES 4,(var_legctrl0)
+			RES 5,(var_legctrl0)
+			RES 6,(var_legctrl0)
+			RES 7,(var_legctrl0)
+			RES 0,(var_legctrl1)
+			SET 1,(var_077)
+			LDB (countdown590_2Hz),04H
+L0667:
+			CPB (countdown590_2Hz),0
+			JR Z,L0666
+			SUBB (countdown590_2Hz),1
+			BIT 3,(var_legctrl0)
+			JR Z,L0667
+			BIT 4,(var_legctrl0)
+			JR Z,L0667
+			BIT 5,(var_legctrl0)
+			JR Z,L0667
+			BIT 6,(var_legctrl0)
+			JR Z,L0667
+			BIT 7,(var_legctrl0)
+			JR Z,L0667
+			BIT 0,(var_legctrl1)
+			JR Z,L0667
+L0666:
+			CALL L0138
+			LDB (var_2E3),0
+			LDL_ACTION XIX,STDACTION_203,9
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0668:
+			CALL Check_SmallButton
+			CALL L0643
+			CALL L0644
+			CALL L0645
+			CALL L0646
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0668
+			LDB (var_2E3),1
+			CALL L0669
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0670
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0670
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0670:
+			CALL L0671
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0672
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0672
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0672:
+			CALL L0673
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0674
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0674
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0674:
+			CALL L0675
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0676
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0676
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0676:
+			CALL L0677
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0678
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0678
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0678:
+			CALL L0679
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0680
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP NZ,L0680
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,20H
+			JP Z,L0655
+L0680:
+			CALL L0681
+			LDB (var_legspeed_0),0AH
+			LDB (var_legspeed_1),0AH
+			LDB (var_legspeed_2),0AH
+			LDB (var_legspeed_9),0AH
+			LDB (var_legspeed_10),0AH
+			LDB (var_legspeed_11),0AH
+			LDB (var_legdat_0),7FH
+			LDB (var_legdat_1),7FH
+			LDB (var_legdat_2),7FH
+			LDB (var_legdat_9),7FH
+			LDB (var_legdat_10),7FH
+			LDB (var_legdat_11),7FH
+			RES 0,(var_legctrl0)
+			RES 1,(var_legctrl0)
+			RES 2,(var_legctrl0)
+			RES 1,(var_legctrl1)
+			RES 2,(var_legctrl1)
+			RES 3,(var_legctrl1)
+			SET 1,(var_077)
+			LDB (countdown590_2Hz),04H
+L0683:
+			CPB (countdown590_2Hz),0
+			JR Z,L0682
+			SUBB (countdown590_2Hz),1
+			BIT 0,(var_legctrl0)
+			JR Z,L0683
+			BIT 1,(var_legctrl0)
+			JR Z,L0683
+			BIT 2,(var_legctrl0)
+			JR Z,L0683
+			BIT 1,(var_legctrl1)
+			JR Z,L0683
+			BIT 2,(var_legctrl1)
+			JR Z,L0683
+			BIT 3,(var_legctrl1)
+			JR Z,L0683
+L0682:
+			CALL L0138
+			LDB (var_2E3),0
+			EI 07H
+			DB 020H,0 ; FAKE OP LDB W,0
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),22H
+			CALL Storage_Write
+			EI 00H
+			CALL L0684
+			SCF
+			RET ; reference (L1106)
+
+L0655:
+			CALL L0652
+			CALL L0138
+			LDB (var_2E3),0
+			EI 07H
+			DB 020H,0 ; FAKE OP LDB W,0
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),22H
+			CALL Storage_Write
+			EI 00H
+			CALL L0684
+			RCF
+			RET ; reference (L1106)
+
+

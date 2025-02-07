@@ -1,0 +1,424 @@
+; ------------------------------
+
+
+L0649:
+
+			CPB (var_077),0
+			JR NZ,L0685
+			CPB (var_258),0
+			JR Z,L0685
+			CPB (var_258),2
+			JR Z,L0686
+			LDB (var_258),02H
+ IFDEF SERIAL_VERBOSE
+            PUSH XWA
+            PUSH XIX
+
+            LD XWA,(var_pAction)
+		    CALL printf
+			    DB "Action(", PRINTF_XWA_HEX, ") ", 0
+
+            POP XIX
+            POP XWA
+ ENDIF
+
+			LDL XIX,(var_pAction)
+			DB 0C5H, 0F0H, 019H, 05CH, 012H ; FAKE OP LDB var_nChunk_ACTIONDAT,(XIX+)
+			LDBB var_25B,var_posture ; old posture
+ IFDEF NEWFEAT ; check for no substitute
+            LDB A,(XIX+) ; count + high bit for no substitute
+            LD W,A
+            AND A,07FH
+            LD (var_posture),A ; low bits of other
+            AND W,080H
+            LD (boolNoSubstitute),W
+ ELSE
+        ; orig code/EXACT
+			DB 0C5H, 0F0H, 019H, 05AH, 012H ; FAKE OP LDB var_posture,(XIX+)
+ ENDIF
+			LD (var_pAction),XIX ; after header
+			LDB A,(var_25B) ; old posture
+			CP (var_posture),A
+			JP NZ,AdjustPosture ; posture change
+			JR L0688 ; reference (L0649)
+
+L0686:
+			BIT 0,(var_263)
+			JP NZ,L0689
+			DECB 1,(var_repeatCount_ACTIONDAT)
+			JR Z,L0690
+			LDB (var_077),1
+			LDB (var_594),1
+L0685:
+			RET ; reference (L0649)
+
+L0690:
+			DECB 1,(var_nChunk_ACTIONDAT)
+			JR NZ,L0688
+			LDB (var_258),0
+			LDB W,(var_posture)
+			LDL XIX,detect_mask_from_posture
+			LDB A,(XIX+W)
+			LD (var_bAfterAction5bitcontrol),A
+			CPB (var_2EA),0
+			JR Z,L0692
+			LDB (var_2EA),02H
+L0692:
+			LDB (var_bEdgeDet2),0
+			CPB (var_275),1
+			JR Z,L0693
+			RET ; reference (L0649)
+
+L0693:
+			LDB (var_275),02H
+			RET ; reference (L0649)
+
+L0688:
+			LDL XIX,(var_pAction)
+			LDW WA,(XIX) ; motion number
+			LD (var_wMotionFromAction),WA
+			INC 2,XIX
+			DB 0C5H, 0F0H, 019H, 059H, 012H ; FAKE OP LDB var_repeatCount_ACTIONDAT,(XIX+)
+			DB 0C5H, 0F0H, 019H, 05DH, 012H ; FAKE OP LDB var_b3ignored_ACTIONDAT,(XIX+)
+			LDW WA,(XIX) ; A = other, W = posture
+			INC 2,XIX
+			LD (var_pAction),XIX ; point to next ACTION_PART
+
+			CPB (var_repeatCount_ACTIONDAT),0
+			JR Z,L0690
+			BIT 7,A ; bit 7 of other
+			JR NZ,L0694
+			LDB (var_b3ignored_ACTIONDAT),0 ; was already 0
+L0694:
+			LDB (var_bAfterAction5bitcontrol),0
+			SRLB 5,W ; posture (1->7)
+			LDBB var_25B,var_posture
+			LD (var_posture),W
+			BIT 6,A ; bit 6 of other
+			JR Z,L0695
+
+			LDL XIX,detect_mask_from_posture
+			LDB C,(XIX+W) ; lookup based on posture
+			LD (var_bAfterAction5bitcontrol),C
+L0695:
+			AND A,1FH ; lower 5 bits of other
+			LD (var_bEdgeDet2),A
+
+			LDW (var_wEdge3),0
+			LDB (var_077),1
+			LDB (var_594),1
+			RET ; reference (L0649)
+
+; ------------------------------
+
+detect_mask_from_posture: ; edge detection masks based on posture
+	DB 00H ; n/a
+    DB 1FH ; STAND
+    DB 1DH ; SIT
+    DB 0FH ; PLAYDEAD
+    DB 1EH ; HEAD
+    DB 1BH ; RECOVER1
+    DB 17H ; RECOVER2
+    DB 1DH ; LIE
+
+L1105:
+			CALL PollInputs
+			LDB A,(var_bInputs0)
+			AND A,65H
+			JP NZ,L0696
+			BIT 1,(var_bInputs1)
+			JP NZ,L0696
+			LDW WA,0
+			LDL XBC,17
+			LDB A,(svar_gain1)
+			MUL XBC,WA
+			AND XBC,0FFFFH
+			LDW WA,(svar_legx1)
+			ADD XBC,XWA
+			DIV XBC,0032H
+			CP (legpos_1),C
+			JR C,L0697
+			LDW WA,0
+			LDL XBC,14
+			LDB A,(svar_gain4)
+			MUL XBC,WA
+			AND XBC,0FFFFH
+			LDW WA,(svar_legx4)
+			ADD XBC,XWA
+			DIV XBC,0032H
+			CP (legpos_4),C
+			JR NC,L0697
+			LDW WA,0
+			LDL XBC,14
+			LDB A,(svar_gain7)
+			MUL XBC,WA
+			AND XBC,0FFFFH
+			LDW WA,(svar_legx7)
+			ADD XBC,XWA
+			DIV XBC,0032H
+			CP (legpos_7),C
+			JR NC,L0697
+			LDW WA,0
+			LDL XBC,17
+			LDB A,(svar_gain10)
+			MUL XBC,WA
+			AND XBC,0FFFFH
+			LDW WA,(svar_legx10)
+			ADD XBC,XWA
+			DIV XBC,0032H
+			CP (legpos_10),C
+			JR C,L0697
+			RET ; reference (L1105)
+
+L0697:
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDW (var_wMotionFromAction),0445H
+			LDB (var_077),1
+			LDB (var_594),1
+L0698:
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0650
+			CALL L0616
+			CPB (var_077),0
+			JR NZ,L0698
+			RET ; reference (L1105)
+
+L0696:
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDW (var_wMotionFromAction),0024H
+			LDB (var_077),1
+			LDB (var_594),1
+L0699:
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0650
+			CALL L0616
+			CPB (var_077),0
+			JR NZ,L0699
+			RET ; reference (L1105)
+
+; ------------------------------
+
+
+AdjustPosture: ; A = old posture, var_posture = new
+			LD (var_2D0),A
+			LDB (var_repeatCount_ACTIONDAT),1
+			INCB 1,(var_nChunk_ACTIONDAT)
+			SET 0,(var_263)
+
+ IFDEF SERIAL_VERBOSE
+            PUSH WA
+			LD W,(var_posture) ; new posture
+		    CALL printf
+			    DB 13, 10
+                DB "Posture("
+                DB PRINTF_A_DECIMAL, " -> "
+                DB PRINTF_W_DECIMAL, ") "
+                DB 0
+
+			LD XWA,(var_pAction) ; where it came from
+		    CALL printf
+                DB PRINTF_XWA_HEX
+                DB 13, 10, 0
+            POP WA
+ ENDIF
+
+			LDL XIX,POSTURE_CHG_TABLE-28 ;; -- ADDRESS OF CODE
+
+;; XIX = POSTURE_CHG_TABLE[28*(A-1)]
+L0700:
+			ADD XIX,0000001CH
+			DJNZ A,L0700
+			LDL XWA,0
+			LDB A,(var_posture)
+			DEC 1,A
+			SLLB 2,A
+			ADD XIX,XWA
+			LDL XIY,(XIX)
+			LD (lvar_264),XIY
+L0689:
+			LDL XIX,(lvar_264)
+			LDB A,(XIX+)
+			CP A,0FFH
+			JR Z,L0701
+			LD (var_bAfterAction5bitcontrol),A
+			LDW WA,(XIX)
+			LD (var_wMotionFromAction),WA
+			INC 2,XIX
+			LD (lvar_264),XIX
+			LDB (var_077),1
+			LDB (var_594),1
+			LDB (var_bEdgeDet2),0
+			RET ; reference (L0649)
+
+L0701:
+			RES 0,(var_263)
+			LDB (var_2D0),0
+			RET ; reference (L0649)
+
+; ------------------------------
+
+
+POSTURE_CHG_TABLE:
+ ; from standing
+	DD	d0702
+	DD	d0703 ; to sitting
+	DD	d0704
+	DD	d0705
+	DD	d0706
+	DD	d0707
+	DD	d0708
+ ; from sitting
+	DD	d0709
+	DD	d0710
+	DD	d0711
+	DD	d0712
+	DD	d0713
+	DD	d0714
+	DD	d0715
+	DD	d0716
+	DD	d0717
+	DD	d0718
+	DD	d0719
+	DD	d0720
+	DD	d0721
+	DD	d0722
+	DD	d0723
+	DD	d0724
+	DD	d0725
+	DD	d0726
+	DD	d0727
+	DD	d0728
+	DD	d0729
+	DD	d0730
+	DD	d0731
+	DD	d0732
+	DD	d0733
+	DD	d0734
+	DD	d0735
+	DD	d0736
+	DD	d0737
+	DD	d0738
+	DD	d0739
+	DD	d0740
+	DD	d0741
+	DD	d0742
+	DD	d0743
+	DD	d0744
+	DD	d0745
+	DD	d0746
+	DD	d0747
+	DD	d0748
+	DD	d0749
+	DD	d0750
+d0702:
+	DB 0FFH
+d0703:
+	DB 00H,74H,0,0FFH
+d0704:
+	DB 00H,38H,04H,0,39H,04H,0FFH
+d0705:
+	DB 00H,3AH,04H,0FFH
+d0706:
+	DB 00H,38H,04H,0FFH
+d0707:
+	DB 00H,3BH,04H,0FFH
+d0708:
+	DB 00H,3CH,04H,0FFH
+d0709:
+	DB 00H,0E8H,03H,0FFH
+d0710:
+	DB 0FFH
+d0711:
+	DB 00H,0E8H,03H,0,38H,04H,00H,39H,04H,0FFH
+d0712:
+	DB 00H,0E8H,03H,0,3AH,04H,0FFH
+d0713:
+	DB 00H,0E8H,03H,0,38H,04H,0FFH
+d0714:
+	DB 00H,0E8H,03H,0,3BH,04H,0FFH
+d0715:
+	DB 00H,0E8H,03H,0,3CH,04H,0FFH
+d0716:
+	DB 00H,3DH,04H,0FFH
+d0717:
+	DB 00H,3DH,04H,0,74H,00H,0FFH
+d0718:
+	DB 0FFH
+d0719:
+	DB 00H,3DH,04H,0,3AH,04H,0FFH
+d0720:
+	DB 00H,3DH,04H,0,38H,04H,0FFH
+d0721:
+	DB 00H,3DH,04H,0,3BH,04H,0FFH
+d0722:
+	DB 00H,3DH,04H,0,3CH,04H,0FFH
+d0723:
+	DB 00H,36H,04H,0FFH
+d0724:
+	DB 00H,3EH,04H,0,3FH,04H,0FFH
+d0725:
+	DB 00H,39H,04H,0FFH
+d0726:
+	DB 0FFH
+d0727:
+	DB 00H,40H,04H,0FFH
+d0728:
+	DB 00H,40H,04H,0FFH
+d0729:
+	DB 00H,60H,0,0FFH
+d0730:
+	DB 00H,72H,0,0FFH
+d0731:
+	DB 00H,3EH,04H,0,3FH,04H,0FFH
+d0732:
+	DB 00H,39H,04H,0FFH
+d0733:
+	DB 00H,3EH,04H,0,41H,04H,0FFH
+d0734:
+	DB 0FFH
+d0735:
+	DB 00H,3EH,04H,0FFH
+d0736:
+	DB 00H,3EH,04H,0FFH
+d0737:
+	DB 00H,73H,0,0FFH
+d0738:
+	DB 00H,42H,04H,0,3FH,04H,0FFH
+d0739:
+	DB 00H,43H,04H,0FFH
+d0740:
+	DB 00H,42H,04H,0,41H,04H,0FFH
+d0741:
+	DB 00H,42H,04H,0,44H,04H,0FFH
+d0742:
+	DB 0FFH
+d0743:
+	DB 00H,42H,04H,0FFH
+d0744:
+	DB 00H,45H,04H,0FFH
+d0745:
+	DB 00H,3FH,04H,0FFH
+d0746:
+	DB 00H,44H,04H,0,39H,04H,0FFH
+d0747:
+	DB 00H,41H,04H,0FFH
+d0748:
+	DB 00H,44H,04H,0FFH
+d0749:
+	DB 00H,37H,04H,0FFH
+d0750:
+	DB 0FFH,1,13H,02H,13H,03H,13H,04H,08H,05H,06H,06H,13H,08H,0EH,09H
+	DB 0EH,0AH,13H,0BH,08H,0DH,0EH,10H,18H,13H,04H,17H,10H,18H,04H,1AH
+	DB 08H,1CH,18H,1FH,0BH,33H,04H,3FH,14H,41H,14H,42H,14H,43H,14H,45H
+	DB 14H,46H,14H,4FH,02H,63H,02H,64H,0AH,0FFH
+d0538:
+	DB 01H,0,02H,00H,04H,00H,08H,00H,10H,00H,20H,00H,40H,00H,80H,00H
+	DB 00H,1,0,02H,00H,04H,00H,08H
+d0559:
+	DB 0FEH,0FFH,0FDH,0FFH,0FBH,0FFH,0F7H,0FFH,0EFH,0FFH,0DFH,0FFH,0BFH,0FFH,7FH,0FFH
+	DB 0FFH,0FEH,0FFH,0FDH,0FFH,0FBH,0FFH,0F7H
+
+
+

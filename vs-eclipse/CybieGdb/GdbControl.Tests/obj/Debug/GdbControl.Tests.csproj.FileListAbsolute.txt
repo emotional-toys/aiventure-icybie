@@ -1,0 +1,8 @@
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl.Tests\obj\Debug\GdbControl.Tests.csprojResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\obj\Debug\ResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\GdbControl.Tests.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\GdbControl.Tests.pdb
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\GdbControl.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\GdbControl.pdb
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\obj\Debug\GdbControl.Tests.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\obj\Debug\GdbControl.Tests.pdb

@@ -1,0 +1,528 @@
+L1670:
+			BIT 1,(var_596)
+			JR Z,L1273
+			BIT 0,(P9)
+			JR Z,L1273
+			RES 3,(var_583)
+			RES 1,(var_596)
+			LDB A,(mirrorP7)
+			OR A,2
+			LD (mirrorP7),A
+			LDB A,(mirrorP6)
+			OR A,80H
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB (var_neckValB),0FFH
+			LDB (var_neckValA),0
+			LDB (var_5A5),02H
+L1273:
+			BIT 0,(var_596)
+			JP Z,L1274
+			CPB (var_597),5
+			JR NC,L1275
+			CPB (var_597),2
+			JR NC,L1276
+			CPB (var_597),1
+			JR Z,L1277
+			BIT 1,(P9)
+			JR NZ,L1274
+			LDB (var_2EF),1
+			LDB (var_597),1
+			LDB A,(mirrorP7)
+			OR A,8
+			AND A,0FBH
+			LD (mirrorP7),A
+			LD (P7),A
+			JR L1274 ; reference (L1670)
+
+L1277:
+			BIT 1,(P9)
+			JR Z,L1274
+			LDB (var_597),02H
+			LDB A,(mirrorP7)
+			OR A,4
+			AND A,0F7H
+			LD (mirrorP7),A
+			LD (P7),A
+			JR L1274 ; reference (L1670)
+
+L1276:
+			INCB 1,(var_597)
+			JR L1274 ; reference (L1670)
+
+L1275:
+			RES 2,(var_583)
+			RES 0,(var_596)
+			LDB (var_597),0
+			LDB A,(mirrorP7)
+			OR A,0CH
+			LD (mirrorP7),A
+			LD (P7),A
+			LDB (var_2EF),0
+			LDB (var_headValB),0FFH
+			LDBB var_headValA,var_HeadFutz
+			LDB (var_5A4),02H
+L1274:
+			BIT 2,(var_596)
+			JR Z,L1278
+			CPB (var_599),5
+			JR NC,L1279
+			CPB (var_599),1
+			JR NC,L1280
+			BIT 2,(P9)
+			JR Z,L1278
+			LDB A,(mirrorP7)
+			OR A,30H
+			LD (mirrorP7),A
+			LDB (var_599),1
+			JR L1278 ; reference (L1670)
+
+L1280:
+			INCB 1,(var_599)
+			JR L1278 ; reference (L1670)
+
+L1279:
+			RES 1,(var_583)
+			RES 2,(var_596)
+			LDB (var_mouthValB),0FFH
+			LDB (var_mouthValA),0
+			LDB (var_5A3),02H
+L1278:
+			BIT 3,(var_596)
+			JR Z,L1281
+			CPB (var_countdown1Hz_d),3
+			JR C,L1282
+			BIT 3,(P9)
+			JR Z,L1281
+L1282:
+			RES 0,(var_583)
+			RES 3,(var_596)
+			RES 0,(var_598)
+			LDB A,(mirrorP7)
+			OR A,0C0H
+			LD (mirrorP7),A
+			LDB (var_tailValB),0FFH
+			LDBB var_tailValA,var_TailFutz
+			LDB (var_5A6),02H
+L1281:
+			RET ; reference (L1670)
+
+; ------------------------------
+
+
+ProcessFutzControl: ; 64Hz - after HNMT processing
+			BIT 0,(var_FutzControl)
+			JR NZ,L1283
+			RET ; reference (ProcessFutzControl)
+
+L1283:
+			BIT 5,(var_FutzControl) ; head
+			JR NZ,L1284
+			BIT 6,(var_FutzControl) ; mouth
+			JR NZ,L1285
+			BIT 7,(var_FutzControl) ; tail
+			JR NZ,L1286
+			INCB 1,(var_NeckFutz)
+			RET ; reference (ProcessFutzControl)
+
+L1284:
+			INCB 1,(var_HeadFutz)
+			RET ; reference (ProcessFutzControl)
+
+L1285:
+			INCB 1,(var_MouthFutz)
+			RET ; reference (ProcessFutzControl)
+
+L1286:
+			INCB 1,(var_TailFutz)
+			RET ; reference (ProcessFutzControl)
+
+; ------------------------------
+
+
+Save4Parts:
+			CALL SaveNeckData
+			CALL SaveHeadData
+			CALL SaveMouthData
+			CALL SaveTailData
+			RET
+
+; ------------------------------
+
+
+DoMove4Parts:
+			LDB A,(var_bCtrlNeck)
+			CALL DoMoveNeck
+			LDB A,(var_bCtrlHead)
+			CALL DoMoveHead
+			LDB A,(var_bCtrlMouth)
+			CALL DoMoveMouth
+			LDB A,(var_bCtrlTail)
+			CALL DoMoveTail
+			RET ; reference (DoMove4Parts)
+
+; ------------------------------
+
+
+SaveNeckData:
+			LDB A,(XIY+)
+			LD (var_bCtrlNeck),A
+			CPB (var_2E2),0
+			JR Z,DoMoveNeck
+			RET ; reference (SaveNeckData)
+
+; ------------------------------
+
+
+DoMoveNeck:
+			AND A,60H
+			JP Z,L1295
+			CP A,20H
+			JR Z,L1296
+			CP A,40H
+			JR Z,L1297
+			LDB A,(var_NeckFutz)
+			DEC 2,A
+			DB 022H,0 ; FAKE OP LDB B,0
+			LDB C,(wvar_325) ; random (512Hz)
+			DIV BC,A
+			LDB A,B
+			JR L1298 ; reference (DoMoveNeck)
+
+L1296:
+			LDB A,(var_NeckFutz)
+			DEC 2,A
+			JR L1298 ; reference (DoMoveNeck)
+
+L1297:
+			DB 021H,0 ; FAKE OP LDB A,0
+L1298:
+			LD (var_neckValB),A
+			LDB A,(var_bCtrlNeck)
+			AND A,0FH
+			JR Z,L1295
+			CP A,0FH
+			JR NZ,L1299
+			LDB A,(mirrorP6)
+			OR A,80H
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB A,(mirrorP7)
+			AND A,0FDH
+			LD (mirrorP7),A
+			LDB (var_countdown1Hz_b),04H
+			SET 1,(var_596)
+			LDB (var_5A5),1
+			SET 3,(var_583)
+			LDB (var_neckValB),0FFH
+			JR L1300 ; reference (DoMoveNeck)
+
+L1295:
+			LDB A,(mirrorP7)
+			OR A,2
+			LD (mirrorP7),A
+			LDB A,(mirrorP6)
+			OR A,80H
+			LD (mirrorP6),A
+			RES 3,(var_583)
+			LDB (var_neckValB),0FFH
+			JR L1300 ; reference (DoMoveNeck)
+
+L1299:
+			SET 1,(var_bitsMovingHNMT)
+			LDB (var_58F),07H
+			LDB (var_countdown1Hz_b),04H
+			SET 3,(var_583)
+			LDB (var_5A5),1
+L1300:
+			RET ; reference (DoMoveNeck)
+
+; ------------------------------
+
+
+SaveHeadData:
+			LDB A,(XIY+)
+			LD (var_bCtrlHead),A
+			CPB (var_2E2),0
+			JR Z,DoMoveHead
+			RET ; reference (SaveHeadData)
+
+; ------------------------------
+
+
+DoMoveHead:
+    ;; xTTx NNNN
+    ;; TT = type
+    ;; NNNN = count (1/64 sec)
+			AND A,60H ; 0110 0000
+			JP Z,L1301 ; off
+			CP A,20H
+			JR Z,L1302 ; use variable
+			CP A,40H
+			JR Z,L1303 ; use zero
+
+            ;; 60H - 
+
+			LDB A,(var_HeadFutz)
+			SLLB 1,A
+			DB 022H,0 ; FAKE OP LDB B,0
+
+			LDB C,(wvar_325) ; random (bumped 512/sec)
+			DIV BC,A
+			LDB A,B
+			JR L1304 ; reference (DoMoveHead)
+
+L1302:
+			LDB A,(var_HeadFutz)
+			SLLB 1,A
+			JR L1304 ; reference (DoMoveHead)
+
+L1303:
+			DB 021H,0 ; FAKE OP LDB A,0
+L1304:
+        ;; Head = right/left head turn
+			LD (var_headValB),A
+			LDB A,(var_bCtrlHead)
+			AND A,0FH ; lower 4 bits = time value (64Hz)
+			JR Z,L1301 ; off
+
+			CP A,0FH
+			JR NZ,L1305 ; 15
+
+            ; fwd (left)
+			LDB A,(mirrorP7)
+			OR A,4
+			AND A,~8
+			LD (mirrorP7),A
+
+			LDB (var_597),0
+			LDB (var_countdown1Hz_a),04H
+			SET 0,(var_596)
+			LDB (var_5A4),1
+			SET 2,(var_583)
+			LDB (var_headValB),0FFH
+			JR L1306 ; reference (DoMoveHead)
+
+L1301:
+			LDB A,(mirrorP7)
+			OR A,0CH ; off
+			LD (mirrorP7),A
+
+			RES 2,(var_583)
+			LDB (var_headValB),0FFH
+			JR L1306 ; reference (DoMoveHead)
+
+L1305:
+			SET 0,(var_bitsMovingHNMT) ; head moving
+			LDB (var_58F),07H
+			LDB (var_countdown1Hz_a),04H
+			SET 2,(var_583)
+			LDB (var_5A4),1
+L1306:
+			RET ; reference (DoMoveHead)
+
+; ------------------------------
+
+
+SaveMouthData:
+			LDB A,(XIY+)
+			LD (var_bCtrlMouth),A
+			CPB (var_2E2),0 ; starting?
+			JR Z,DoMoveMouth
+			RET ; reference (SaveMouthData)
+
+; ------------------------------
+
+
+DoMoveMouth:
+			AND A,60H
+			JP Z,L1307
+			CP A,20H
+			JR Z,L1308
+			CP A,40H
+			JR Z,L1309
+			LDB A,(var_MouthFutz)
+			SLLB 1,A
+			DB 022H,0 ; FAKE OP LDB B,0
+			LDB C,(wvar_325)
+			DIV BC,A
+			LDB A,B
+			JR L1310 ; reference (DoMoveMouth)
+
+L1308:
+			LDB A,(var_MouthFutz)
+			SLLB 1,A
+			JR L1310 ; reference (DoMoveMouth)
+
+L1309:
+			DB 021H,0 ; FAKE OP LDB A,0
+L1310:
+			LD (var_mouthValB),A
+			LDB A,(var_bCtrlMouth)
+			AND A,0FH
+			JR Z,L1307
+			CP A,0FH
+			JR NZ,L1311
+			LDB A,(mirrorP7)
+			OR A,10H
+			AND A,0DFH
+			LD (mirrorP7),A
+			LDB (var_countdown1Hz_c),04H
+			SET 2,(var_596)
+			LDB (var_599),0
+			LDB (var_5A5),1
+			SET 1,(var_583)
+			LDB (var_mouthValB),0FFH
+			JR L1312 ; reference (DoMoveMouth)
+
+L1307:
+			LDB A,(mirrorP7)
+			OR A,30H
+			LD (mirrorP7),A
+			RES 1,(var_583)
+			LDB (var_mouthValB),0FFH
+			JR L1312 ; reference (DoMoveMouth)
+
+L1311:
+			SET 2,(var_bitsMovingHNMT)
+			LDB (var_58F),07H
+			LDB (var_countdown1Hz_c),04H
+			SET 1,(var_583)
+			LDB (var_5A5),1
+L1312:
+			RET ; reference (DoMoveMouth)
+
+; ------------------------------
+
+
+SaveTailData:
+			LDB A,(XIY+)
+			LD (var_bCtrlTail),A
+			CPB (var_2E2),0
+			JR Z,DoMoveTail
+			RET ; reference (SaveTailData)
+
+; ------------------------------
+
+
+DoMoveTail:
+			AND A,60H
+			JP Z,L1313
+			CP A,20H
+			JR Z,L1314
+			CP A,40H
+			JR Z,L1315
+			LDB A,(var_TailFutz)
+			SLLB 1,A
+			DEC 6,A
+			DB 022H,0 ; FAKE OP LDB B,0
+			LDB C,(wvar_325)
+			DIV BC,A
+			LDB A,B
+			JR L1316 ; reference (DoMoveTail)
+
+L1314:
+			LDB A,(var_TailFutz)
+			SLLB 1,A
+			DEC 6,A
+			JR L1316 ; reference (DoMoveTail)
+
+L1315:
+			DB 021H,0 ; FAKE OP LDB A,0
+L1316:
+			LD (var_tailValB),A
+			LDB A,(var_bCtrlTail)
+			AND A,0FH
+			JR Z,L1313
+			CP A,0FH
+			JR NZ,L1317
+			LDB A,(var_TailFutz)
+			CP (var_tailValA),A
+			JR Z,L1313
+			JR C,L1318
+			LDB A,(mirrorP7)
+			OR A,80H
+			AND A,0BFH
+			LD (mirrorP7),A
+			LDB (var_59A),03H
+			LDB (var_598),0
+			JR L1319 ; reference (DoMoveTail)
+
+L1318:
+			LDB A,(mirrorP7)
+			OR A,40H
+			AND A,7FH
+			LD (mirrorP7),A
+			LDB (var_59A),03H
+			LDB (var_598),1
+L1319:
+			LDB (var_countdown1Hz_d),04H
+			SET 3,(var_596)
+			LDB (var_5A6),1
+			SET 0,(var_583)
+			LDB (var_tailValB),0FFH
+			JR L1320 ; reference (DoMoveTail)
+
+L1313:
+			LDB A,(mirrorP7)
+			OR A,0C0H
+			LD (mirrorP7),A
+			RES 0,(var_583)
+			LDB (var_tailValB),0FFH
+			JR L1320 ; reference (DoMoveTail)
+
+L1317:
+			SET 3,(var_bitsMovingHNMT)
+			LDB (var_58F),07H
+			LDB (var_countdown1Hz_d),04H
+			SET 0,(var_583)
+			LDB (var_5A6),1
+L1320:
+			RET ; reference (DoMoveTail)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0C5H,0F4H,21H,0C9H,0CFH,0FFH,66H,04H,0F1H,41H,13H,41H,0EH,0C5H,0F4H,21H
+	DB 0C9H,0CFH,0FEH,66H,04H,0F1H,24H,13H,41H,0B4H,0,1,0EH
+ ENDIF
+
+L0633:
+			LDB (var_583),0
+			ORB (mirrorP7),0FEH
+			ORB (P7),0FEH
+			ORB (mirrorP6),80H
+			ORB (P6),80H
+			RET ; reference (L0633)
+
+; ------------------------------
+
+ IFDEF EXACT
+
+	DB 8CH,0C9H,22H,0,95H,0C9H,22H,00H,1,00H,00H,00H,00H,0CFH,00H,00H
+	DB 82H,0CH,02H,0AFH,0AFH,0AFH,0AFH,0,00H,02H,00H,00H,00H,00H,0C2H,00H
+	DB 00H,02H,0,00H,00H,00H,0A3H,00H,00H,02H,00H,00H,00H,00H,0C3H,00H
+	DB 00H,02H,0,00H,00H,00H,0A3H,00H,00H,02H,00H,00H,00H,00H,0C3H,00H
+	DB 00H,02H,0,00H,00H,00H,0A3H,00H,00H,02H,00H,00H,00H,00H,0C3H,00H
+	DB 00H,02H,0,00H,00H,00H,0A3H,00H,00H,02H,00H,00H,00H,00H,0C3H,00H
+	DB 00H,02H,0,00H,00H,00H,0A3H,00H,00H,02H,00H,00H,00H,00H,0CFH,00H
+	DB 00H,82H
+ ENDIF
+
+L1652:
+			PUSH A
+			LDB A,(mirrorP7)
+			LD (P7),A
+			POP A
+			RET ; reference (L1652)
+
+; ------------------------------
+
+ IFDEF EXACT
+
+	DB 0C1H,11H,10H,21H,0C1H,0EFH,12H,3FH,1,66H,03H,0C9H,0CEH,0CH,0C1H,0F0H
+	DB 12H,3FH,1,66H,03H,0C9H,0CEH,30H,0F0H,13H,41H,15H,0EH
+ ENDIF
+
+

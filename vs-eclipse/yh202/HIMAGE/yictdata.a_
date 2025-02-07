@@ -1,0 +1,97 @@
+;; YICT 202 customization data
+
+;; must track structure in ../yictdata.h
+
+YICT_CUSTOMIZATION_DATA:
+    ;; first part - do not change values with tools
+        ;; (but tools can change data pointed to)
+YD_yict_id:
+    DB  "YICT202", 0 ; 8 bytes
+    ;; change when data structure changes
+YD_copyright:
+    DB  "(c) 2002-2003 ICybiePet", 0 ; 24 bytes
+YD_generation:
+    DW  1       ;; first generation
+
+    ;; memory pool sizes
+    DD  POOL1_START ; left over of first 64K
+    DW  POOL1_MAXSIZE
+    DD  POOL2_START ; left over of second 64K
+    DW  POOL2_MAXSIZE
+    DD  POOL3_START ; left over of third 64K (broken up so sizes will fit)
+    DW  POOL3_MAXSIZE
+        ;; last 64K is hand-packed with data
+
+    ;; important addresses/data - user audio
+    DD  NEW30_AUDIO_LOOKUP_TABLE ; just first 30
+    DD  EXTRA_AUDIO_POINTERS    ;; audio pointers for sounds 31->60
+
+    ;; important addresses/data - behavior mucking
+    DD  PROB_ACTION_TABLE   ; 64 vectors to PROBACTIONs
+    DD  EXTRA_ACTION_TABLE  ; 76 extra customizable ACTION pointers
+	DW  NUM_EXTRA_ACTION
+
+    DD  SIT_STAND_NEW_DATA  ; 14 bytes
+
+    DD  ADDR_ACTION_PT1     ;; first standard actions
+    DW  NUM_ACTION_PT1
+    DD  ADDR_ACTION_PT2     ;; second standard + newer actions
+    DW  NUM_ACTION_PT2
+    DD  ADDR_ACTION_PT3     ;; new actions (mostly playing sounds)
+    DW  NUM_ACTION_PT3
+
+    ;; important addresses/data - general options
+
+;;;; Changable by tools
+    ;; image name (changable)
+YD_name:
+    DB  "Original       ", 0 ; 16 bytes
+YD_basename:
+    DB  "Generic        ", 0 ; 16 bytes
+
+    ;; current memory usage (changed by tools)
+    DW  0   ; POOL1_AUDIOSIZE (not audio in generic build)
+    DW  0   ; POOL2_AUDIOSIZE
+    DW  0   ; POOL3_AUDIOSIZE
+    DW  POOL3_YICTSIZE ; after POOL3_AUDIO
+
+    ; YICT behavior customization
+
+;;;; simple data - accessed by custom code
+YD_bStretchCount:
+    DB  3
+YD_bWagTime:
+    DB  0       ;; in 1/2 minute intervals after first 1/2 minute
+
+YD_wSslSkipCount:
+    DW 0 ; or 0xFFFF for use posture logic
+
+;;YD_wMoodFactors: // 10 bytes
+YD_bFixedMood:
+    DB  0FFH ; off
+    DB  0FFH ; not used
+YD_wMoodFactorThreshold:
+    DW  3
+YD_wMoodFactor_Interact:
+    DW  1
+YD_wMoodFactor_Environment:
+    DW  4
+YD_wMoodFactor_Terrain:
+    DW  1
+
+;; new fields (YICT202)
+
+YD_boolDisableCharger_INIT:
+    DB 0 ; initial state
+YD_boolMute_INIT:
+    DB 0 ; initial state
+YD_bIdleDelay:
+    DB 0   ; 0=> default (5->15 seconds)
+YD_reserved:
+    DB 0
+
+;;;; that's all (for now)
+
+    DB  "YICTEND",0
+
+;;;;;;;;;;;;;;;;;; END ;;;;;;;;;;;;;;;;;;;

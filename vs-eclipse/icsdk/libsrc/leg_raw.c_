@@ -1,0 +1,46 @@
+#define CLOSE_ENOUGH_STATIC     4   /* close enough - don't bother moving */
+#define CLOSE_ENOUGH_DYNAMIC    5   /* close enough when moving  - just stop */
+#define SLOW_TO_MEDIUM          20  /* when error gets small - slow to medium */
+#define SLOW_TO_SLOW            10  /* when error gets smaller - slow down */
+//#define KICK_SPEED              10
+#define FAST_SPEED              10 /* normally 8 in system ROM */
+#define MEDIUM_SPEED            5
+#define SLOW_SPEED              3
+
+static void ADECL AdjustSpeedRaw3Stage(byte ileg, MOVE_JOB* pJob, byte legCur, int abs_error)
+{
+	sbyte speed = FAST_SPEED;
+    if (abs_error <= SLOW_TO_SLOW)
+    {
+        speed = SLOW_SPEED;
+	    pJob->state = ICMOVE_STOPPING; // getting close
+    }
+    else if (abs_error <= SLOW_TO_MEDIUM)
+    {
+        speed = MEDIUM_SPEED;
+	    pJob->state = ICMOVE_STOPPING; // bogus
+    }
+    if (pJob->target < legCur)
+        speed = -speed;
+
+    if (!_ic_adjust_motor_speed(ileg, speed))
+    {
+        // motor timeout => servo jam
+        pJob->state = ICMOVE_JAMMED;
+    }
+}
+
+
+static void ADECL AdjustSpeedRaw1Stage(byte ileg, MOVE_JOB* pJob, byte legCur)
+{
+	sbyte speed = FAST_SPEED;
+    if (pJob->target < legCur)
+        speed = -speed;
+
+    if (!_ic_adjust_motor_speed(ileg, speed))
+    {
+        // motor timeout => servo jam
+        pJob->state = ICMOVE_JAMMED;
+    }
+}
+

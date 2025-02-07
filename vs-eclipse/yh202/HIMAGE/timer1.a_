@@ -1,0 +1,66 @@
+SaveLEDPart:
+			LDB A,(XIY+)
+			CP A,0FFH
+			JR Z,L0804
+			CP A,0
+			JR Z,L0804
+			LDL XIZ,d0805
+			LDB W,(XIZ+A)
+			LD (var_LEDMode),W
+			LDB (var_timer64_c_up),20H
+			LDB (var_2E1),1
+			RET
+
+L0804:
+			RET
+
+; ------------------------------
+
+
+d0805:
+	DB 00H,08H,0CH,04H,0FH,0EH,0DH,06H,0BH,1,0AH,07H
+        ;; index = 8 => 0BH
+
+SendToDaugtherAndWait1Sec:
+			CALL SendAudioByteToDaughter
+			JR NC,SendToDaugtherAndWait1Sec
+		WAIT_1SEC
+			RET ; reference (SendToDaugtherAndWait1Sec)
+
+; ------------------------------
+
+
+L0751:
+			PUSHB (var_boolMute)
+			LDB (var_boolMute),0 ; temporary mute disable
+			LDB (var_iSoundToPlay_1based),1
+			CALL L0762
+			POPB (var_boolMute)
+			RET ; reference (L0751)
+
+; ------------------------------
+
+
+L0762:
+			CALL L0807
+L0808:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L0808
+			EI 07H
+			LDL XIX,09AA65H
+L0809:
+			LDB (WDCR),4EH
+			SUB XIX,1
+			JR NZ,L0809
+			EI 00H
+			RET ; reference (L0762)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 02H,1,02H,01H,02H,01H,02H
+ ENDIF
+
+

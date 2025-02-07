@@ -1,0 +1,402 @@
+L1118:
+			CALL L0751
+        SEND_EYES 2FH ; OFF
+			LDB (var_505),02H
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_bAdvPlayMode),0
+			LDB (countdown590_2Hz),3CH
+L0754:
+			CALL Check_SmallButton
+			CPB (countdown590_2Hz),0
+			JP Z,L0753
+			LDB A,(var_iRemoteButton_1based)
+			CP A,0
+			JR Z,L0754
+			CP A,0BH
+			JR Z,L0755
+			CP A,0CH
+			JP Z,L0753
+			CP A,0EH
+			JR Z,L0756
+			CP A,0AH
+			JR NC,L0757
+			LDB C,(var_bAdvPlayMode)
+			AND C,0F0H
+			OR C,A
+			LD (var_bAdvPlayMode),C
+			CALL L0751
+			JR L0757 ; reference (L1118)
+
+L0755:
+			CALL L0751
+			LDB (var_bAdvPlayMode),0
+L0757:
+			LDB (countdown590_2Hz),3CH
+			LDB (var_iRemoteButton_1based),0
+			JR L0754 ; reference (L1118)
+
+L0756:
+			LDB A,(var_bAdvPlayMode)
+			AND A,0FH
+			CP A,0
+			JR Z,L0757
+			CALL L0751
+			LDB A,(var_bAdvPlayMode)
+			CP A,9
+			JR C,L0758
+			CP A,91H
+			JR NC,L0759
+			SLLB 4,A
+			LD (var_bAdvPlayMode),A
+			JR L0757 ; reference (L1118)
+
+L0759:
+			CP A,99H
+			JP Z,AdvPlay_99_ClearTrained
+			CP A,91H
+			JP Z,AdvPlay_91_LowerThreshold
+			CP A,92H
+			JP Z,AdvPlay_92_RaiseThreshold
+			CP A,93H
+			JP Z,AdvPlay_93_EnableCharger
+			CP A,94H
+			JP Z,AdvPlay_94_DisableCharger
+			CP A,95H
+			JP Z,AdvPlay_95_EnableEdgeDetect
+			CP A,96H
+			JP Z,AdvPlay_96_DisableEdgeDetect
+			CP A,97H
+			JP Z,AdvPlay_97_DemoMode
+			JR L0760 ; reference (L1118)
+
+L0758:
+			CP A,1
+			JP Z,AdvPlay_1_LifeOfICybie
+			CP A,2
+			JP Z,AdvPlay_2_ICybieTheGreat
+			CP A,3
+			JP Z,AdvPlay_3_Walkabout
+			CP A,4
+			JP Z,AdvPlay_4_MuteOnOff
+			CP A,5
+			JP Z,AdvPlay_5_EnableAutoListen
+			CP A,6
+			JP Z,AdvPlay_6_DisableAutoListen
+			CP A,7
+			JP Z,AdvPlay_7_UseVoiceCommands
+			CP A,8
+			JP Z,AdvPlay_8_UseSoundCommands
+L0760:
+			LDB A,25H
+			CALL SendToDaugtherAndWait1Sec
+			LDB (var_iSoundToPlay_1based),0FH
+			CALL L0762
+			JR L0753 ; reference (L1118)
+
+AdvPlay_99_ClearTrained:
+			CALL L0763
+			JR C,L0760
+L0771:
+			LDB A,2AH
+			CALL SendToDaugtherAndWait1Sec
+			LDB (var_iSoundToPlay_1based),02H
+			CALL L0762
+L0753:
+        SEND_EYES 2FH ; OFF
+			LDB (var_b2_5SecCountdown_HalfSec),05H
+			LDBB var_bModeCountdownSeconds,var_5F9
+			LDBB var_bIdleTimer,var_bIdleTimeout
+			LDB (var_iMetaCommand),0
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_275),02H
+			LDB (var_505),0
+			RET ; reference (L1118)
+
+AdvPlay_1_LifeOfICybie:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_1_LifeOfICybie
+			CALL L0766
+			JR L0753 ; reference (L1118)
+
+AdvPlay_2_ICybieTheGreat:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_2_ICybieTheGreat
+			CALL L0768
+			JR L0753 ; reference (L1118)
+
+AdvPlay_3_Walkabout:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_3_Walkabout
+			CALL L0770
+			JP L0753 ; reference (L1118)
+
+AdvPlay_4_MuteOnOff:
+			XORB (var_boolMute),1
+			JP L0771 ; reference (L1118)
+
+AdvPlay_5_EnableAutoListen:
+			LDB (var_boolAutoListen),1
+			JP L0771 ; reference (L1118)
+
+AdvPlay_6_DisableAutoListen:
+			LDB (var_boolAutoListen),0
+			JP L0771 ; reference (L1118)
+
+AdvPlay_7_UseVoiceCommands:
+			LDB (svar_boolUseVoiceCmds),1
+			LDB (var_2D2),0
+			CPB (var_251),1
+			JP Z,L0771
+			LDB (var_2D2),1
+			JP L0771 ; reference (L1118)
+
+AdvPlay_8_UseSoundCommands:
+			LDB (svar_boolUseVoiceCmds),0
+			JP L0771 ; reference (L1118)
+
+AdvPlay_95_EnableEdgeDetect:
+			LDB (var_boolEdgeDetection),1
+			JP L0771 ; reference (L1118)
+
+AdvPlay_96_DisableEdgeDetect:
+			LDB (var_boolEdgeDetection),0
+			JP L0771 ; reference (L1118)
+
+AdvPlay_97_DemoMode:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_97_DemoMode
+			CALL YipOnce
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),1
+			LDL_ACTION XIX,NEWACTION_05,10
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0773:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0773
+			LDB (varNEW_bSearchCharger),0
+			CALL L0774
+			JP L0753 ; reference (L1118)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F1H,0F9H,15H,0,1EH,1BH,0DEH,4CH,20H
+ ENDIF
+
+AdvPlay_91_LowerThreshold:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_91_LowerThreshold
+			JP DoLowerThreshold ; reference (L1118)
+
+DoLowerThreshold:
+			LDB A,(varNEW_1AF)
+			CP (svar_battery_threshold),A
+			JP ULE,L0776
+			EI 07H
+			LDB A,1CH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			EI 00H
+			LDB C,7EH
+L0778:
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			CP (svar_battery_threshold),A
+			JR UGT,L0777
+			CP C,79H
+			JR Z,L0777
+			POP A
+			DEC 1,C
+			JR L0778 ; reference (L1118)
+
+L0777:
+			LD (svar_battery_threshold),A
+			POP A
+			INC 2,C
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			LD (varNEW_1A1),A
+			EI 07H
+			LDB A,1FH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(svar_battery_threshold)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),1FH
+			CALL Storage_Write
+			EI 00H
+			CALL YipOnce
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),2DH
+			LDL_ACTION XIX,NEWACTION_05,11
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0779:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0779
+			LDB (varNEW_bSearchCharger),0
+			JP L0753 ; reference (L1118)
+
+AdvPlay_92_RaiseThreshold:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_92_RaiseThreshold
+			JP DoRaiseThreshold ; reference (L1118)
+
+DoRaiseThreshold:
+			LDB A,(varNEW_1AE)
+			CP (svar_battery_threshold),A
+			JP NC,L0776
+			EI 07H
+			LDB A,1CH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			EI 00H
+			LDB C,79H
+L0782:
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			CP (svar_battery_threshold),A
+			JR C,L0781
+			CP C,7EH
+			JR Z,L0781
+			POP A
+			INC 1,C
+			JR L0782 ; reference (L1118)
+
+L0781:
+			LD (svar_battery_threshold),A
+			POP A
+			INC 2,C
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			LD (varNEW_1A1),A
+			EI 07H
+			LDB A,1FH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(svar_battery_threshold)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),1FH
+			CALL Storage_Write
+			EI 00H
+			CALL YipOnce
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),2CH
+			LDL_ACTION XIX,NEWACTION_05,12
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0783:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0783
+			LDB (varNEW_bSearchCharger),0
+			JP L0753 ; reference (L1118)
+
+L0776:
+			CALL YipTwice
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),29H
+			LDL_ACTION XIX,NEWACTION_04,13
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0784:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0784
+			LDB (varNEW_bSearchCharger),0
+			JP L0753 ; reference (L1118)
+
+AdvPlay_93_EnableCharger:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_93_EnableCharger
+			CALL YipOnce
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),2AH
+			LDL_ACTION XIX,NEWACTION_05,14
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0786:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0786
+			LDB (varNEW_bSearchCharger),0
+			LDB (varNEW_bDisableCharger),0
+			JP L0753 ; reference (L1118)
+
+AdvPlay_94_DisableCharger:
+			LDB (var_iRemoteButton_1based),0
+        WAIT_1SEC
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,AdvPlay_94_DisableCharger
+			LDB (varNEW_bDisableCharger),0FFH
+			CALL YipTwice
+			LDB (varNEW_bSearchCharger),1
+			LDB (var_LEDMode),2EH
+			LDL_ACTION XIX,NEWACTION_04,15
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L0788:
+			CALL L0057
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L0788
+			LDB (varNEW_bSearchCharger),0
+			JP L0753 ; reference (L1118)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F1H,0D4H,12H,0,0FFH,44H
+
+WHATEVER_1:
+	DD	STDACTION_104
+	DB 68H,4BH,0F1H,0D4H,12H,0,0FFH,44H
+WHATEVER_2:
+	DD	STDACTION_105
+	DB 68H,3FH,0F1H,0D4H,12H,0,0FFH,44H
+WHATEVER_3:
+	DD	STDACTION_106
+	DB 68H,33H,0F1H,0D4H,12H,0,0FFH,44H
+WHATEVER_4:
+	DD	STDACTION_107
+	DB 68H,27H
+
+ ENDIF
+
+

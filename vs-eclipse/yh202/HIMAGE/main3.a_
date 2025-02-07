@@ -1,0 +1,107 @@
+L0766:
+			LDB (var_2D4),1
+			LDL_ACTION XIX,STDACTION_197,16
+			JR L0789 ; reference (L0766)
+
+; ------------------------------
+
+
+L0768:
+			LDB (var_2D4),02H
+			LDL_ACTION XIX,STDACTION_198,17
+			JR L0789 ; reference (L0768)
+
+; ------------------------------
+
+
+L0770:
+			LDB (var_2D4),03H
+			LDB (var_bWalkingCountdownSeconds),0B4H
+			LDL_ACTION XIX,STDACTION_077,18
+L0789:
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			LDB (var_505),0
+			LDB (var_LEDMode),24H
+L0794:
+			CALL L0790
+			CALL Check_SmallButton
+			CALL L0057
+			CALL PollInputs
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CALL L0791
+			CALL L0792
+			BIT 0,(var_bInputs1)
+			JR NZ,L0793
+			CPB (var_258),0
+			JR NZ,L0794
+			CPB (var_2D4),1
+			JR Z,L0793
+			CPB (var_2D4),2
+			JR Z,L0793
+			CPB (var_2D4),0FFH
+			JR Z,L0793
+			CPB (var_bWalkingCountdownSeconds),0
+			JR Z,L0793
+			LDL_ACTION XIX,STDACTION_077,19
+			JR L0789 ; reference (L0770)
+
+L0793:
+			CALL L0795
+L0796:
+			CALL PollInputs
+			BIT 0,(var_bInputs1)
+			JR NZ,L0796
+			RET ; reference (L0770)
+
+; ------------------------------
+
+
+L1138:
+			LDB A,(var_iClapDetectedLast)
+			CP A,0FEH
+			JR Z,L0797
+			CP A,0CH
+			JR Z,L0798
+			PUSH A
+			INC 1,A
+			AND A,0FH
+			XOR A,0FH
+			OR A,20H
+			CALL SendToDaugtherAndWait1Sec
+			POP A
+			LDL XIX,d0799
+			LDB W,(XIX+A)
+			CP W,0FFH
+			JR Z,L0797
+			LD (var_iSkit),W
+			CALL L0800
+			RET ; reference (L1138)
+
+L0797:
+        SEND_EYES 25H ; RED
+        WAIT_1SEC
+
+			LDB (var_iSkit),1CH
+			RET ; reference (L1138)
+
+L0798:
+			LDB (var_2D6),0
+			CALL L0803
+			LDB (var_iSkit),24H
+			LDB A,0CH
+			CALL L0800
+			LDB (var_275),1
+			RET ; reference (L1138)
+
+; ------------------------------
+
+
+d0799:
+	DB 0FFH,1DH,1EH,1FH,0FFH,0FFH,0FFH,0FFH,20H,21H,22H,23H
+
+

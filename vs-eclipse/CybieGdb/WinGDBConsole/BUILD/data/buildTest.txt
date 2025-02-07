@@ -1,0 +1,5 @@
+break *0xdd
+run
+-data-evaluate-expression *(&phhalMem_TransitionByte)
+print /x *0x1af
+-var-create - * *(&phhalMem_TransitionByte)

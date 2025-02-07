@@ -1,0 +1,21 @@
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Interop.HWINTERFACELib.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\AxInterop.HWINTERFACELib.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.csproj.ResolveComReference.cache
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets_Parallel_Port_Control.ParallelPort.resources
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets_Parallel_Port_Control.Properties.Resources.resources
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.csproj.GenerateResource.Cache
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\bin\Debug\Jaspreets Parallel Port Control.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\bin\Debug\Jaspreets Parallel Port Control.pdb
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\bin\Debug\Interop.HWINTERFACELib.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\bin\Debug\AxInterop.HWINTERFACELib.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio 2005\Projects\Jaspreets Parallel Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.pdb
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\bin\Debug\Jaspreets Parallel Port Control.dll
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\bin\Debug\Jaspreets Parallel Port Control.pdb
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\ResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets_Parallel_Port_Control.ParallelPort.resources
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets_Parallel_Port_Control.Properties.Resources.resources
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.csproj.GenerateResource.Cache
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.dll
+c:\aeonWorkingDirectory\bph\cybie\supercybie\RS232\C# Port Control\Jaspreets Parallel Port Control\obj\Debug\Jaspreets Parallel Port Control.pdb

@@ -1,0 +1,256 @@
+L1779:
+			INCB 1,(var_300)
+			LDB A,(var_304)
+			AND A,88H
+			JP NZ,L1538
+			LDB A,(P9)
+			BIT 4,(var_304)
+			JR Z,L1539
+			AND A,0E0H
+			CP A,0
+			JP Z,L1538
+			SET 5,(var_304)
+			JP L1538 ; reference (L1779)
+
+L1539:
+			BIT 1,(var_304)
+			JR NZ,L1540
+			BIT 5,A
+			JR Z,L1540
+			BIT 2,(var_304)
+			JR Z,L1541
+			LDBB var_301,var_300
+			JP L1542 ; reference (L1779)
+
+L1541:
+			LDB (var_301),0
+			LDB (var_300),0
+			SET 1,(var_304)
+L1540:
+			BIT 2,(var_304)
+			JR NZ,L1543
+			BIT 7,A
+			JR Z,L1543
+			BIT 1,(var_304)
+			JR Z,L1544
+			LDBB var_302,var_300
+			JR L1542 ; reference (L1779)
+
+L1544:
+			LDB (var_302),0
+			LDB (var_300),0
+			SET 2,(var_304)
+L1543:
+			BIT 0,(var_304)
+			JR NZ,L1545
+			BIT 6,A
+			JR Z,L1545
+			LDB B,(var_304)
+			AND B,6
+			JR NZ,L1545
+			SET 0,(var_304)
+L1545:
+			LDB B,(var_304)
+			AND B,7
+			JR Z,L1538
+			INCB 1,(var_303)
+L1538:
+			RET ; reference (L1779)
+
+L1542:
+			SET 7,(var_304)
+			JR L1543 ; reference (L1779)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0EH
+ ENDIF
+
+L1668:
+			BIT 3,(var_304)
+			JR Z,L1546
+			INCB 1,(var_305)
+			CPB (var_305),10H
+			JR C,L1547
+			RES 3,(var_304)
+			SET 4,(var_304)
+			LDB (var_305),03H
+L1546:
+			BIT 4,(var_304)
+			JR Z,L1547
+			BIT 5,(var_304)
+			JR Z,L1548
+			LDB (var_305),03H
+			RES 5,(var_304)
+L1548:
+			DECB 1,(var_305)
+			JR NZ,L1547
+			RES 4,(var_304)
+L1547:
+			RET ; reference (L1668)
+
+; ------------------------------
+
+
+L1834:
+			CPB (var_077),0
+			JR NZ,L1549
+			BIT 2,(var_583)
+			JR Z,L1550
+L1549:
+			RET ; reference (L1834)
+
+L1550:
+			BIT 3,(var_304)
+			JR NZ,L1551
+			BIT 4,(var_304)
+			JR NZ,L1551
+			BIT 0,(var_585)
+			JR NZ,L1551
+			BIT 7,(var_304)
+			JR Z,L1552
+			BIT 1,(var_304)
+			JR Z,L1553
+			LDB C,(var_302)
+			SUB C,(var_301)
+			LD (var_307),C
+			JR L1554 ; reference (L1834)
+
+L1553:
+			LDB C,(var_301)
+			SUB C,(var_302)
+			LD (var_307),C
+			JR L1555 ; reference (L1834)
+
+L1552:
+			RET ; reference (L1834)
+
+L1551:
+			LDB (var_boolIRWhatever),0
+			CALL L1556
+			RET ; reference (L1834)
+
+L1554:
+			DB 021H, 002H ; FAKE OP LDB A,02H
+			LDL XIX,d1557
+L1559:
+			LDB B,(XIX)
+			CP C,B
+			JR C,L1558
+			INC 1,XIX
+			SUB A,1
+			JR NZ,L1559
+L1558:
+			LDB C,A
+			JP L1560 ; reference (L1834)
+
+L1555:
+			DB 021H, 002H ; FAKE OP LDB A,02H
+			LDL XIX,d1561
+L1563:
+			LDB B,(XIX)
+			CP C,B
+			JR C,L1562
+			INC 1,XIX
+			INC 1,A
+			CP A,4
+			JR C,L1563
+L1562:
+			LDB C,A
+			JP L1560 ; reference (L1834)
+
+L1560:
+			LD (var_bWalkingSpeed),C
+			LDB (var_boolIRWhatever),1
+			SET 3,(var_304)
+			CALL L1556
+			RET ; reference (L1834)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 05H,04H,03H,02H,1,07H,08H,09H,0AH,0BH
+ ENDIF
+
+d1557:
+	DB 07H,0AH
+d1561:
+	DB 07H,0BH,13H,14H,15H,16H,17H,11H,10H,0FH,0EH,0DH
+L1556:
+			LDB (var_301),0
+			LDB (var_302),0
+			LDB (var_303),0
+			ANDB (var_304),78H
+			RET ; reference (L1556)
+
+; ------------------------------
+
+ IFDEF EXACT
+
+	DB 00H,0,00H,0F1H,28H,13H,0C8H,66H,1,0EH,0C1H,0BBH,15H,3FH,90H,66H
+	DB 1BH,0C1H,0BCH,15H,3FH,0,66H,1,0EH,0C1H,0BBH,15H,21H,0F1H,0BCH,15H
+	DB 41H,0C1H,27H,13H,61H,0C1H,27H,13H,3FH,02H,67H,05H,0F1H,27H,13H,0
+	DB 00H,0C1H,27H,13H,21H,0E9H,0A8H,0C1H,24H,13H,23H,0CBH,0EEH,02H,44H,0F1H
+	DB 0EAH,22H,0,0E3H,03H,0F0H,0E4H,21H,0C3H,03H,0E4H,0E0H,25H,0CDH,0CEH,20H
+	DB 0CDH,89H,1DH,09H,0ECH,22H,6FH,0FAH,0EH
+DEAD_SOMETHING_VECTOR:
+	DD	d1564
+	DD	d1565
+	DD	d1566
+	DD	d1567
+	DD	d1568
+	DD	d1569
+	DD	d1570
+	DD	d1571
+	DD	d1572
+	DD	d1573
+	DD	d1574
+	DD	d1575
+	DD	d1576
+	DD	d1577
+	DD	d1578
+	DD	d1579
+	DD	d1580
+d1564:
+	DB 0FH,0FH
+d1565:
+	DB 07H,0FH
+d1566:
+	DB 0DH,0FH
+d1567:
+	DB 0BH,0FH
+d1568:
+	DB 0EH,0FH
+d1569:
+	DB 03H,0FH
+d1570:
+	DB 0CH,0FH
+d1571:
+	DB 05H,0FH
+d1572:
+	DB 0AH,0FH
+d1573:
+	DB 00H,0FH
+d1574:
+	DB 09H,0FH
+d1575:
+	DB 06H,0FH
+d1576:
+	DB 0DH,07H
+d1577:
+	DB 0EH,0BH
+d1578:
+	DB 0CH,03H
+d1579:
+	DB 0DH,0BH
+d1580:
+	DB 0EH,07H
+ ENDIF
+
+
+
+
+

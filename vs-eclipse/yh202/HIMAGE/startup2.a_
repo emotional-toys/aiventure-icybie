@@ -1,0 +1,887 @@
+; ------------------------------
+
+
+L0791:
+			CPB (var_bSecondFrame),1
+			JR NZ,L1164
+			LDB (var_bSecondFrame),02H
+			LDBB var_iSoundToPlay_1based,var_iSoundToPlay_1based_afterstart
+			CALL L0807
+			LDL XIX,122
+L1165:
+			SUB XIX,1
+			JR NZ,L1165
+			LDB (var_2E2),0
+			CALL DoMove4Parts
+L1164:
+			RET ; reference (L0791)
+
+; ------------------------------
+
+
+L1160:
+			CPB (var_bPlayingSound),1
+			JR Z,L1167
+			CPB (var_077),0
+			JR NZ,L1167
+			CPB (var_258),0
+			JR NZ,L1167
+			CPB (g_bMode),2
+			JR Z,L1168
+			LDB (var_18B),0
+			LDB (var_18C),0
+			LDW (var_wSickSecondCount),0
+			RET ; reference (L1160)
+
+L1168:
+			CPB (var_18C),0
+			JR NZ,L1169
+			RET ; reference (L1160)
+
+L1169:
+			EI 07H
+			LDB A,(g_bMode)
+			DB 020H,0 ; FAKE OP LDB W,0
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),24H
+			CALL Storage_Write
+			EI 00H
+			JP PowerDown ; reference (L1160)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 1DH,45H,12H,21H,0F1H,8CH,11H,0,00H,0F1H,8BH,11H,00H,00H,0F1H,8DH
+	DB 11H,02H,0,00H
+ ENDIF
+
+L1167:
+			RET ; reference (L1160)
+
+; ------------------------------
+
+
+L1157:
+			CPB (svar_indexScramble),64H
+			JR C,L1171
+			LDB (svar_indexScramble),0
+			RET ; reference (L1157)
+
+L1171:
+			INCB 1,(svar_indexScramble)
+			RET ; reference (L1157)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0C1H,02H,12H,3FH,1,6EH,2CH,0F1H,02H,12H,0,00H,21H,20H,1DH,09H
+	DB 0ECH,22H,0F1H,90H,15H,0,02H,0C1H,90H,15H,3FH,00H,6EH,0F9H,0F1H,41H
+	DB 13H,0,1,1DH,57H,0EBH,22H,0F1H,28H,13H,0C8H,6EH,0FAH,21H,2FH,1DH
+	DB 09H,0ECH,22H,0C1H,0BAH,15H,3FH,1,0F2H,0D7H,05H,21H,0DEH,1DH,0CEH,33H
+	DB 20H,0F1H,24H,13H,0,07H,1DH,9BH,0EAH,22H,1DH,93H,0EEH,22H,0F1H,46H
+	DB 13H,0CBH,66H,0F2H,1BH,0,00H,21H,21H,40H,1DH,09H,0ECH,22H,6FH,0FAH
+	DB 0EH
+ ENDIF
+
+L1058:
+			LDL XIX,legpos_0
+			DB 021H,0 ; FAKE OP LDB A,0
+L1172:
+			LD (XIX),A
+			INC 1,XIX
+			CP XIX,000010C8H ; 0010C8H
+			JR C,L1172
+			RET ; reference (L1058)
+
+; ------------------------------
+
+
+DiddleP5:
+			LDB A,(P5)
+			RES 6,A
+			LD (P5),A
+			LDW WA,2
+			CALL L1173
+			LDB A,(P5)
+			SET 6,A
+			LD (P5),A
+			EI 07H
+			LDL XIX,0041FBH
+L1174:
+			LDB (WDCR),4EH
+			SUB XIX,1
+			JR NZ,L1174
+			EI 00H
+			RET ; reference (DiddleP5)
+
+; ------------------------------
+
+
+L1066:
+			LDB C,0CH
+			LDL XIX,var_legwhat_0
+L1175:
+			LDB (XIX+),04H
+			DJNZ C,L1175
+			JP L0138 ; reference (L1066)
+
+; ------------------------------
+
+
+SaveMoodArray:
+			EI 07H
+			LDB (var_iStorageProcessing),26H
+			LDL XIX,rgw_mood_array	; // (save mood)
+L1177:
+			CPB (var_iStorageProcessing),40H
+			JR Z,L1176
+			CALL GetXIX_WordAsByte
+			LDB A,C
+			INC 2,XIX
+			CALL GetXIX_WordAsByte
+			LDB W,C
+			LD (wvar_reply_data),WA
+			LDB A,(var_iStorageProcessing)
+			LD (var_iwStorageToWrite),A
+			CALL Storage_Write
+			INC 2,XIX
+			INCB 1,(var_iStorageProcessing)
+			JR L1177 ; reference (SaveMoodArray)
+
+L1176:
+			EI 00H
+			RET ; reference (SaveMoodArray)
+
+; ------------------------------
+
+
+GetXIX_WordAsByte:
+			LDW BC,(XIX)
+			CP BC,00FFH
+			JR UGT,L1178
+			RET ; reference (GetXIX_WordAsByte)
+
+L1178:
+			LDB C,0FFH
+			RET ; reference (GetXIX_WordAsByte)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 06H,07H,0F1H,89H,10H,0,26H,44H,0FEH,10H,00H,00H,0F1H,88H,11H,00H
+	DB 00H,0C1H,89H,10H,3FH,40H,66H,2EH,0C1H,89H,10H,21H,1DH,69H,0FCH,20H
+	DB 0D1H,9CH,10H,20H,44H,0FEH,10H,0,00H,0C1H,88H,11H,23H,0CBH,0EEH,1
+	DB 0F3H,03H,0F0H,0E4H,41H,0CBH,62H,0F3H,03H,0F0H,0E4H,40H,0C1H,89H,10H,61H
+	DB 0C1H,88H,11H,62H,68H,0CBH,06H,0,0EH
+ ENDIF
+
+L0643:
+			BIT 4,(var_bInputs0)
+			JR Z,L1179
+			RET ; reference (L0643)
+
+L1179:
+			CALL L0633
+			CALL L0138
+			CALL DiddleP5
+			CALL L1180
+			CALL L1181
+			CALL SaveMoodArray
+			CALL L1182
+			PUSHB (var_LEDMode)
+			LDB (var_LEDMode),26H
+L1183:
+			CALL Check_SmallButton
+			CALL L0646
+			CALL PollInputs
+			BIT 4,(var_bInputs0)
+			JR Z,L1183
+			POPB (var_LEDMode)
+			RET ; reference (L0643)
+
+; ------------------------------
+
+
+L0790:
+			CALL L0828
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,L0795
+			RET ; reference (L0790)
+
+L0795:
+			CALL L1184
+			CALL L1105
+			CPB (g_bMode),6
+			JR NZ,L1185
+			LDB (var_275),02H
+			CALL L0645
+L1185:
+			RET ; reference (L0790)
+
+; ------------------------------
+
+
+L1184:
+			LDB (var_2F0),0
+			LDB (var_2EF),0
+			LDB (var_2EA),0
+			LDBB var_5B7,var_5B6
+			LDB (var_5B6),0
+			LDB (var_5B2),0
+			LDB (var_2D4),0
+			LDB (var_bWalkingCountdownSeconds),0
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_5BD),0
+			LDW (var_wEdge3),0
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDB (var_bEdgeDet2),0
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_posture),1 ; stand
+			LDB (var_25B),1
+			CALL L0633
+			CALL L0866
+			RET ; reference (L1184)
+
+; ------------------------------
+
+
+L0828:
+			CPB (varNEW_1C4),1
+			JP Z,L1186
+			CPB (varNEW_1C0),1
+			JR Z,L1187
+			CPB (varNEW_1CA),1
+			JR Z,L1188
+			CPB (varNEW_1BF),1
+			JR Z,L1189
+L1187:
+			RET ; reference (L0828)
+
+L1193:
+			LDB (var_LEDMode),21H
+			JR L1190 ; reference (L0828)
+
+L1192:
+			CPB (varNEW_1BE),0
+			JR NZ,L1186
+			LDB (varNEW_1BE),28H
+L1186:
+			LDB (varNEW_1BF),0
+			LDB (var_LEDMode),2FH
+L1190:
+			CALL PollInputs
+			CALL Check_SmallButton
+			CALL L0643
+			CALL L0057
+			CPB (varNEW_19E),1
+			JR Z,L1191
+			CPB (varNEW_1BF),1
+			JR Z,L1192
+			CPB (varNEW_1BE),0
+			JR Z,L1193
+			JR L1190 ; reference (L0828)
+
+L1191:
+			LDB (varNEW_1AC),1
+			LDB (varNEW_1BF),0
+			RET ; reference (L0828)
+
+L1189:
+			CALL L0839
+L1188:
+			LDB (varNEW_1CA),0
+			CPB (varNEW_1C6),0FFH
+			JR Z,L1194
+			CALL L0795
+			JR L1195 ; reference (L0828)
+
+L1194:
+			CALL L0819
+L1195:
+			CALL L0820
+			LDB (var_LEDMode),2FH
+			LDB (varNEW_1BE),28H
+L1199:
+			CALL PollInputs
+			CALL Check_SmallButton
+			CALL L0643
+			CALL L0057
+			CPB (varNEW_1BE),0
+			JR Z,L1196
+			BIT 3,(var_bInputs0)
+			JR NZ,L1197
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1198
+			CPB (var_IR_result_byte),8CH
+			JR Z,L1196
+L1198:
+			CPB (varNEW_19E),1
+			JR NZ,L1199
+			LDB (varNEW_1AC),1
+			JR L1200 ; reference (L0828)
+
+L1197:
+			LDB (varNEW_1BE),0
+			LDB (var_505),0DH
+			LDB (var_506),0DH
+			LDB (var_IR_mode),0
+			LDL_ACTION XIX,STDACTION_117,69
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1201:
+			CALL PollInputs
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L1201
+			CALL L0839
+			RET ; reference (L0828)
+
+L1196:
+			CALL L0884
+			CPB (varNEW_1C6),0FFH
+			JR NZ,L1202
+			LDB (varNEW_1C3),1
+			LDB A,(varNEW_1A1)
+			CP (varNEW_1A3),A
+			JR C,L1200
+L1202:
+			LDL_ACTION XIX,NEWACTION_02,70
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1200:
+			LDB (varNEW_1BF),0
+			RET ; reference (L0828)
+
+; ------------------------------
+
+
+L0834:
+			CPB (var_iRemoteButton_1based),0EH
+			JR Z,L0819
+			RET ; reference (L0834)
+
+; ------------------------------
+
+
+L0819:
+			CALL L1184
+			CPB (g_bMode),6
+			JR NZ,L1203
+			LDB (var_275),02H
+			CALL L0645
+L1203:
+			RET ; reference (L0819)
+
+; ------------------------------
+
+
+Check_SmallButton:
+			CPW (var_wIdleSecondCount),1800 ; 30 minutes before power down test
+			JR NC,PowerDown
+L0842:
+			CPB (var_iRemoteButton_1based),0DH
+			JR Z,PowerDown
+			RET ; reference (Check_SmallButton)
+
+; ------------------------------
+
+PowerDown:
+			LDB (var_18C),0
+			LDB (var_18B),0
+			LDW (var_wSickSecondCount),0
+			LDB (var_2F0),0
+			LDB (var_2EF),0
+			LDB (var_2EA),0
+			LDB (WDMOD),0
+			LDB (WDCR),0B1H
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_5BD),0
+			LDW (var_wEdge3),0
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDB (var_bEdgeDet2),0
+			CALL L1180
+			CALL L1181
+			CALL L1182
+			CALL L0633
+			CALL L0866
+		WAIT_1SEC
+			CALL L1205
+        SEND_EYES 2FH ; OFF
+		WAIT_1SEC
+        SEND_EYES 40H ; special
+		WAIT_1SEC
+			LDB (INTE0AD),0
+			LDB (INTE12),0
+			LDB (INTE3ALM4),0
+			LDB (INTEALM01),0
+			LDB (INTEALM23),0
+			LDB (INTETA01),0
+			LDB (INTETA23),0
+			LDB (INTRTC),0
+			LDB (INTES0),0
+			LDB (INTES1),0
+			LDB (INTES2),0
+			LDB (INTETC01),0
+			LDB (INTETC23),0
+			LDB (INTEP01),0
+			LDB A,(P2)
+			AND A,3
+			LD (P2),A
+			LDB A,(P5)
+			AND A,0C3H
+			LD (P5),A
+			LDB A,(mirrorPB)
+			AND A,0FDH
+			LD (mirrorPB),A
+			LD (PB),A
+			LDB A,(mirrorPC)
+			AND A,0F8H
+			LD (mirrorPC),A
+			LD (PC),A
+			LDB A,(mirrorPD)
+			AND A,1FH
+			LD (mirrorPD),A
+			LD (PD),A
+			LDB A,(mirrorP6)
+			AND A,0FDH
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB A,(SYSCR2)
+			AND A,0F3H
+			OR A,0DH
+			LD (SYSCR2),A
+			EI 07H
+			LDB A,(SYSCR2)
+			OR A,30H
+			LD (SYSCR2),A
+			SET 6,(SYSCR0)
+			SET 2,(SYSCR0)
+L1210:
+			BIT 2,(SYSCR0)
+			JR NZ,L1210
+			SET 3,(SYSCR1)
+			RES 7,(SYSCR0)
+			LDB A,(SYSCR2)
+			AND A,0F3H
+			OR A,0DH
+			LD (SYSCR2),A
+			LDB A,(mirrorPC)
+			OR A,10H
+			LD (mirrorPC),A
+			LD (PC),A
+			EI 07H
+			LDL XIY,SHUTDOWN_SUBROUTINE ;; -- ADDRESS OF CODE
+			LDL XIX,ramSubroutine0
+L1211:
+			LDIB_X
+			CP XIY,SHUTDOWN_SUBROUTINE_END
+			JR NZ,L1211
+L1212:
+			CALL ramSubroutine0 ; NEAR
+			JR L1212 ; reference (L1160)
+
+; ------------------------------
+
+
+SHUTDOWN_SUBROUTINE:
+			HALT
+			BIT 4,(P8)
+			JR Z,SHUTDOWN_SUBROUTINE
+			LDB A,(mirrorPC)
+			AND A,0FBH
+			LD (mirrorPC),A
+			LD (PC),A
+			LDB (WDMOD),86H
+			RET ; reference (SHUTDOWN_SUBROUTINE)
+
+; ------------------------------
+
+
+SHUTDOWN_SUBROUTINE_END:
+	DB 00H
+L0866:
+			LDB (var_258),0
+			JR L0138 ; reference (L0866)
+
+; ------------------------------
+
+
+L0138:
+			LDW (var_legctrl0),0FFFFH
+			LDB (var_077),0
+			CALL L0602
+			RET ; reference (L0138)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+    ;; dead code - includes Flash writing
+	DB 44H,0EDH,15H,0,00H,0F1H,0ACH,10H,64H,0E1H,0E9H,15H,25H,0F1H,0B0H,10H
+	DB 65H,0EDH,0C8H,02H,0,00H,00H,0F1H,0E9H,15H,65H,44H,0EDH,15H,00H,00H
+	DB 94H,19H,94H,10H,44H,0AAH,0AAH,20H,0,45H,54H,55H,20H,00H,0B4H,02H
+	DB 0AAH,0AAH,0B5H,02H,55H,55H,0B4H,02H,0A0H,0A0H,0D1H,94H,10H,22H,0E1H,0B0H
+	DB 10H,24H,0B4H,52H,44H,0,00H,20H,00H,94H,20H,00H,44H,00H,00H,20H
+	DB 00H,94H,21H,0D9H,0D0H,0D8H,0CCH,40H,40H,0D8H,0D8H,6EH,0E7H,0EH,44H,0AAH
+	DB 0AAH,20H,0,45H,54H,55H,20H,00H,0B4H,02H,0AAH,0AAH,0B5H,02H,55H,55H
+	DB 0B4H,02H,80H,80H,0B4H,02H,0AAH,0AAH,0B5H,02H,55H,55H,0B4H,02H,10H,10H
+	DB 44H,0,00H,20H,00H,94H,20H,00H,44H,00H,00H,20H,00H,94H,21H,0D9H
+	DB 0D0H,0D8H,0CCH,40H,40H,0D8H,0D8H,6EH,0E7H,0EH
+ ENDIF
+
+L1065:
+			LDB A,(g_adcMode)
+			CP A,1
+			JR Z,L1213
+			CP A,2
+			JR Z,L1214
+			LDB A,(P5)
+			AND A,0F8H
+			LD (P5),A
+			LDB A,(P2)
+			AND A,3FH
+			OR A,40H
+			LD (P2),A
+			RET ; reference (L1065)
+
+L1213:
+			LDB A,(P5)
+			AND A,78H
+			LD (P5),A
+			LDB A,(P2)
+			AND A,3FH
+			OR A,80H
+			LD (P2),A
+			RET ; reference (L1065)
+
+L1214:
+			LDB A,(P2)
+			AND A,3FH
+			LD (P2),A
+			LDB A,(P5)
+			AND A,0F8H
+			OR A,4
+			LD (P5),A
+			RET ; reference (L1065)
+
+; ------------------------------
+
+
+mpMode_Countdown:
+	DB 06H,10H,06H,06H,06H,06H,06H
+d1152:
+	DB 0FFH,03H,1,01H,0FFH,01H,02H,01H
+
+ IFDEF EXACT
+DEAD_ACTION_VECTOR:
+	DD	STDACTION_191
+	DD	STDACTION_173
+	DD	STDACTION_165
+	DD	STDACTION_190
+	DD	STDACTION_191
+	DD	STDACTION_189
+	DD	STDACTION_193
+	DD	STDACTION_194
+	DD	STDACTION_195
+	DD	STDACTION_188
+	DD	STDACTION_189
+	DD	STDACTION_190
+	DD	STDACTION_191
+	DD	STDACTION_192
+	DD	STDACTION_193
+	DD	STDACTION_194
+	DD	STDACTION_195
+	DB 29H,31H,0FFH,0FFH,0D9H,1CH,0FDH,49H,0C9H,1CH,0F5H,0EH
+ ENDIF
+
+L0831:
+			CPB (svar_boolBattLow),1
+			JR Z,L1215
+			RET ; reference (L0831)
+
+L1215:
+			CPB (varNEW_1C6),0FFH
+			JR Z,L1216
+			EI 07H
+			LDB A,(svar_indexScramble)
+			LDB W,(svar_boolBattLow)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),25H
+			CALL Storage_Write
+			EI 00H
+L1216:
+			CALL L1180
+			CALL SaveMoodArray
+			CALL L1182
+        SEND_EYES 2FH ; OFF
+			CPB (varNEW_1C6),0FFH
+			JR Z,L1218
+			LDW (var_wMotionFromAction),0088H
+			CALL L1219
+L1218:
+			LDB (var_LEDMode),21H
+			LDB (var_timer64_c_up),20H
+			CALL L0839
+L1222:
+			CPB (varNEW_1BF),1
+			JR Z,L1220
+			CPB (varNEW_19E),1
+			JR Z,L1221
+			CALL L0057
+			JR L1222 ; reference (L0831)
+
+L1220:
+			CPB (varNEW_1C6),0FFH
+			JR Z,L1223
+			EI 07H
+			LDB A,(svar_indexScramble)
+			AND WA,00FFH
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),25H
+			CALL Storage_Write
+			EI 00H
+			LDW (var_wMotionFromAction),0087H
+			CALL L1219
+L1223:
+			LDB (varNEW_1BF),0
+			LDB (svar_boolBattLow),0
+			LDB (varNEW_1C6),0
+			JP L1189 ; reference (L0831)
+
+L1221:
+			LDB (svar_boolBattLow),0
+			RET ; reference (L0831)
+
+; ------------------------------
+
+
+L1219:
+			LDB (var_077),1
+			LDB (var_594),1
+L1224:
+			CALL L0616
+			CPB (var_077),0
+			JR NZ,L1224
+			RET ; reference (L1219)
+
+; ------------------------------
+
+
+L1180:
+			EI 07H
+			LDB A,24H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(g_bMode)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),24H
+			CALL Storage_Write
+			EI 00H
+			RET ; reference (L1180)
+
+; ------------------------------
+
+
+L0684:
+			EI 07H
+			LDB A,24H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			CP A,5
+			JR Z,LoadSetMode3_Sad_if_invalid
+			CP A,7
+			JR NC,LoadSetMode3_Sad_if_invalid
+			LD (g_bMode),A	; // set mode (from storage read)
+			EI 00H
+			RET ; reference (L0684)
+
+LoadSetMode3_Sad_if_invalid:
+			LDB (g_bMode),03H
+			EI 00H
+			CALL L1225
+			RET ; reference (L0684)
+
+; ------------------------------
+
+
+L1181:
+			EI 07H
+			LDB A,25H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(svar_indexScramble)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),25H
+			CALL Storage_Write
+			EI 00H
+			RET ; reference (L1181)
+
+; ------------------------------
+
+
+L1070:
+			EI 07H
+			LDB A,25H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			CP A,64H
+			JR NC,L1226
+			LD (svar_indexScramble),A
+			EI 00H
+			RET ; reference (L1070)
+
+L1226:
+			LDB (svar_indexScramble),0
+			EI 00H
+			RET ; reference (L1070)
+
+; ------------------------------
+
+
+L1071:
+			EI 07H
+			LDB A,1EH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			CP A,1
+			JR NZ,L1227
+			LDB (svar_boolUseVoiceCmds),1
+			EI 00H
+			RET ; reference (L1071)
+
+L1227:
+			LDB (svar_boolUseVoiceCmds),0
+			EI 00H
+			RET ; reference (L1071)
+
+; ------------------------------
+
+
+L1182:
+			EI 07H
+			LDB A,1EH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(svar_boolUseVoiceCmds)
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),1EH
+			CALL Storage_Write
+			EI 00H
+			RET ; reference (L1182)
+
+; ------------------------------
+
+
+L1094:
+			EI 07H
+			LDB A,24H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LD (g_bMode),A	; // set mode (from storage read) - less validation ??
+			CP W,1
+			JR Z,L1228
+			CP W,2
+			JR Z,L1229
+			EI 00H
+			RET ; reference (L1094)
+
+L1228:
+			LDL_ACTION XIY,OLDACTION_207,71
+			LD (var_pAction),XIY
+			JR L1230 ; reference (L1094)
+
+L1229:
+			LDL_ACTION XIY,OLDACTION_209,72
+			LD (var_pAction),XIY
+L1230:
+			LDB A,(g_bMode)
+			DB 020H,0 ; FAKE OP LDB W,0
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),24H
+			CALL Storage_Write
+			EI 00H
+			LDB (var_258),1
+L1231:
+			CALL PollInputs
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CALL L0791
+			CALL L0792
+			CPB (var_258),0
+			JR NZ,L1231
+			RET ; reference (L1094)
+
+; ------------------------------
+
+
+L1225:
+			EI 07H
+			LDB (var_iwStorageToWrite),1EH
+			LDW (wvar_reply_data),0
+			CALL Storage_Write
+			LDB (var_iStorageProcessing),21H
+L1233:
+			CPB (var_iStorageProcessing),40H
+			JR NC,L1232
+			LDW (wvar_reply_data),0
+			LDB A,(var_iStorageProcessing)
+			LD (var_iwStorageToWrite),A
+			CALL Storage_Write
+			INCB 1,(var_iStorageProcessing)
+			JR L1233 ; reference (L1225)
+
+L1232:
+			EI 00H
+			RET ; reference (L1225)
+
+; ------------------------------
+
+
+L1093:
+			EI 07H
+			LDB A,25H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LD (svar_indexScramble),A
+			LD (svar_boolBattLow),W
+			CPB (svar_boolBattLow),1
+			JR Z,L1234
+			LDB (svar_boolBattLow),0
+			EI 00H
+			RET ; reference (L1093)
+
+L1234:
+			LDB A,(svar_indexScramble)
+			AND WA,00FFH
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),25H
+			CALL Storage_Write
+			EI 00H
+L1235:
+			CALL PollInputs
+			BIT 3,(var_bInputs0)
+			JR Z,L1235
+L1236:
+			CALL PollInputs
+			BIT 3,(var_bInputs0)
+			JR NZ,L1236
+			LDW (var_wMotionFromAction),0087H
+			LDB (var_077),1
+			LDB (var_594),1
+L1237:
+			CALL L0616
+			CPB (var_077),0
+			JR NZ,L1237
+			RET ; reference (L1093)
+
+; ------------------------------
+

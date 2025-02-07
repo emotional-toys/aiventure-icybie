@@ -1,0 +1,15 @@
+F:\PROJECT_MYNE\interfaces\GdbApi\GdbApi\bin\Debug\GdbApi.dll
+F:\PROJECT_MYNE\interfaces\GdbApi\GdbApi\bin\Debug\GdbApi.pdb
+F:\PROJECT_MYNE\interfaces\GdbApi\GdbApi\obj\Debug\ResolveAssemblyReference.cache
+F:\PROJECT_MYNE\interfaces\GdbApi\GdbApi\obj\Debug\GdbApi.dll
+F:\PROJECT_MYNE\interfaces\GdbApi\GdbApi\obj\Debug\GdbApi.pdb
+G:\Nxp Projects\GdbApi\GdbApi\bin\Debug\GdbApi.dll
+G:\Nxp Projects\GdbApi\GdbApi\bin\Debug\GdbApi.pdb
+G:\Nxp Projects\GdbApi\GdbApi\obj\Debug\GdbApi.dll
+G:\Nxp Projects\GdbApi\GdbApi\obj\Debug\GdbApi.pdb
+G:\Nxp Projects\GdbApi\GdbApi\obj\Debug\GdbApi.csprojResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbApi\GdbApi\bin\Debug\GdbApi.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbApi\GdbApi\bin\Debug\GdbApi.pdb
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbApi\GdbApi\obj\Debug\ResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbApi\GdbApi\obj\Debug\GdbApi.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbApi\GdbApi\obj\Debug\GdbApi.pdb

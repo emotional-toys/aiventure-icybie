@@ -1,0 +1,141 @@
+// ICSDK2 - ICybie Library
+// SFR access (advanced)
+
+////////// ////////// ////////// ////////// //////////
+// Advanced: access to SFR (Special Function Registers) of CPU
+
+#define SFR_B(addr)     (*(byte volatile*)(addr))
+
+#define SFR_P2 SFR_B(0x6)
+#define SFR_P2FC SFR_B(0x9)
+#define SFR_P3CR SFR_B(0xA)
+#define SFR_P3FC SFR_B(0xB)
+#define SFR_P5 SFR_B(0xD)
+#define SFR_P4CR SFR_B(0xE)
+#define SFR_TA01RUN SFR_B(0x100)
+#define SFR_TA0REG SFR_B(0x102)
+#define SFR_TA1REG SFR_B(0x103)
+#define SFR_TA01MOD SFR_B(0x104)
+#define SFR_TA1FFCR SFR_B(0x105)
+#define SFR_TA23RUN SFR_B(0x108)
+#define SFR_TA2REG SFR_B(0x10A)
+#define SFR_TA3REG SFR_B(0x10B)
+#define SFR_TA23MOD SFR_B(0x10C)
+#define SFR_TA3FFCR SFR_B(0x10D)
+#define SFR_P5FC SFR_B(0x11)
+#define SFR_P6 SFR_B(0x12)
+#define SFR_P7 SFR_B(0x13)
+#define SFR_P6FC SFR_B(0x15)
+#define SFR_P7CR SFR_B(0x16)
+#define SFR_P7FC SFR_B(0x17)
+#define SFR_P8 SFR_B(0x18)
+#define SFR_P9 SFR_B(0x19)
+#define SFR_P6FC2 SFR_B(0x1B)
+#define SFR_P7FC2 SFR_B(0x1C)
+#define SFR_P9FC SFR_B(0x1D)
+#define SFR_PA SFR_B(0x1E)
+#define SFR_SC0BUF SFR_B(0x200)
+#define SFR_SC0CR SFR_B(0x201)
+#define SFR_SC0MOD0 SFR_B(0x202)
+#define SFR_BR0CR SFR_B(0x203)
+#define SFR_BR0ADD SFR_B(0x204)
+#define SFR_SC0MOD1 SFR_B(0x205)
+#define SFR_SC1BUF SFR_B(0x208)
+#define SFR_SC1CR SFR_B(0x209)
+#define SFR_SC1MOD0 SFR_B(0x20A)
+#define SFR_BR1CR SFR_B(0x20B)
+#define SFR_BR1ADD SFR_B(0x20C)
+#define SFR_SC1MOD1 SFR_B(0x20D)
+#define SFR_PAFC SFR_B(0x21)
+#define SFR_PB SFR_B(0x22)
+#define SFR_PC SFR_B(0x23)
+#define SFR_PBCR SFR_B(0x24)
+#define SFR_SBIOCR1 SFR_B(0x240)
+#define SFR_SBIODBR SFR_B(0x241)
+#define SFR_I2C0AR SFR_B(0x242)
+#define SFR_SBIOCR2_SBIOSR SFR_B(0x243)
+#define SFR_SBIOBR0 SFR_B(0x244)
+#define SFR_SBIOBR1 SFR_B(0x245)
+#define SFR_PBFC SFR_B(0x25)
+#define SFR_PCCR SFR_B(0x26)
+#define SFR_PCFC SFR_B(0x27)
+#define SFR_PCODE SFR_B(0x28)
+#define SFR_PD SFR_B(0x29)
+#define SFR_PDFC SFR_B(0x2A)
+#define SFR_ADREG04L SFR_B(0x2A0)
+#define SFR_ADREG04H SFR_B(0x2A1)
+#define SFR_ADREG15L SFR_B(0x2A2)
+#define SFR_ADREG15H SFR_B(0x2A3)
+#define SFR_ADREG26L SFR_B(0x2A4)
+#define SFR_ADREG26H SFR_B(0x2A5)
+#define SFR_ADREG37L SFR_B(0x2A6)
+#define SFR_ADREG37H SFR_B(0x2A7)
+#define SFR_ADMOD0 SFR_B(0x2B0)
+#define SFR_ADMOD1 SFR_B(0x2B1)
+#define SFR_WDMOD SFR_B(0x300)
+#define SFR_WDCR SFR_B(0x301)
+#define SFR_INTE0AD SFR_B(0x90)
+#define SFR_INTE12 SFR_B(0x91)
+#define SFR_INTE3ALM4 SFR_B(0x92)
+#define SFR_INTEALM01 SFR_B(0x93)
+#define SFR_INTEALM23 SFR_B(0x94)
+#define SFR_INTETA01 SFR_B(0x95)
+#define SFR_INTETA23 SFR_B(0x96)
+#define SFR_INTRTC SFR_B(0x97)
+#define SFR_INTES0 SFR_B(0x98)
+#define SFR_INTES1 SFR_B(0x99)
+#define SFR_INTES2 SFR_B(0x9A)
+#define SFR_INTETC01 SFR_B(0x9B)
+#define SFR_INTETC23 SFR_B(0x9C)
+#define SFR_INTEP01 SFR_B(0x9D)
+#define SFR_B0CS SFR_B(0xC0)
+#define SFR_B1CS SFR_B(0xC1)
+#define SFR_B2CS SFR_B(0xC2)
+#define SFR_B3CS SFR_B(0xC3)
+#define SFR_BEXCS SFR_B(0xC7)
+#define SFR_MSAR0 SFR_B(0xC8)
+#define SFR_MAMR0 SFR_B(0xC9)
+#define SFR_MSAR1 SFR_B(0xCA)
+#define SFR_MAMR1 SFR_B(0xCB)
+#define SFR_MSAR2 SFR_B(0xCC)
+#define SFR_MAMR2 SFR_B(0xCD)
+#define SFR_MSAR3 SFR_B(0xCE)
+#define SFR_MAMR3 SFR_B(0xCF)
+#define SFR_SYSCR0 SFR_B(0xE0)
+#define SFR_SYSCR1 SFR_B(0xE1)
+#define SFR_SYSCR2 SFR_B(0xE2)
+#define SFR_EMCCR0 SFR_B(0xE3)
+#define SFR_EMCCR1 SFR_B(0xE4)
+#define SFR_EMCCR2 SFR_B(0xE5)
+#define SFR_EMCCR3 SFR_B(0xE6)
+#define SFR_DFMCR0 SFR_B(0xE8)
+#define SFR_DFMCR1 SFR_B(0xE9)
+#define SFR_ALMINT SFR_B(0x334)
+#define SFR_MELALMC SFR_B(0x331)
+
+////////// ////////// ////////// ////////// //////////
+// Advanced: direct call to subroutines in system ROM
+// NOTE: relies on NEW ROM layout
+
+#define SYS_SAFECALL(addr_string) \
+    { __asm("PUSH XIZ"); __asm("CALL " addr_string); __asm("POP XIZ"); }
+
+////////// ////////// ////////// ////////// //////////
+// mirrors for all motors
+
+typedef struct
+{
+    byte porta, portb, portc, portd;
+    byte port6, port7;
+} IC_PORT_MIRRORS;
+
+extern IC_PORT_MIRRORS __near _ic_ipm;
+
+#define MIRROR_PA (_ic_ipm.porta)
+#define MIRROR_PB (_ic_ipm.portb)
+#define MIRROR_PC (_ic_ipm.portc)
+#define MIRROR_PD (_ic_ipm.portd)
+#define MIRROR_P6 (_ic_ipm.port6)
+#define MIRROR_P7 (_ic_ipm.port7)
+
+////////// ////////// ////////// ////////// //////////

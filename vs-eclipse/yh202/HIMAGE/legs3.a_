@@ -1,0 +1,186 @@
+ IFDEF EXACT
+	DB 0D8H,0A8H,0D8H,61H,0,00H,0D8H,0D8H,6EH,0F8H,0EH
+ ENDIF
+
+L1173:
+			LDW (wvar_325),0
+L0577:
+			CP (wvar_325),WA
+			JR C,L0577
+			RET ; reference (L1173)
+
+; ------------------------------
+
+
+L0630:
+			PUSH XBC
+			PUSH H
+			PUSH W
+			LDB (var_legctrl0),0FFH
+			LDB (var_legctrl1),0FFH
+			LDL XIX,var_rgbLegTmp
+			LDL XIZ,var_legspeed_0
+			LDB A,0CH
+L0578:
+			LDB (XIX+),0
+			DJNZ A,L0578
+			DB 026H,0 ; FAKE OP LDB H,0
+			LDL XIX,svar_legx0_start_of_stored
+L0599:
+			LDL XBC,0
+			LDL XWA,0
+			LDL XIY,var_legpositions
+			LDB C,(XIY+H)
+			BIT 6,C
+			JR Z,L0579
+			LDB (XIZ+H),0AH
+			JR L0580 ; reference (L0630)
+
+L0579:
+			LDB (XIZ+H),08H
+L0580:
+			AND C,3FH
+			CP C,0
+			JP Z,L0581
+			CP H,0
+			JR Z,L0582
+			CP H,1
+			JR Z,L0583
+			CP H,2
+			JR Z,L0584
+			CP H,3
+			JR Z,L0585
+			CP H,4
+			JR Z,L0586
+			CP H,5
+			JR Z,L0587
+			CP H,6
+			JR Z,L0588
+			CP H,7
+			JR Z,L0589
+			CP H,8
+			JR Z,L0590
+			CP H,9
+			JR Z,L0591
+			CP H,0AH
+			JR Z,L0592
+			RES 3,(var_legctrl1)
+			JP L0593 ; reference (L0630)
+
+L0582:
+			RES 0,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0583:
+			RES 1,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0584:
+			RES 2,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0585:
+			RES 3,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0586:
+			RES 4,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0587:
+			RES 5,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0588:
+			RES 6,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0589:
+			RES 7,(var_legctrl0)
+			JR L0593 ; reference (L0630)
+
+L0590:
+			RES 0,(var_legctrl1)
+			JR L0593 ; reference (L0630)
+
+L0591:
+			RES 1,(var_legctrl1)
+			JR L0593 ; reference (L0630)
+
+L0592:
+			RES 2,(var_legctrl1)
+L0593:
+			DEC 1,C
+			CP H,1
+			JR Z,L0594
+			CP H,4
+			JR Z,L0594
+			CP H,7
+			JR Z,L0594
+			CP H,0AH
+			JR Z,L0594
+			JR L0595 ; reference (L0630)
+
+L0594:
+			SRLB 1,C
+L0595:
+			LDL XIY,svar_gain0
+			LDB A,(XIY+H)
+			MUL XBC,WA
+			AND XBC,0FFFFH
+			LDW WA,(XIX)
+			ADD XBC,XWA
+			DIV XBC,0032H
+			LDL XIY,var_legdat_0
+			LD (XIY+H),C
+			LDL XIY,legpos_0
+			LDB A,(XIY+H)
+			LDL XIY,varlegs_mode
+			CP A,C
+			JR NC,L0596
+			EX A,C
+L0596:
+			SUB A,C
+			CP A,7
+			JR NC,L0597
+			LDB (XIY+H),0
+			PUSH XIX
+			LDL XIX,var_legwhat_0
+			ANDB (XIX+H),0FCH
+			SET 2,(XIX+H)
+			POP XIX
+			JR L0598 ; reference (L0630)
+
+L0597:
+			PUSH XIX
+			LDL XIX,var_legwhat_0
+			LDB (XIX+H),0
+			POP XIX
+			LDB (XIY+H),1
+			LDL XIY,varlegs_countmode4
+			LDB (XIY+H),0
+			LDL XIY,varlegs_countmode5
+			LDB (XIY+H),0
+			LDL XIY,varlegs_count2
+			LDB (XIY+H),0
+L0598:
+			LDB (var_2B4),0AH
+L0581:
+			ADD XIX,2
+			INC 1,H
+			CP H,0CH
+			JP C,L0599
+			POP W
+			POP H
+			POP XBC
+			RET ; reference (L0630)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 44H,0,10H,00H,00H,21H,00H,0B4H,41H,0ECH,61H,0ECH,0CFH,0C8H,10H,00H
+	DB 00H,67H,0F4H,0EH
+ ENDIF
+
+

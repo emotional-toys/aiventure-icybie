@@ -1,0 +1,75 @@
+======================================================================
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+CPU Timers
+==========
+
+This note describes how the Toshiba CPU timers and timer interrupts
+are used.
+
+In most cases the usage in the System ROM and ICSDK2 are different.
+
+======================================================================
+Main CPU clock
+
+When running normally, the main Toshiba CPU runs at 6.6MHz.
+Most other clock are derived from half of that (3.3MHz)
+
+----------------------------------------------------------------------
+
+Timer 0 "TA0"
+    Fast interrupt
+    ~31500 Hz (3.3MHz / TA1REG=105)
+
+    Interrupt (Int19) is used in the System ROM
+        (for interrupt driven audio playback, and other polling)
+
+    Interrupt (Int19) is not currently used in the ICSDK2
+
+----------------------------------------------------------------------
+
+Timer 1 "TA1"
+    IR modulation
+    37500 Hz (3.3MHz / TA1REG=34) / 2 (for flip-flop)
+
+    Interrupt (Int20) is not used
+
+    This timer is turned on when the IR signal is modulated during
+    IR transmission. The TA1OUT output pin is set in a special "FlipFlop"
+    mode that will output a 37.5kHz square wave.
+
+----------------------------------------------------------------------
+Timer 2:
+    Interrupt (Int21) is not used
+
+----------------------------------------------------------------------
+Timer 3:
+    ~3500 Hz (3.3MHz / TA3REG=60 / 16)
+
+    Interrupt (Int22) is used to process the normal IR encoding
+    for both receive and transmit.
+    This is 16 times the IR bit clock.
+
+    The IR input pin (PB.2) is polled in this interrupt handler.
+    If this pin is low, the IR detector is receiving a
+    37.5kHz modulated IR signal. If this pin is high, there is no signal.
+
+    Typically it takes 16 samples to determine a data bit.
+        if PB.2 is low for 4 samples and high for 12 samples => 0 data bit
+        if PB.2 is low for 12 samples and high for 4 samples => 1 data bit
+
+    There are 16 data bits sent between gaps of no signal (high-bit first)
+
+    For the IR remote the first/upper 8 bits are all zero.
+    For the obstacle detection logic, the first/upper 8 bits are $33
+    For the newer walkup charger logic, the first/upper 8 bits are $DD
+
+    Therefore to send 16 bits of data takes 256 clocks (*1/3500 Hz) ~= 73ms
+
+    The ICSDK2 supports faster sending/polling for obstacle detection.
+
+    //REVIEW: move this to irlogic.txt
+    //REVIEW: add ircodes.txt
+
+----------------------------------------------------------------------

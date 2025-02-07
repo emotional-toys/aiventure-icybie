@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="d754caeb-b51a-4640-bd58-6ee07b2249ef" name="aeon@XENO 2013-06-24 20:31:09" runUser="xeno\aeon" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Default Test Settings" id="3c9b82ac-784b-4654-9c31-a77d83ce67de">
+    <Deployment runDeploymentRoot="aeon_XENO 2013-06-24 20_31_09">
+      <DeploymentItem filename="c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\Consonya.MSTestTools.dll" />
+      <DeploymentItem filename="c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\Consonya.TestTools.dll" />
+      <DeploymentItem filename="c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Tests\bin\Debug\Consonya.Tools.dll" />
+      <DeploymentItem filename="C:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\bin\Debug\GdbControl.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2013-06-24T20:31:09.0200000+02:00" queuing="2013-06-24T20:31:13.2240000+02:00" start="2013-06-24T20:31:13.5170000+02:00" finish="2013-06-24T20:31:26.9470000+02:00" />
+  <ResultSummary outcome="Error">
+    <Counters total="1" executed="1" error="0" failed="0" timeout="0" aborted="1" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="XENO" outcome="Error" timestamp="2013-06-24T20:31:26.9450000+02:00">
+        <Text>Test host process exited unexpectedly.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="StartStopDebugging" storage="c:\aeonworkingdirectory\bph\cybie\vs\cybiegdb\gdbcontrol.tests\bin\debug\gdbcontrol.tests.dll" id="d1810f14-5327-ad84-2f4d-cb49edc0228b">
+      <Execution timeOut="5000" id="50195427-3532-40ce-9a2c-efce31ecf883" />
+      <TestMethod codeBase="c:/aeonWorkingDirectory/bph/cybie/vs/CybieGdb/GdbControl.Tests/bin/Debug/GdbControl.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="GdbControl.Tests.GdbControlTests, GdbControl.Tests, Version=1.0.2.35104, Culture=neutral, PublicKeyToken=null" name="StartStopDebugging" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="d1810f14-5327-ad84-2f4d-cb49edc0228b" executionId="50195427-3532-40ce-9a2c-efce31ecf883" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="50195427-3532-40ce-9a2c-efce31ecf883" testId="d1810f14-5327-ad84-2f4d-cb49edc0228b" testName="StartStopDebugging" computerName="XENO" duration="00:00:13.2510000" startTime="2013-06-24T20:31:13.6950000+02:00" endTime="2013-06-24T20:31:26.9460000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Aborted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50195427-3532-40ce-9a2c-efce31ecf883">
+    </UnitTestResult>
+  </Results>
+</TestRun>

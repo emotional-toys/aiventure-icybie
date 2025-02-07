@@ -1,0 +1,150 @@
+
+L0644:
+			CPB (var_2E1),0
+			JR Z,L0121
+			RET ; reference (L0644)
+
+L0121:
+			CPB (var_2D6),1
+			JR NZ,L0122
+			LDB (var_LEDMode),22H
+			RET ; reference (L0644)
+
+L0122:
+			LDB C,(g_bMode)
+			LDL XIX,mpMode_LEDeyes
+			LDB A,(XIX+C)
+			LD (var_LEDMode),A
+			RET ; reference (L0644)
+
+; ------------------------------
+
+
+L0645: ; set mode
+ IFDEF NEWFEAT ; startup performance
+			CPB (boolStartupPerformed),0
+            JR NZ,inited_already
+			LDL_ACTION XIY,ACTION_SND_30,5 ; first custom sound
+			LDB (boolStartupPerformed),1
+			JR play_this_action ; reference (L0645)
+inited_already:
+ ENDIF
+			CPB (g_bMode),5
+			JR Z,L0123
+			CPB (var_bPlayingSound),0
+			JR Z,L0124
+			RET ; reference (L0645)
+
+L0124:
+			CPB (var_275),2
+			JR NZ,L0123
+			CPB (var_258),0
+			JR NZ,L0123
+			CPB (var_077),0
+			JR Z,L0125
+L0123:
+			RET ; reference (L0645)
+
+L0125:
+			LDB (var_275),0
+			LDB C,(g_bMode)
+			LDL XIX,mpMode_LEDeyes
+			LDB A,(XIX+C)
+			LD (var_LEDMode),A
+			CP C,1
+			JR NZ,L0126
+			CPB (tmp_valScramble),32H
+			JR C,L0127
+			LDL_ACTION XIY,STDACTION_165,6
+			JR play_this_action ; reference (L0645)
+
+L0127:
+			LDL_ACTION XIY,STDACTION_165,7
+			JR play_this_action ; reference (L0645)
+
+L0126:
+ IFDEF NEWFEAT ; no idle if sit or lie tendency - incomplete
+			LD A,(var_posture)
+
+            CP A,2
+            JR Z,skip_default_mode
+            CP A,7
+            JR Z,skip_default_mode
+ ENDIF
+
+			LDL XIX,mpModeStand_pAction
+			SLLB 2,C ; mode * 4
+			LDL XIY,(XIX+C) ; ACTION INDIRECT
+
+play_this_action:
+			LD (var_pAction),XIY
+			LDB (var_258),1
+skip_default_mode:
+			RET ; reference (L0645)
+
+; ------------------------------
+
+ IFDEF EXACT
+
+mpModeStand_pAction:
+	DD	STDACTION_164
+	DD	STDACTION_165
+	DD	STDACTION_169
+	DD	STDACTION_168
+	DD	STDACTION_167
+	DD	STDACTION_170
+	DD	STDACTION_170
+ ENDIF
+
+mpMode_LEDeyes:
+	DB 06H,0BH,25H,1AH,16H,0,15H
+L1163:
+			CPB (g_bMode),6
+			JR Z,L0129
+			CPB (var_182),5
+			JR NC,LaterSetMode3_Sad
+			CPB (var_181),5
+			JR NC,LaterSetMode1_Happy
+L0129:
+			RET ; reference (L1163)
+
+LaterSetMode1_Happy:
+			LDB (g_bMode),1
+			LDB (var_275),02H
+			LDB (var_181),0
+			RET ; reference (L1163)
+
+LaterSetMode3_Sad:
+			LDB (g_bMode),03H
+			LDB (var_275),02H
+			LDB (var_182),0
+			RET ; reference (L1163)
+
+; ------------------------------
+
+
+BumpScramble:
+			CPB (svar_indexScramble),64H
+			JR C,L0130
+			LDB (svar_indexScramble),0
+L0130:
+			LDB C,(svar_indexScramble)
+			LDL XIX,d0131
+			LDB A,(XIX+C)
+			LD (tmp_valScramble),A
+			INCB 1,(svar_indexScramble)
+			RET ; reference (BumpScramble)
+
+; ------------------------------
+
+
+d0131:
+	DB 08H,22H,47H,1AH,34H,48H,3CH,1BH,09H,2AH,29H,56H,04H,46H,5BH,33H
+	DB 5CH,55H,05H,59H,49H,3BH,12H,61H,28H,4FH,17H,1CH,26H,13H,23H,1FH
+	DB 32H,5AH,16H,45H,3AH,02H,62H,20H,57H,07H,27H,35H,1,2BH,4AH,0EH
+	DB 54H,3DH,31H,60H,41H,1EH,30H,4BH,1DH,5DH,0AH,63H,15H,24H,5FH,0DH
+	DB 5EH,50H,39H,0FH,4DH,14H,4CH,03H,2CH,18H,36H,06H,58H,21H,64H,3EH
+	DB 38H,2DH,51H,40H,0BH,4EH,3FH,2EH,53H,44H,19H,11H,52H,42H,37H,10H
+	DB 25H,43H,0CH,2FH
+
+

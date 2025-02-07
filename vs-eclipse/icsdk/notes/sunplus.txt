@@ -1,0 +1,76 @@
+======================================================================
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+SunPlus Chip interface
+======================
+
+This note describes the interface to the SunPlus daughter CPU
+used for sound playback, LED control and extra sensor input bits.
+
+The SunPlus chip is a small 8 bit microprocessor connected to
+the main Toshiba CPU with a simple 2 data bit serial protocol.
+
+This protocol is very inefficient, and requires a lot of CPU
+overhead to use (ie. during sound playback).
+
+For more details, see the source code to the ICLib2 (ICybie Library)
+In particular:
+	sound.c - for LED/sound playback
+    sensor.c - for sensor polling
+
+======================================================================
+
+Ports (see ports.txt)
+
+	PD.5: (O) protocol to SunPlus daughter CPU (clock)
+	PD.6: (O) protocol to SunPlus daughter CPU (data)
+	PD.7: (O) protocol to SunPlus daughter CPU (data)
+
+	P9.4: (I) SunPlus daughter CPU ack/data
+
+----------------------------------------------------------------------
+
+2 bit serial protocol:
+    PD.7 + PD.6 = 2 data bits (interleaved nibbles)
+    PD.5 = clock (high to send)
+        P9.4 = acknowledged
+
+    (see source for more details)
+
+----------------------------------------------------------------------
+Commands to daughter board:
+
+    $10 - start of PCM4 data
+
+    $20 - LEDs
+    $25
+    $26
+    $2A
+    $2B
+    $2F
+
+    $40 - shutdown
+
+    $30 - poll inputs (return 10 bits)
+
+----------------------------------------------------------------------
+
+10 bit input from daughter board:
+    bInput1:bInput0
+
+bInputs0
+    .0 = Tilt Back (1 = on his back, upside-down)
+    .1 = Nose (1 = open, 0 = hand)
+    .2 = Tilt Butt (1 = fell on butt)
+    .3 = Head pat sensor (1 = pressed)
+    .4 = Battery door (1 = closed)
+    .5 = Tilt Right (1 = on R side)
+    .6 = Tilt Left (1 = on L side)
+    .7 = ? (mystery sensor)
+
+bInput1
+    .0 = Back sensor (1 = pressed)
+    .1 = Tilt Face (1 = fell on face)
+
+==========================================================

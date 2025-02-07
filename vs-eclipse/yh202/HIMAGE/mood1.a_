@@ -1,0 +1,979 @@
+
+L1161:
+			CPB (var_bTenureCountdownSeconds),0
+			JR Z,L0001
+			RET ; reference (L1161)
+
+L0001:
+			LDB (var_bTenureCountdownSeconds),3CH
+			CALL Pre_TenureMood
+			CALL TenureMood
+
+ IFDEF SERIAL_VERBOSE
+            CALL ReportDogStatus
+ ENDIF
+			LDW BC,0	; // BC=0->3 (index words 3,2,1,0)
+_tenure_row_loop:
+			LDW HL,000AH
+			LDW WA,5
+			EXTZ XWA
+			LDL XIX,rgw_mood_array	; // (tenure - copy 4 newer values)
+			LDW DE,BC
+			INC 2,DE
+			SUB WA,DE
+			SLLW 1,WA
+			ADD XIX,XWA	; // XIX = rgw_mood_array + (3-BC)*2
+_tenure_col_loop:
+			LDW WA,(XIX)
+			LDA XIX,(XIX+2)
+			LD (XIX),WA
+			LDA XIX,(XIX-2)
+			ADD XIX,0000000AH
+			DEC 1,HL
+			CP HL,0
+			JR NZ,_tenure_col_loop
+			INC 1,BC
+			CP BC,4
+			JR C,_tenure_row_loop
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDL XIX,rgw_mood_array	; // (tenure - erase current value column)
+L0002:
+			LDW (XIX),0
+			ADD XIX,0000000AH
+			INC 1,A
+			CP A,0AH
+			JR C,L0002
+			CPW (var_wAverageOf4Level),0080H
+			JR NC,L0003
+			LDL XIX,rgw_mood_array	; // (tenure - start off light indicator)
+			ADD XIX,00000032H	; // +50 => wMood_5 (darkness)
+			LDW (XIX),1
+L0003:
+			LDW (wMood_4_LightOnOff),1
+			RET ; reference (L1161)
+
+; ------------------------------
+
+
+L0004:
+			RET ; reference (TenureMood)
+
+TenureMood:
+			CPB (g_bMode),6
+			JR Z,L0004
+L0027:
+			CPB (var_5FB_singleuse_alwayszero),1
+			JR NZ,L0005
+			RET ; reference (TenureMood)
+
+L0005:
+
+ IFDEF NEWFEAT ; fixed mood check
+            LD A,(YD_bFixedMood)
+            CPB A,0FFH
+            JR Z,do_normal_mood_tenuring
+			LDB (g_bMode),A ;; fixed mood
+			RET ; - quick exit for TenureMood
+do_normal_mood_tenuring:
+ ENDIF
+            
+			LDW (wTenureSum_0to3),0
+			LDW (wTenureSum_4to5),0
+			LDW (wTenureSum_6to9),0
+			LDW BC,0
+L0006:
+			LDW WA,0
+			LDL XIX,rgw_mood_array	; // (mood sum loop)
+			AND XBC,0FFFFH
+			ADD XIX,XBC
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD (wTenureSum_0to3),WA
+			LDW WA,0
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD (wTenureSum_4to5),WA
+			LDW WA,0
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD XIX,0000000AH
+			ADD WA,(XIX)
+			ADD (wTenureSum_6to9),WA
+			INC 2,BC
+			CP BC,000AH
+			JP C,L0006
+			LDW WA,(wTenureSum_0to3)	; // Scale by 1,4,1
+			EXTZ XWA
+    IFDEF NEWFEAT ; mood factor
+            MUL XWA,(YD_wMoodFactor_Interact)
+    ELSE
+			MUL XWA,1 ;; EXACT
+    ENDIF
+			LD (wTenureSum_0to3),WA
+			LDW WA,(wTenureSum_4to5)
+			EXTZ XWA
+    IFDEF NEWFEAT ; mood factor
+            MUL XWA,(YD_wMoodFactor_Environment)
+    ELSE
+			MUL XWA,4 ;; EXACT
+    ENDIF
+			LD (wTenureSum_4to5),WA
+			LDW WA,(wTenureSum_6to9)
+			EXTZ XWA
+    IFDEF NEWFEAT ; mood factor
+            MUL XWA,(YD_wMoodFactor_Terrain)
+    ELSE
+			MUL XWA,1 ;; EXACT
+    ENDIF
+			LD (wTenureSum_6to9),WA
+_test_sum1_minus2:
+			LDW WA,(wTenureSum_0to3)
+			SUB WA,(wTenureSum_4to5)
+			LDW BC,WA
+			CP BC,0
+			JR GE,L0007
+			NEG BC
+L0007:
+    IFDEF NEWFEAT ; mood factor
+            CP BC,(YD_wMoodFactorThreshold)
+    ELSE
+			CP BC,3
+    ENDIF
+			JR ULE,_test_sum1_minus3
+			CP WA,0
+			JR GT,L0008
+			LDW WA,(wTenureSum_0to3)
+			SUB WA,(wTenureSum_6to9)
+			LDW BC,WA
+			CP BC,0
+			JR GE,L0009
+			NEG BC
+L0009:
+    IFDEF NEWFEAT ; mood factor
+            CP BC,(YD_wMoodFactorThreshold)
+    ELSE
+			CP BC,3
+    ENDIF
+			JR ULE,SetMode2_Sleepy
+			CP WA,0
+			JR GT,SetMode3_Sad
+			LDB (g_bMode),04H	; // set mode 4 - sick
+			RET ; reference (TenureMood)
+
+SetMode3_Sad:
+			LDB (g_bMode),03H
+			RET ; reference (TenureMood)
+
+SetMode3_Sad_ditto:
+			LDB (g_bMode),03H
+			RET ; reference (TenureMood)
+
+SetMode2_Sleepy:
+			LDB (g_bMode),02H
+			RET ; reference (TenureMood)
+
+L0008:
+			LDW WA,(wTenureSum_0to3)
+			SUB WA,(wTenureSum_6to9)
+			LDW BC,WA
+			CP BC,0
+			JR GE,L0010
+			NEG BC
+L0010:
+    IFDEF NEWFEAT ; mood factor
+            CP BC,(YD_wMoodFactorThreshold)
+    ELSE
+			CP BC,3
+    ENDIF
+			JR ULE,SetMode1_Happy
+			CP WA,0
+			JR GT,SetMode1_Happy
+			LDB (g_bMode),0	; // set mode 0 - hyper
+			RET ; reference (TenureMood)
+
+SetMode1_Happy:
+			LDB (g_bMode),1
+			RET ; reference (TenureMood)
+
+_test_sum1_minus3:
+			LDW WA,(wTenureSum_0to3)
+			SUB WA,(wTenureSum_6to9)
+			LDW BC,WA
+			CP BC,0
+			JR GE,L0011
+			NEG BC
+L0011:
+    IFDEF NEWFEAT ; mood factor
+            CP BC,(YD_wMoodFactorThreshold)
+    ELSE
+			CP BC,3
+    ENDIF
+			JR ULE,SetMode3_Sad_ditto
+			CP WA,0
+			JR GT,SetMode1_Happy
+			LDB (g_bMode),0	; // set mode 0 - hyper
+			RET ; reference (TenureMood)
+
+; ------------------------------
+
+
+L1159:
+			CALL BumpScramble
+			CALL AdjustSitStandLie
+			CALL L0013
+			RET ; reference (L1159)
+
+; ------------------------------
+
+
+L0013:
+			CPB (var_258),0
+			JP NZ,L0014
+			CPB (var_077),0
+			JP NZ,L0014
+			CPB (var_iSkit),0
+			JP NZ,L0015
+			CPB (var_iSkit2),0
+			JP NZ,L0016
+			CPB (var_iMetaCommand),0
+			JP NZ,L0017
+			RET ; reference (L0013)
+
+L0016:
+			CPB (g_bMode),6
+			JP Z,L0014
+			CPB (var_boolStayMode),1
+			JP NZ,L0018
+			CPB (var_iSkit2),7
+			JR Z,MoveHeadLeft
+			CPB (var_iSkit2),8
+			JR Z,MoveHeadCenter
+			CPB (var_iSkit2),9
+			JR Z,L0019
+			JP L0014 ; reference (L0013)
+
+MoveHeadLeft:
+			LDL_ACTION XIX,STDACTION_160,0
+			JR MoveHeadRight ; reference (L0013)
+
+MoveHeadCenter:
+			LDL_ACTION XIX,STDACTION_161,1
+			JR MoveHeadRight ; reference (L0013)
+
+L0019:
+			LDL_ACTION XIX,STDACTION_162,2
+MoveHeadRight:
+			LD (var_pAction),XIX
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_iSkit),0
+			LDB (var_258),1
+			RET ; reference (L0013)
+
+L0017:
+			CPB (g_bMode),6
+			JP NZ,L0020
+			CPB (var_iMetaCommand),4
+			JP Z,Play_MetaCommand
+			CPB (var_iMetaCommand),3
+			JP Z,L0021
+			CPB (var_iMetaCommand),1
+			JP Z,L0022
+L0014:
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_iSkit),0
+			RET ; reference (L0013)
+
+L0020:
+			CPB (var_iMetaCommand),3
+			JP Z,L0021
+			CPB (var_iMetaCommand),1
+			JR Z,L0022
+			CPB (var_iMetaCommand),14H
+			JR Z,L0023
+			CPB (var_iMetaCommand),17H
+			JR Z,L0024
+			CPB (var_iMetaCommand),1AH
+			JR Z,L0025
+			CPB (var_iMetaCommand),1BH
+			JP NZ,Play_MetaCommand
+			LDB (g_bMode),06H	; // set mode 6 - guard
+			LDB (var_boolStayMode),0
+			JR L0021 ; reference (L0013)
+
+L0025:
+			CPB (g_bMode),6
+			JR Z,L0021
+			LDB (var_boolStayMode),1
+			JR L0021 ; reference (L0013)
+
+L0024:
+			LDB (var_b30SecCountdown),30
+			LDB (var_2D6),1
+			LDBB var_bModeCountdownSeconds,var_5F9
+			JR L0021 ; reference (L0013)
+
+L0023:
+			CPB (g_bMode),6
+			JR NZ,L0026
+			CALL L0027
+			LDB (var_275),1
+			JP Play_MetaCommand ; reference (L0013)
+
+L0026:
+			CPB (var_boolStayMode),1
+			JP NZ,Play_MetaCommand
+			LDB (var_boolStayMode),0
+			JP Play_MetaCommand ; reference (L0013)
+
+L0022:
+			CPB (g_bMode),6
+			JR NZ,L0028
+			CALL L0027
+			LDB (var_275),02H
+			JP L0014 ; reference (L0013)
+
+L0028:
+			CPB (var_boolStayMode),1
+			JR NZ,Play_MetaCommand
+			LDB (var_boolStayMode),0
+			JP L0014 ; reference (L0013)
+
+L0021:
+			CPB (g_bMode),5
+			JR Z,Play_MetaCommand
+			LDB (var_275),1
+			JR Play_MetaCommand ; reference (L0013)
+
+L0015:
+			CPB (g_bMode),5
+			JR Z,L0029
+			CPB (var_iSkit),12H
+			JR Z,L0030
+			CPB (var_iSkit),0CH
+			JR Z,L0031
+			CPB (var_iSkit),13H
+			JR NZ,L0029
+			LDB (g_bMode),06H	; // set mode 6 - guard
+			LDB (var_boolStayMode),0
+			JR L0029 ; reference (L0013)
+
+L0031:
+			LDB (var_boolStayMode),0
+			CPB (g_bMode),6
+			JP NZ,L0029
+			CALL L0027
+			LDB (var_275),02H
+			JR L0029 ; reference (L0013)
+
+L0030:
+			CPB (g_bMode),6
+			JR Z,L0029
+			LDB (var_boolStayMode),1
+			JR L0029 ; reference (L0013)
+
+L0046:
+			CALL BumpScramble
+			CALL AdjustSitStandLie
+			JR Play_MetaCommand ; reference (L0013)
+
+L0029:
+			LDB A,(var_iSkit)
+			JR L0032 ; reference (L0013)
+
+L0018:
+			LDB A,(var_iSkit2)
+			JR L0032 ; reference (L0013)
+
+Play_MetaCommand:
+
+ IFDEF SERIAL_VERBOSE
+			LDB A,(var_iMetaCommand)
+            LDB W,(var_boolStayMode)
+            LDB B,(g_bMode)
+			LDB C,(var_modeSit1Stand2Lie3)
+            CALL printf
+                DB 13, 10
+			    DB "Meta(", PRINTF_A_DECIMAL, ", "
+                DB "stay=", PRINTF_W_DECIMAL, ", "
+                DB "mood=", PRINTF_B_DECIMAL, ", "
+                DB "ssl=", PRINTF_C_DECIMAL
+                DB ") ", 0
+ ENDIF
+
+			LDB A,(var_iMetaCommand)
+			CP A,1
+			JR Z,L0033
+			CP A,2
+			JR Z,L0033
+			CP A,5
+			JR NZ,L0032
+L0033:
+			LDW (var_wIdleSecondCount),0
+L0032:
+			DEC 1,A
+			SLLB 1,A
+			LDL XIX,d0034
+			LDB C,(XIX+A)
+			LD (var_iProbAction),C
+			INC 1,A
+			LDB C,(XIX+A)
+			LD (var_nProbAction_ThisSkit),C
+L0037:
+			RES 0,(var_bDoesNotApply)
+			CPB (var_nProbAction_ThisSkit),0
+			JR Z,L0035
+			CALL DoesThisApply1
+			CALL DoesThisApply2
+			BIT 0,(var_bDoesNotApply)
+			JR NZ,L0036
+			JP Play_ProbAction ; reference (L0013)
+
+L0036:
+			DECB 1,(var_nProbAction_ThisSkit)
+			INCB 1,(var_iProbAction)
+			JR L0037 ; reference (L0013)
+
+L0035:
+			RET ; reference (L0013)
+
+; ------------------------------
+
+
+DoesThisApply1:
+			BIT 0,(var_bDoesNotApply)
+			JR NZ,L0038
+			LDL XIX,d0039
+			LDW BC,0
+			LDB C,(var_iProbAction)
+			LDB A,(XIX+BC)
+			CP A,4
+			JR Z,L0038
+			CP A,2
+			JR NZ,L0040
+			CPB (var_boolStayMode),1
+			JR Z,L0041
+L0040:
+			CP A,(var_modeSit1Stand2Lie3)
+			JR Z,L0038
+L0041:
+			SET 0,(var_bDoesNotApply)
+L0038:
+			RET ; reference (DoesThisApply1)
+
+; ------------------------------
+
+
+DoesThisApply2:
+			BIT 0,(var_bDoesNotApply)
+			JR NZ,L0038
+			LDL XIX,d0042
+			LDW BC,0
+			LDB C,(var_iProbAction)
+			LDB A,(XIX+BC)
+			CP A,7
+			JR Z,L0038
+			CP A,(g_bMode)
+			JR Z,L0038
+			JR L0041 ; reference (DoesThisApply2)
+
+; ------------------------------
+
+
+Play_ProbAction:
+ IFDEF SERIAL_VERBOSE
+			LDB A,(var_iProbAction)
+            CALL printf
+			    DB "ProbAct(", PRINTF_A_DECIMAL, ") ", 0
+ ENDIF
+
+			LDL XIX,PROB_ACTION_TABLE
+			LDL XBC,0
+			LDB C,(var_iProbAction)
+			SLLW 2,BC
+			LDL XIY,(XIX+BC)
+			CP XIY,0
+			JR Z,L0043
+			LD (lvar_169),XIY
+			JR L0044 ; reference (L0013)
+
+L0044:
+			LDL XIX,(lvar_169)
+			LDB A,(XIX+)
+			CP (tmp_valScramble),A
+			JR ULE,Play_Action_fromProbAction
+			INC 4,XIX
+			LD (lvar_169),XIX
+			JR L0044 ; reference (L0013)
+
+Play_Action_fromProbAction:
+			LDL XIY,(XIX) ; ACTION indirect
+			LD (var_pAction),XIY
+			CPB (var_iMetaCommand),3
+			JR NZ,L0045
+			LDL XIZ,(lvar_183)
+			CP XIY,XIZ
+			JP Z,L0046
+			LD (lvar_183),XIY
+			CP XIY,STDACTION_127
+			JR Z,L0047
+			CP XIY,STDACTION_156
+			JR Z,L0048
+L0045:
+			LDB (var_258),1
+			LDB (var_275),1
+L0043:
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_iSkit),0
+			RET ; reference (L0013)
+
+L0047:
+			CPW (var_wSickSecondCount),0258H
+			JR NC,L0049
+			INCB 1,(var_18B)
+			CPB (var_18B),5
+			JR C,L0045
+L0049:
+			LDL_ACTION XIY,OLDACTION_206,3
+			LDB (var_18C),1
+			LD (var_pAction),XIY
+			JR L0045 ; reference (L0013)
+
+L0048:
+			CPW (var_wSickSecondCount),0258H
+			JR NC,L0050
+			INCB 1,(var_18B)
+			CPB (var_18B),5
+			JR C,L0045
+L0050:
+			LDL_ACTION XIY,OLDACTION_208,4
+			LDB (var_18C),02H
+			LD (var_pAction),XIY
+			JR L0045 ; reference (L0013)
+
+; ------------------------------
+
+ IFDEF EXACT
+
+dead1: ; // dead code
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_iSkit),0
+			LDL_ACTION XIX,STDACTION_163,-10000
+			LD (var_pAction),XIX
+			LDB (var_258),1
+			RET ; reference (dead1)
+ ENDIF
+
+; ------------------------------
+
+ IFDEF EXACT ; bogus version
+AdjustSitStandLie:
+			LDL XBC,0
+			CPB (g_bMode),0
+			JP Z,ModeIs0_Hyper
+			CPB (g_bMode),1
+			JP Z,ModeIs1_Happy
+			CPB (g_bMode),2
+			JP Z,ModeIs2_Sleepy
+			CPB (g_bMode),3
+			JP Z,ModeIs3_Sad
+			CPB (g_bMode),4
+			JP Z,ModeIs4_Sick
+			CPB (g_bMode),5
+			JP Z,ModeIs5_What
+ModeIsOther_Guard:
+			LDL XIX,SitStandLiePercent_Guard_0_94_0_6
+
+			LDB A,(XIX) ; BUG!
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0051
+			INC 1,C
+			CP C,4
+			JP NC,L0052
+			JP ModeIs3_Sad ; reference (AdjustSitStandLie)
+
+ModeIs5_What:
+			LDL XIX,SitStandLiePercent_WhatMode5_50_10_30_10
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0053
+			INC 1,C
+			CP C,4
+			JR NC,L0054
+			JR ModeIs5_What ; reference (AdjustSitStandLie)
+
+L0054:
+			AND W,3 ; random
+			LDB C,W
+L0053:
+			CP C,0
+			JR Z,L0055
+			JR L0056 ; reference (AdjustSitStandLie)
+
+L0055:
+			DB 023H, 004H ; FAKE OP LDB C,04H
+L0056:
+			LD (var_modeSit1Stand2Lie3),C
+			RET ; reference (AdjustSitStandLie)
+
+ModeIs4_Sick:
+			LDL XIX,SitStandLiePercent_Sick_0_84_1_15
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JR ULE,L0051
+			INC 1,C
+			CP C,4
+			JP NC,L0052
+			JR ModeIs4_Sick ; reference (AdjustSitStandLie)
+
+L0051:
+			LD (var_modeSit1Stand2Lie3),C
+			RET ; reference (AdjustSitStandLie)
+
+ModeIs0_Hyper:
+			LDL XIX,SitStandLiePercent_Hyper_0_55_33_12
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0051
+			INC 1,C
+			CP C,4
+			JP NC,L0052
+			JR ModeIs0_Hyper ; reference (AdjustSitStandLie)
+
+ModeIs1_Happy:
+			LDL XIX,SitStandLiePercent_Happy_0_60_20_20
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0051
+			INC 1,C
+			CP C,4
+			JP NC,L0052
+			JR ModeIs1_Happy ; reference (AdjustSitStandLie)
+
+ModeIs2_Sleepy:
+			LDL XIX,SitStandLiePercent_Sleepy_0_77_6_17_ditto
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0051
+			INC 1,C
+			CP C,4
+			JP NC,L0052
+			JR ModeIs2_Sleepy ; reference (AdjustSitStandLie)
+
+ModeIs3_Sad:
+			LDL XIX,SitStandLiePercent_Sad_0_77_6_17
+			LDB A,(XIX)
+			LDB W,(tmp_valScramble)
+			CP W,A
+			JP ULE,L0051
+			INC 1,C
+			CP C,4
+			JR NC,L0052
+			JR ModeIs3_Sad ; reference (AdjustSitStandLie)
+
+L0052:
+			AND W,3 ; random
+			LDB C,W
+			JP L0051 ; reference (AdjustSitStandLie)
+
+SitStandLiePercent_Hyper_0_55_33_12:
+	DB 0,55,88,100
+SitStandLiePercent_Happy_0_60_20_20:
+	DB 0,60,80,100
+SitStandLiePercent_Sad_0_77_6_17:
+	DB 0,77,53H,100
+SitStandLiePercent_Sleepy_0_77_6_17_ditto:
+	DB 0,77,83,100
+SitStandLiePercent_Sick_0_84_1_15:
+	DB 0,84,85,100
+SitStandLiePercent_Guard_0_94_0_6:
+	DB 0,94,94,100
+SitStandLiePercent_WhatMode5_50_10_30_10:
+	DB 50,60,90,100
+
+ ENDIF ; EXACT - bogus version
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+L0646:
+			CPB (g_bMode),5
+			JR NZ,L0057
+			LDB (var_timer64_c_up),0
+			RET ; reference (L0646)
+
+; ------------------------------
+
+
+L0057:
+			CPB (varNEW_bSearchCharger),1
+			JR Z,L0058
+			CPB (var_timer64_c_up),20H
+			JR NC,L0059
+			RET ; reference (L0057)
+
+L0058:
+			CPB (var_timer64_c_up),10H
+			JR NC,L0059
+			RET ; reference (L0057)
+
+L0059:
+			LDB (var_timer64_c_up),0
+			CPB (var_bPlayingSound),1
+			JR Z,L0060
+			CPB (var_LEDMode),10H
+			JP C,L0061
+			LDB C,(var_LEDMode)
+			CP (var_176),C
+			JR Z,L0062
+L0064:
+			LD (var_176),C
+			LDB (var_177),1
+			LDB (var_179),0
+			JP L0063 ; reference (L0057)
+
+L0062:
+			CPB (var_177),1
+			JR NZ,L0064
+			INCB 1,(var_179)
+			LDL XIX,LEDCMDS_TBL
+			LDL XBC,0
+			LDB C,(var_176)
+			SLLW 2,BC
+			LDL XIY,(XIX+BC)
+			LDB C,(var_179)
+			LDB A,(XIY+C)
+			CP A,0FFH
+			JR Z,L0065
+L0067:
+			CALL SendAudioByteToDaughter
+			JR NC,L0067
+L0060:
+			RET ; reference (L0057)
+
+L0065:
+			LDB (var_179),0
+			JP L0063 ; reference (L0057)
+
+L0061:
+			LDB (var_177),0
+			LDB (var_179),0
+			LDB C,(var_LEDMode)
+			CP (var_176),C
+			JR Z,L0063
+			LD (var_176),C
+L0063:
+			LDL XIX,LEDCMDS_TBL
+			LDL XBC,0
+			LDB C,(var_176)
+			SLLW 2,BC
+			LDL XIY,(XIX+BC)
+			LDB A,(XIY)
+L0068:
+			CALL SendAudioByteToDaughter
+			JR NC,L0068
+			RET ; reference (L0057)
+
+; ------------------------------
+
+
+Pre_TenureMood:
+			CPW (wMood_1_Light),2
+			JR C,L0069
+			CPW (wMood_1_Light),5
+			JR C,L0070
+L0072:
+			SUBB (var_bIdleTimeout),3
+			CPB (var_bIdleTimeout),5
+			JR NC,L0071
+			LDB (var_bIdleTimeout),05H
+			RET ; reference (Pre_TenureMood)
+
+L0070:
+			CPW (rgw_mood_array),2
+			JR NC,L0072
+			RET ; reference (Pre_TenureMood)
+
+L0069:
+			CPW (rgw_mood_array),2
+			JR NC,L0072
+			CPW (rgw_mood_array),1
+			JR Z,L0071
+			ADDB (var_bIdleTimeout),3
+			CPB (var_bIdleTimeout),0FH
+			JR ULE,L0071
+			LDB (var_bIdleTimeout),0FH
+L0071:
+			RET ; reference (Pre_TenureMood)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; mood LED data
+
+LEDCMDS_TBL:
+	DD	d0073
+	DD	d0074
+	DD	d0075
+	DD	d0076
+	DD	d0077
+	DD	d0078
+	DD	d0079
+	DD	d0080
+	DD	d0081
+	DD	d0082
+	DD	d0083
+	DD	d0084
+	DD	d0085
+	DD	d0086
+	DD	d0087
+	DD	d0088
+	DD	d0089
+	DD	d0090
+	DD	d0091
+	DD	d0092
+	DD	d0093
+	DD	d0094
+	DD	d0095
+	DD	d0096
+	DD	d0097
+	DD	d0098
+	DD	d0099
+	DD	d0100
+	DD	d0101
+	DD	d0102
+	DD	d0103
+	DD	d0104
+	DD	d0105
+	DD	d0106
+	DD	d0107
+	DD	d0108
+	DD	d0109
+	DD	d0110
+	DD	d0111
+	DD	d0112
+	DD	d0113
+	DD	d0114
+	DD	d0115
+	DD	d0116
+	DD	d0117
+	DD	d0118
+	DD	d0119
+	DD	d0120
+d0073:
+	DB 2FH
+d0074:
+	DB 20H
+d0075:
+	DB 21H
+d0076:
+	DB 22H
+d0077:
+	DB 23H
+d0078:
+	DB 24H
+d0079:
+	DB 25H
+d0080:
+	DB 26H
+d0081:
+	DB 27H
+d0082:
+	DB 28H
+d0083:
+	DB 29H
+d0084:
+	DB 2AH
+d0085:
+	DB 2BH
+d0086:
+	DB 2CH
+d0087:
+	DB 2DH
+d0088:
+	DB 2EH
+d0089:
+	DB 20H,2FH,0FFH
+d0090:
+	DB 21H,2FH,0FFH
+d0091:
+	DB 22H,2FH,0FFH
+d0092:
+	DB 23H,2FH,0FFH
+d0093:
+	DB 24H,2FH,0FFH
+d0094:
+	DB 25H,2FH,0FFH
+d0095:
+	DB 26H,2FH,0FFH
+d0096:
+	DB 27H,2FH,0FFH
+d0097:
+	DB 28H,2FH,0FFH
+d0098:
+	DB 29H,2FH,0FFH
+d0099:
+	DB 2AH,2FH,0FFH
+d0100:
+	DB 2BH,2FH,0FFH
+d0101:
+	DB 2CH,2FH,0FFH
+d0102:
+	DB 2DH,2FH,0FFH
+d0103:
+	DB 2EH,2FH,0FFH
+d0104:
+	DB 26H,2FH,29H,2FH,0FFH
+d0105:
+	DB 21H,2FH,24H,2FH,0FFH
+d0106:
+	DB 25H,2FH,2AH,2FH,0FFH
+d0107:
+	DB 2BH,2EH,0FFH
+d0108:
+	DB 27H,2DH,0FFH
+d0109:
+	DB 23H,2CH,0FFH
+d0110:
+	DB 2AH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,0FFH
+d0111:
+	DB 22H,2FH,29H,2FH,24H,2FH,0FFH
+d0112:
+	DB 25H,2FH,25H,2FH,25H,2FH,25H,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH
+	DB 2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,2FH,0FFH
+d0113:
+	DB 25H,25H,25H,25H,2FH,2FH,2FH,2FH,0FFH
+d0114:
+	DB 25H,2FH,25H,2FH,25H,2FH,25H,2FH,0FFH
+d0115:
+	DB 2AH,2AH,2FH,2FH,0FFH
+d0116:
+	DB 25H,2FH,2AH,2FH,20H,2FH,25H,2FH,2AH,2FH,20H,2FH,0FFH
+d0117:
+	DB 28H,2CH,28H,2CH,28H,2CH,28H,2CH,0FFH
+d0118:
+	DB 22H,23H,22H,23H,22H,23H,22H,23H,0FFH
+d0119:
+	DB 2AH,2FH,20H,2FH,2AH,2FH,20H,2FH,0FFH
+d0120:
+	DB 21H,23H,21H,23H,21H,23H,21H,23H,0FFH
+
+

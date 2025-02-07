@@ -1,0 +1,144 @@
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+Toshiba CPU Memory Map:
+=======================
+
+The Toshiba CPU uses 24 bit addresses, but only a few address regions
+are valid:
+
+    000000 -> 000FFF : 4KB of "Special Function Registers" (SFR) in the CPU
+    001000 -> 003FFF : 8KB of RAM
+
+    200000 -> 23FFFF : 256KB of Cartridge ROM (if cartridge present)
+
+    FC0000 -> FFFFFF : 256KB of System ROM
+
+The Toshiba CPU places no restrictions on RAM usage and only minimal
+restrictions on ROM usage (from FFFF00 up for reset/interrupt vectors).
+
+ICSDK2 created cartridge programs co-exist with the System ROM.
+This places restrictions on the ROM and RAM usage, which are described below.
+
+======================================================================
+RAM restrictions:
+=================
+
+The normal System ROM software uses only a small amount of RAM (about 1.5KB),
+but spread over the 8KB of RAM.
+
+        1000 -> 15FF : variables used by main program
+        2000 -> 20?? : small space used to copy shutdown routine
+        2F?? -> 2FFF : stack space
+
+When running an ICSDK2 program, there are several memory regions that are not moveable.
+        1500 : 1 byte flag for interrupt steering
+        1F00 -> 1FFF : space used by CROM11, including interrupt vectors
+                [NOTE: may be removed in the future]
+
+The rest are allocated by the C compiler/linker. Typically the RAM layout looks something like this:
+        1000 -> 14FF : 1.2K for stack space (lots of room)
+        1500 -> 1500 : 1 byte special interrupt value
+        1501 -> ???? : variables used by SicLib2
+        1F00 -> 1FFF : CROM11 interrupt vectors - not touched 
+        2000 -> 2FFF : user variables (4KB)
+
+//REVIEW: is this correct ??
+
+If you need more than 4KB of user variables, you can pack them into the unused gaps (giving around 7KB of data). Email me for details.
+There is no dynamic heap allocation supported.
+
+This layout magic is handled by the "cartic3.lcf" file, specially named
+sections and the use of the "#pragma section" in source files.
+For most programs, you don't need to touch these.
+
+======================================================================
+Cartridge ROM restrictions:
+===========================
+
+Instead of a contiguous 256KB of flash ROM, the cartridge ROM memory map
+is littered with special addresses that the System ROM relies upon.
+
+    200000 - 200001 : 2 byte signature
+    20FFFE - 20FFFF : 2 byte signature
+    210000          : cartridge startup address
+    230000 - 23FFFF : littered with interrupt vectors
+			230000: INT01 (256 byte gap)
+			230100: INT02 (256 byte gap)
+            ...
+			230C00: INT13 (256 byte gap)
+
+			231000: INT14 - first interrupt handler we use
+			231800: INT15
+			232000: INT16
+			232800: INT17
+			233000: INT18
+			234000: INT19
+			235000: INT20
+			235800: INT21
+			236000: INT22
+			237000: INT23
+			238000: INT24
+			239000: INT25
+			239800: INT26
+			23A000: INT27 - ADC handler (last interrupt handler we use)
+
+			23B000: INT28
+			23B800: INT29
+			23C000: INT30
+			23C800: INT31
+			23D000: INT32
+			23D800: INT33
+			23E000: INT34
+			23E800: INT35
+			23F000: INT36
+			23F800: INT37
+
+        Fortunately many of these are not used - so we don't need to provide
+        handlers at those addresses.
+
+
+-----------------------------------
+The actual layout is allocated by the C compiler/linker.
+For the current version, the cartridge ROM layout looks something like this:
+
+    200000 - 20???? : standard library code (IcLib2)
+    20???? - 20FFFD : user provided code (under 64KB)
+
+    20FFFE - 2100xx : special startup code
+    2100xx - 230FFF : user provided read-only data (around 132KB)
+
+    231000 - 23A0xx : used interrupt handlers
+                        (with some library code stuck in the gaps)
+    23A0xx - 23FFFF : left-over space (about 24KB)
+
+This gives you close to 64KB for normal code, and close to 132B for
+read-only data (including sounds).
+
+To get more space, or adjust the layout, you can pack code and read-only
+data into the unused gaps in the cartridge ROM memory map
+by using "#pragma section" tricks. Email me for details.
+
+======================================================================
+System ROM restrictions/issues:
+===============================
+
+Changing the System ROM is very dangerous.
+
+Very advanced developers can create a system ROM program (replacing
+all 256KB of the system ROM with their own code)
+
+There is a technology called "ICSUCK" to install the new program
+into the system ROM (ICybie System rom Update Cartridge Kludge).
+It places the 256KB System ROM image (slightly compressed) and the installer
+on a 256KB cartridge. The user can install the cartridge in any ICybie,
+and by confirming by pressing ICybie's head/back buttons, ICybie's
+System ROM can be replaced.
+
+There are many more restrictions/rules/caveats/risks for writing a new
+System ROM program - since you want your ICybie to continue to work,
+and continue to launch and coexist with cartridge programs.
+
+This is very advanced stuff and not recommended to anyone, but it is possible.
+
+======================================================================

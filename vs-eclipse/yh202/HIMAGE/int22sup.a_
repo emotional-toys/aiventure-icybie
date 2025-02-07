@@ -1,0 +1,1284 @@
+;; int22 handler stuff
+
+L1326:
+			CPB (var_voice_enable),2
+			JR Z,L1321
+			ANDB (P2),0C3H
+			CPB (var_IR_mode),0
+			JR Z,L1322
+			ORB (P2),8
+			JR L1321 ; reference (L1851)
+
+L1322:
+			LDB A,(var_506)
+			SLLB 2,A
+			LDL XIX,int22_vector_14a
+			LDL XIY,(XIX+A)
+			LDB A,(var_54B)
+			LDB W,(XIY+A)
+			OR (P2),W
+			JR L1321 ; reference (L1851)
+
+L1321:
+			ANDB (TA01RUN),0FDH
+			LDB (TA1REG),2CH
+			LDL XIX,var_IR_bit_array1
+			LD (var_pIRRXData),XIX
+			LDB (var_cbitIRRXData),16H
+			LDB (var_507),0
+			LDB (var_50A),0
+			LDB (var_bIsSendingIR),1
+			RET ; reference (L1851)
+
+L1851:
+			CPB (var_bIsSendingIR),1
+			JP Z,L1323
+			CPB (var_boolEnable5SecIRTimer),2
+			JR NZ,L1324
+			LDB (varNEW_1AB),1
+			LDB (var_boolEnable5SecIRTimer),0
+			LDB (var_IR_data),81H
+			LDB (var_IR_mode),0
+			CALL L1064
+			JR L1325 ; reference (L1851)
+
+L1324:
+			CPB (var_IR_mode),0
+			JR Z,L1325
+			CPB (var_IR_47),0
+			JP NZ,L1323
+L1325:
+			DECW 1,(wvar_508)
+			JP NZ,L1323
+			DB 020H,0 ; FAKE OP LDB W,0
+			LDB A,(var_570)
+			SRLB 1,A
+			ADD WA,01A8H
+			LD (wvar_508),WA
+			CPB (var_IR_mode),0
+			JP NZ,L1326
+			CPB (var_591_alwayszero),1
+			JP Z,L1327
+			INCB 1,(varNEW_direction_count)
+			CPB (varNEW_direction_count),5
+			JR C,L1328
+			CALL L1329
+			LDB (varNEW_direction_0),0
+			LDB (varNEW_direction_1),0
+			LDB (varNEW_direction_2),0
+			LDB (varNEW_direction_3),0
+			LDB (varNEW_direction_4),0
+			LDB (varNEW_direction_count),0
+L1328:
+			CPB (var_54B),3
+			JR C,L1330
+			JR NZ,L1331
+			BIT 0,(var_boolCommIR89a)
+			JR NZ,L1330
+			INCB 1,(var_5E2)
+			CPB (var_5E2),2
+			JR NC,L1330
+			DECB 1,(var_54B)
+			JR L1330 ; reference (L1851)
+
+L1331:
+			BIT 0,(var_boolCommIR89b)
+			JR NZ,L1330
+			INCB 1,(var_5E3)
+			CPB (var_5E3),2
+			JR NC,L1330
+			DECB 1,(var_54B)
+L1330:
+			INCB 1,(var_54B)
+			CPB (var_54B),5
+			JP C,L1327
+			LDB (var_54B),0
+			LDB (var_5E3),0
+			LDB (var_5E2),0
+			LDB (var_wEdge3),0
+			LDB (var_rgfEdge_NOTUSED),0
+			RES 1,(var_bEdgeDet1)
+			RES 2,(var_bEdgeDet1)
+			BIT 0,(var_boolCommIR81)
+			JR Z,L1332
+			LDB (var_boolCommIR81),0
+			SET 4,(var_wEdge3)
+			SET 4,(var_rgfEdge_NOTUSED)
+L1332:
+			BIT 0,(var_boolCommIR85)
+			JR Z,L1333
+			LDB (var_boolCommIR85),0
+			BIT 2,(var_bEdgeDet2)
+			JR Z,L1333
+			SET 2,(var_wEdge3)
+			SET 2,(var_rgfEdge_NOTUSED)
+			SET 2,(var_bEdgeDet1)
+L1333:
+			BIT 0,(var_boolCommIR87)
+			JR Z,L1334
+			LDB (var_boolCommIR87),0
+			BIT 3,(var_bEdgeDet2)
+			JR Z,L1334
+			SET 3,(var_wEdge3)
+			SET 3,(var_rgfEdge_NOTUSED)
+			SET 2,(var_bEdgeDet1)
+L1334:
+			CPB (var_boolEdgeDetection),1
+			JR NZ,L1335
+			BIT 0,(var_boolCommIR89b)
+			JR NZ,L1336
+			BIT 0,(var_bEdgeDet2)
+			JR Z,L1336
+			SET 0,(var_wEdge3)
+			SET 0,(var_rgfEdge_NOTUSED)
+			SET 1,(var_bEdgeDet1)
+			SET 0,(var_boolEnableEdgeTimer)
+			LDB (var_bEdgeCount0to120_HalfSec),0
+L1336:
+			BIT 0,(var_boolCommIR89a)
+			JR NZ,L1335
+			BIT 1,(var_bEdgeDet2)
+			JR Z,L1335
+			SET 1,(var_wEdge3)
+			SET 1,(var_rgfEdge_NOTUSED)
+			SET 1,(var_bEdgeDet1)
+			SET 0,(var_boolEnableEdgeTimer)
+			LDB (var_bEdgeCount0to120_HalfSec),0
+L1335:
+			LDB (var_boolCommIR89b),0
+			LDB (var_boolCommIR89a),0
+			LDB A,(var_bflagsIR89ab)
+			CP (var_574),A
+			JR Z,L1337
+			LDW BC,4
+			LDL XIX,var_578_singleuse
+			LDL XIY,var_577_singleuse
+			LDDRB_X
+			LD (var_574),A
+L1337:
+			AND A,7
+			SLLB 2,A
+			LDL XIY,int22_vector_8
+			LDL XIX,(XIY+A)
+			LDB A,(var_575_singleuse)
+			AND A,7
+			JR L1338 ; reference (L1851)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0C9H,0CCH,07H,44H,0CFH,0D7H,22H,0
+ ENDIF
+
+L1338:
+			LDB W,(XIX+A)
+			LDB (var_bflagsIR89ab),0
+L1327:
+			CPB (var_voice_enable),0
+			JR Z,L1339
+			LDBB var_IR_data,var_voice_dataout
+			LDB (var_voice_enable),02H
+			JP L1340 ; reference (L1851)
+
+L1339:
+			CPB (var_506),8
+			JR NZ,L1341
+			LDB (var_505),02H
+			JR L1342 ; reference (L1851)
+
+L1341:
+			CPB (var_505),2
+			JR NC,L1342
+			CPB (var_077),0
+			JR NZ,L1343
+			CPB (var_258),0
+			JR NZ,L1343
+			LDB (var_505),1
+			JR L1342 ; reference (L1851)
+
+L1343:
+			LDB (var_505),0
+L1342:
+			CPB (varNEW_1B5),0
+			JR Z,L1344
+			CPB (varNEW_1B2),0
+			JR NZ,L1344
+			LDB (var_505),0CH
+			LDB (var_506),0CH
+			LDB (var_IR_mode),0
+			LDB (varNEW_1B5),0
+L1344:
+			LDBB var_506,var_505
+			LDB A,(var_506)
+			SLLB 2,A
+			LDL XIX,int22_vector_14b
+			LDL XIY,(XIX+A)
+			LDB A,(var_54B)
+			LDB W,(XIY+A)
+			LD (var_IR_data),W
+			CPB (var_2EA),2
+			JR C,L1340
+			CPB (var_54B),0
+			JR NZ,L1340
+			LDBB var_IR_data,var_2EB
+			LDB (var_2EB),0
+			LDB (var_2EA),0
+L1340:
+			CALL L1064
+			JP L1326 ; reference (L1851)
+
+L1323:
+			RET ; reference (L1851)
+
+; ------------------------------
+
+
+L1852:
+			CPB (var_bIsSendingIR),1
+			JR Z,L1345
+			RET ; reference (L1852)
+
+L1345:
+			CPB (varNEW_19E),1
+			JR NZ,L1346
+			RET ; reference (L1852)
+
+L1346:
+			CPB (var_507),0
+			JP NZ,L1347
+			CPB (var_cbitIRRXData),6
+			JP Z,L1348
+			CPB (var_50A),1
+			JP Z,L1349
+			CPB (var_50A),2
+			JP Z,L1350
+			SUBB (var_cbitIRRXData),1
+			CPB (var_cbitIRRXData),0
+			JR Z,L1351
+			LDL XIX,(var_pIRRXData)
+			LDB A,(XIX)
+			ADD XIX,1
+			LD (var_pIRRXData),XIX
+			AND A,1
+			JR Z,L1352
+L1351:
+			LDB (var_507),0CH
+			LDB (var_50A),1
+			JR L1353 ; reference (L1852)
+
+L1352:
+			LDB (var_507),04H
+			LDB (var_50A),02H
+			JR L1353 ; reference (L1852)
+
+L1349:
+			LDB (var_507),04H
+			LDB (var_50A),0
+			JR L1354 ; reference (L1852)
+
+L1350:
+			LDB (var_507),0CH
+			LDB (var_50A),0
+			JR L1354 ; reference (L1852)
+
+L1354:
+			CPB (var_voice_enable),2
+			JR Z,L1355
+			ANDB (TA01RUN),0FDH
+			ANDB (P2),0E3H
+			JR L1347 ; reference (L1852)
+
+L1355:
+			ANDB (P2),0FBH
+			JR L1347 ; reference (L1852)
+
+L1353:
+			CPB (var_voice_enable),2
+			JR Z,L1356
+			CPB (var_IR_mode),0AH
+			JR NZ,L1357
+			CPB (varNEW_1AA),0
+			JR Z,L1358
+			DB 020H,0 ; FAKE OP LDB W,0
+			JR L1359 ; reference (L1852)
+
+L1358:
+			LDB W,08H
+			JR L1359 ; reference (L1852)
+
+L1357:
+			LDB A,(var_506)
+			SLLB 2,A
+			LDL XIX,int22_vector_14a
+			LDL XIY,(XIX+A)
+			LDB A,(var_54B)
+			LDB W,(XIY+A)
+L1359:
+			OR (P2),W
+			CP W,0
+			JR Z,L1347
+			ORB (TA01RUN),2
+			JR L1347 ; reference (L1852)
+
+L1356:
+			ORB (P2),4
+			JR L1347 ; reference (L1852)
+
+L1347:
+			SUBB (var_507),1
+			RET ; reference (L1852)
+
+L1348:
+			ANDB (TA01RUN),0FDH
+			ANDB (P2),0C3H
+			LDB (var_bIsSendingIR),0
+			CPB (var_voice_what),0
+			JR Z,L1360
+			DECB 1,(var_voice_what)
+L1360:
+			RET ; reference (L1852)
+
+; ------------------------------
+
+
+L1853:
+			CPB (var_IR_mode),0
+			JR Z,L1361
+			CPB (var_bIsSendingIR),1
+			JR NZ,L1362
+			RET ; reference (L1853)
+
+L1361:
+			BIT 0,(var_591_alwayszero)
+			JR NZ,L1362
+			JR L1362 ; reference (L1853)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0C1H,0FH,15H,3FH,1,6EH,01H,0EH
+ ENDIF
+
+L1362:
+			CPB (var_IR_47),1
+			JR Z,L1363
+			LDB A,(PB)
+			AND A,4
+			JR Z,L1364
+			CPB (var_IR_47),0
+			JR NZ,L1364
+			LDB (var_IR_48),0
+			LDB (var_IR_bitcount),0
+			RET ; reference (L1853)
+
+L1363:
+			LDB A,(PB)
+			AND A,4
+			JR NZ,L1365
+			LDB (var_IR_bitcount),0
+			RET ; reference (L1853)
+
+L1365:
+			ADDB (var_IR_bitcount),1
+			CPB (var_IR_bitcount),28H
+			JR C,L1366
+			LDB (var_IR_47),0
+			LDB (var_IR_bitcount),0
+			LDB (var_IR_48),0
+L1366:
+			RET ; reference (L1853)
+
+L1364:
+			CP (var_IR_48),A
+			JR NZ,L1367
+			CPB (var_IR_47),0
+			JR NZ,L1368
+			LDB (var_IR_47),02H
+			LDL XIX,var_IR_array_21
+			LD (var_IR_pointer),XIX
+L1368:
+			ADDB (var_IR_bitcount),1
+			CPB (var_IR_bitcount),14H
+			JR NC,L1369
+			RET ; reference (L1853)
+
+L1369:
+			LDL XIX,(var_IR_pointer)
+			CP XIX,0000153CH ; 00153CH
+			JP NZ,L1370
+			CPB (var_IR_47),3
+			JP C,L1370
+			JR NZ,L1371
+			DB 021H, 001H ; FAKE OP LDB A,1
+			LD (XIX),A
+			JP L1372 ; reference (L1853)
+
+L1371:
+			DB 021H,0 ; FAKE OP LDB A,0
+			LD (XIX),A
+			JP L1372 ; reference (L1853)
+
+L1367:
+			LD (var_IR_48),A
+			CPB (var_IR_47),3
+			JR Z,L1373
+			CPB (var_IR_47),4
+			JR Z,L1374
+			CPB (var_IR_bitcount),2
+			JR C,L1370
+			CPB (var_IR_bitcount),7
+			JR NC,L1375
+			LDB (var_IR_bitcount),1
+			LDB (var_IR_47),04H
+			RET ; reference (L1853)
+
+L1375:
+			CPB (var_IR_bitcount),13H
+			JR NC,L1370
+			LDB (var_IR_bitcount),1
+			LDB (var_IR_47),03H
+			RET ; reference (L1853)
+
+L1373:
+			DB 021H, 001H ; FAKE OP LDB A,1
+			JR L1376 ; reference (L1853)
+
+L1374:
+			DB 021H,0 ; FAKE OP LDB A,0
+L1376:
+			LDB (var_IR_bitcount),1
+			LDB (var_IR_47),02H
+			LDL XIX,(var_IR_pointer)
+			LD (XIX),A
+			ADD XIX,1
+			LD (var_IR_pointer),XIX
+			CP XIX,00001542H ; (var_IR_pointer)
+			JR NC,L1377
+			RET ; reference (L1853)
+
+L1370:
+			LDB (var_IR_bitcount),0
+			LDB (var_IR_47),1
+			RET ; reference (L1853)
+
+L1377:
+			LDW WA,0
+			LDL XIX,var_IR_array_21
+			LDL XIY,d1378
+L1379:
+			ADD A,(XIX)
+			ADD XIX,1
+			CP XIX,0000153DH ; 00153DH
+			JR C,L1379
+L1381:
+			CPB (XIX),1
+			JR NZ,L1380
+			ADD W,(XIY)
+L1380:
+			INC 1,XIY
+			INC 1,XIX
+			CP XIX,00001542H ; (var_IR_pointer)
+			JR C,L1381
+			CP W,A
+			JR NZ,L1370
+			JP L1372 ; reference (L1853)
+
+; ------------------------------
+
+
+L1403:
+			CPB (var_IR_result_byte),80H
+			JR Z,L1382
+			CPB (var_IR_result_byte),8EH
+			JR Z,L1383
+			CPB (varNEW_1C6),0
+			JR Z,L1384
+			CPB (var_IR_result_byte),85H
+			JR Z,Int22_Beacon1_85
+			CPB (var_IR_result_byte),87H
+			JP Z,Int22_Beacon1_87
+			CPB (var_IR_result_byte),89H
+			JP Z,Int22_Beacon1_89
+L1384:
+			RET ; reference (L1403)
+
+L1385:
+			LDB (varNEW_1B5),0
+			LDB (varNEW_1B2),0
+			LDB (var_505),0
+			LDB (var_506),0
+			LDB (var_IR_mode),0
+			RET ; reference (L1403)
+
+L1383:
+			LDB (varNEW_1A8),28H
+			RET ; reference (L1403)
+
+L1382:
+			LDB (varNEW_1BF),1
+			RET ; reference (L1403)
+
+Int22_Beacon1_85:
+			CPB (varNEW_1C7),1
+			JP Z,L1385
+			LDB (varNEW_1B5),1
+			LDB (varNEW_1B2),04H
+			LDB (var_505),02H
+			LDB (var_506),02H
+			CPB (varNEW_direction_count),0
+			JR Z,L1386
+			CPB (varNEW_direction_count),1
+			JR Z,L1387
+			CPB (varNEW_direction_count),2
+			JR Z,L1388
+			CPB (varNEW_direction_count),3
+			JR Z,L1389
+			LDB (varNEW_direction_4),85H
+			RET ; reference (L1403)
+
+L1389:
+			LDB (varNEW_direction_3),85H
+			RET ; reference (L1403)
+
+L1388:
+			LDB (varNEW_direction_2),85H
+			RET ; reference (L1403)
+
+L1387:
+			LDB (varNEW_direction_1),85H
+			RET ; reference (L1403)
+
+L1386:
+			LDB (varNEW_direction_0),85H
+			RET ; reference (L1403)
+
+Int22_Beacon1_87:
+			CPB (varNEW_1C7),1
+			JP Z,L1385
+			LDB (varNEW_1B5),1
+			LDB (varNEW_1B2),04H
+			LDB (var_505),02H
+			LDB (var_506),02H
+			CPB (varNEW_direction_count),0
+			JR Z,L1390
+			CPB (varNEW_direction_count),1
+			JR Z,L1391
+			CPB (varNEW_direction_count),2
+			JR Z,L1392
+			CPB (varNEW_direction_count),3
+			JR Z,L1393
+			LDB (varNEW_direction_4),87H
+			RET ; reference (L1403)
+
+L1393:
+			LDB (varNEW_direction_3),87H
+			RET ; reference (L1403)
+
+L1392:
+			LDB (varNEW_direction_2),87H
+			RET ; reference (L1403)
+
+L1391:
+			LDB (varNEW_direction_1),87H
+			RET ; reference (L1403)
+
+L1390:
+			LDB (varNEW_direction_0),87H
+			RET ; reference (L1403)
+
+Int22_Beacon1_89:
+			CPB (varNEW_1C7),1
+			JP Z,L1385
+			LDB (varNEW_1B5),1
+			LDB (varNEW_1B2),04H
+			LDB (var_505),02H
+			LDB (var_506),02H
+			CPB (varNEW_direction_count),0
+			JR Z,L1394
+			CPB (varNEW_direction_count),1
+			JR Z,L1395
+			CPB (varNEW_direction_count),2
+			JR Z,L1396
+			CPB (varNEW_direction_count),3
+			JR Z,L1397
+			LDB (varNEW_direction_4),89H
+			RET ; reference (L1403)
+
+L1397:
+			LDB (varNEW_direction_3),89H
+			RET ; reference (L1403)
+
+L1396:
+			LDB (varNEW_direction_2),89H
+			RET ; reference (L1403)
+
+L1395:
+			LDB (varNEW_direction_1),89H
+			RET ; reference (L1403)
+
+L1394:
+			LDB (varNEW_direction_0),89H
+			RET ; reference (L1403)
+
+; ------------------------------
+
+
+L1372:
+			CALL L1398
+			LDB (var_IR_47),0
+			LDB (var_IR_bitcount),0
+			LDB A,(var_IR_result_byte)
+			CP A,0B0H
+			JP NC,L1399
+			AND A,0F0H
+			CP A,0A0H
+			JP Z,L1400
+			LDB A,(var_IR_upper_byte_code_for_something)
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1401
+			CPB (varNEW_1C6),0FFH
+			JR NZ,L1402
+			LDW (var_wIdleSecondCount),0
+L1402:
+			CALL L1403
+			JP L1404 ; reference (L1853)
+
+L1401:
+			CP (var_IR_high_result_byte),A
+			JP NZ,L1405
+			CPB (var_IR_result_byte),85H
+			JR Z,Int22_Beacon2_85
+			CPB (var_IR_result_byte),87H
+			JR Z,Int22_Beacon2_87
+			CPB (var_IR_result_byte),89H
+			JR Z,Int22_Beacon2_89
+			CPB (var_IR_result_byte),81H
+			JP NZ,L1406
+			CPB (var_54B),0
+			JP NZ,L1406
+			LDB (var_boolCommIR81),1
+			LDB (var_bCommInfo_part_unused),0AH
+			RET ; reference (L1853)
+
+Int22_Beacon2_89:
+			CPB (var_54B),3
+			JR Z,L1407
+			JR NC,L1408
+			RET ; reference (L1853)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0C1H,4BH,15H,3FH,03H,66H,0DH,6FH,15H,0F1H,03H,12H,0,1,0F1H,24H
+	DB 13H,0,0AH,0EH
+ ENDIF
+
+L1407:
+			LDB (var_boolCommIR89a),1
+			SET 4,(var_bflagsIR89ab)
+			RET ; reference (L1853)
+
+L1408:
+			LDB (var_boolCommIR89b),1
+			SET 3,(var_bflagsIR89ab)
+			RET ; reference (L1853)
+
+Int22_Beacon2_85:
+			LDB (var_boolCommIR85),1
+			LDB (var_bCommInfo_part_unused),07H
+			CPB (g_bMode),5
+			JR NZ,L1409
+			LDB (var_269),07H
+L1409:
+			RET ; reference (L1853)
+
+Int22_Beacon2_87:
+			LDB (var_boolCommIR87),1
+			LDB (var_bCommInfo_part_unused),09H
+			CPB (g_bMode),5
+			JR NZ,L1410
+			LDB (var_269),07H
+L1410:
+			RET ; reference (L1853)
+
+L1399:
+			LDB A,(var_IR_result_byte)
+			CP A,0F0H
+			JR NC,L1411
+			LD (var_voice_datain),A
+L1411:
+			RET ; reference (L1853)
+
+L1400:
+			CPB (var_IR_high_result_byte),0
+			JR Z,L1412
+			CPB (var_IR_high_result_byte),88H
+			JR Z,L1413
+			RET ; reference (L1853)
+
+L1413:
+			CPB (g_bMode),6
+			JR NZ,L1414
+			LDB (var_2EA),0
+			RET ; reference (L1853)
+
+L1414:
+			CPB (var_2EA),0
+			JR Z,L1415
+			RET ; reference (L1853)
+
+L1415:
+			LDB (var_2EA),1
+			LDBB var_2EB,var_IR_result_byte
+L1412:
+			LDB A,(var_IR_result_byte)
+			AND A,0FH
+			INC 1,A
+			LD (var_iRemoteButton_1based),A
+			LDB (var_boolCommIR85),0
+			LDB (var_boolCommIR87),0
+			LDB (var_boolCommIR81),0
+			LDB (var_boolCommIR89b),0
+			LDB (var_boolCommIR89a),0
+			LDB (var_boolEnableEdgeTimer),0
+			LDB (var_5F1),1
+			LDB (var_5F0),0
+			LDW (var_wEdge3),0
+			RET ; reference (L1853)
+
+L1406:
+			LDB (var_bDetectedOtherCybie),1
+L1405:
+			BIT 0,(var_boolEnable60SecIRTimer)
+			JR NZ,L1416
+L1404:
+			LDB A,(var_IR_result_byte)
+			CP A,50H
+			JR NZ,L1417
+			CPB (var_IR_mode),1
+			JR Z,L1418
+			CPB (var_IR_mode),2
+			JP Z,L1419
+L1416:
+			RET ; reference (L1853)
+
+L1419:
+			LDB (var_IR_mode),03H
+			LDB (var_IR_data),80H
+			JP L1420 ; reference (L1853)
+
+L1418:
+			LDB (var_IR_mode),02H
+			LDB (var_IR_data),53H
+			JP L1420 ; reference (L1853)
+
+L1417:
+			LDL XIX,d1421
+L1424:
+			CP (XIX),A
+			JR Z,L1422
+			INC 4,XIX
+			CP XIX,d1423
+			JR C,L1424
+			RET ; reference (L1853)
+
+L1422:
+			INC 1,XIX
+			LDB A,(var_IR_mode)
+			CP (XIX),A
+			JR Z,L1425
+			RET ; reference (L1853)
+
+L1425:
+			INC 1,XIX
+			LDW WA,(XIX)
+			CPB (var_IR_mode),0AH
+			JR Z,L1426
+			JR L1427 ; reference (L1853)
+
+L1426:
+			CPB (var_IR_result_byte),8CH
+			JR Z,L1428
+			CPB (var_IR_result_byte),8EH
+			JR Z,L1429
+			CPB (var_IR_result_byte),8FH
+			JR Z,L1430
+			JR L1431 ; reference (L1853)
+
+L1428:
+			LDB (varNEW_1C1),8CH
+			LDB (varNEW_1AA),1
+			LDB (varNEW_1C2),28H
+			JR L1431 ; reference (L1853)
+
+L1429:
+			LDB (varNEW_1C1),8EH
+			JR L1432 ; reference (L1853)
+
+L1430:
+			LDB (varNEW_1C1),8FH
+			JR L1432 ; reference (L1853)
+
+L1432:
+			LDB (varNEW_1AA),1
+			LDB (varNEW_1A8),28H
+			JR L1431 ; reference (L1853)
+
+L1427:
+			CPB (var_IR_mode),0
+			JR NZ,L1431
+			CPB (var_IR_high_result_byte),0DDH
+			JR NZ,L1431
+			CPB (var_IR_result_byte),8BH
+			JR NZ,L1431
+			LDB (varNEW_19E),1
+L1431:
+			LD (var_IR_mode),A
+			LD (var_IR_data),W
+L1420:
+			CALL L1064
+			CALL L1433
+			JP C,L1434
+			CPB (var_IR_mode),1
+			JP Z,L1434
+			CPB (var_IR_mode),3
+			JR Z,L1435
+			CPB (var_IR_mode),9
+			JR Z,L1436
+			CPB (var_IR_mode),4
+			JR Z,L1434
+			CPB (var_IR_mode),5
+			JR Z,L1434
+			CPB (var_IR_mode),0AH
+			JR Z,L1437
+			CPB (var_IR_result_byte),83H
+			JR Z,L1438
+			CPB (var_IR_result_byte),84H
+			JR Z,L1438
+			JP L1348 ; reference (L1853)
+
+L1435:
+			CPB (var_bDetectedOtherCybie),1
+			JR Z,L1439
+			LDB (var_boolStubCommMode),1
+			LDB (var_iMetaCommand),26H
+			JP L1348 ; reference (L1853)
+
+L1439:
+			LDB (var_bDetectedOtherCybie),0
+			LDB (var_iMetaCommand),2BH
+			LDB (var_b5SecIRTimer),05H
+			LDB (var_boolEnable5SecIRTimer),1
+			JP L1348 ; reference (L1853)
+
+L1436:
+			LDB (var_bDetectedOtherCybie),0
+			LDB (var_iMetaCommand),2AH
+			LDB (var_IR_mode),0
+			JP L1348 ; reference (L1853)
+
+L1438:
+			LDB A,(var_IR_high_result_byte)
+			SLLB 1,A
+			LDB (var_b60SecIRTimer),60
+			LDB (var_boolEnable60SecIRTimer),1
+			JP L1348 ; reference (L1853)
+
+L1434:
+			LDB (var_b5SecIRTimer),05H
+			LDB (var_boolEnable5SecIRTimer),1
+			JP L1348 ; reference (L1853)
+
+L1437:
+			LDB (varNEW_1A8),28H
+			LDB (var_b5SecIRTimer),0AH
+			LDB (var_boolEnable5SecIRTimer),1
+			JP L1348 ; reference (L1853)
+
+; ------------------------------
+
+ IFDEF EXACT
+	DB 0EH
+ ENDIF
+
+L1398:
+			LDW WA,0800H
+			LDL XIX,var_IR_array_21
+			LDL XIY,d1440
+L1442:
+			CPB (XIX),1
+			JR NZ,L1441
+			ADD A,(XIY)
+L1441:
+			INC 1,XIX
+			INC 1,XIY
+			DEC 1,W
+			JR NZ,L1442
+			LD (var_IR_high_result_byte),A
+			LDW WA,0800H
+			LDL XIY,d1440
+L1444:
+			CPB (XIX),1
+			JR NZ,L1443
+			ADD A,(XIY)
+L1443:
+			INC 1,XIX
+			INC 1,XIY
+			DEC 1,W
+			JR NZ,L1444
+			LD (var_IR_result_byte),A
+			RET ; reference (L1398)
+
+; ------------------------------
+
+
+L1433:
+			CPB (var_IR_result_byte),81H
+			JR Z,L1445
+			CPB (var_IR_result_byte),82H
+			JP NZ,L1446
+L1445:
+			LDB A,(var_IR_high_result_byte)
+			LDL XIX,var_550_singleuse
+L1449:
+			CPB (XIX),0
+			JR Z,L1447
+			CP (XIX),A
+			JR Z,L1448
+			INC 1,XIX
+			CP XIX,00001559H ; 001559H
+			JR NZ,L1449
+L1447:
+			LD (XIX),A
+			ADD XIX,0000000AH
+			LDB (XIX),1
+			CP XIX,0000155FH ; 00155FH
+			JR NC,L1450
+			JR L1446 ; reference (L1433)
+
+L1448:
+			ADD XIX,0000000AH
+			CPB (XIX),0FFH
+			JR Z,L1451
+			INCB 1,(XIX)
+L1451:
+			CP XIX,0000155AH ; 00155AH
+			JR Z,L1446
+			DEC 1,XIX
+			LDW WA,(XIX)
+			CP A,W
+			JR UGT,L1452
+			EX W,A
+			LD (XIX),WA
+			SUB XIX,0000000AH
+			LDW WA,(XIX)
+			EX W,A
+			LD (XIX),WA
+			CP XIX,00001555H ; 001555H
+			JR C,L1446
+			ADD XIX,0000000AH
+			CPB (XIX),5
+			JR C,L1450
+			JR L1446 ; reference (L1433)
+
+L1452:
+			CP XIX,00001554H ; 001554H
+			JR C,L1446
+			ADD XIX,0000000BH
+			CPB (XIX),5
+			JR C,L1450
+L1446:
+			RCF
+			RET ; reference (L1433)
+
+L1450:
+			SCF
+			RET ; reference (L1433)
+
+; ------------------------------
+
+
+L1064:
+			LDB A,(var_IR_data)
+			LDL XIX,var_end_of_IR_bit_array2
+L1453:
+			SRLB 1,A
+			STCF 0,(XIX)
+			DEC 1,XIX
+			CP XIX,00001519H ; (before_var_IR_bit_array2)
+			JR NZ,L1453
+			CPB (var_voice_enable),2
+			JR Z,L1454
+			CPB (var_IR_mode),0
+			JR Z,L1455
+			CPB (var_IR_mode),1
+			JR Z,L1456
+			CPB (var_IR_mode),4
+			JR Z,L1455
+			CPB (var_IR_mode),0AH
+			JR Z,L1457
+			CPB (var_IR_data),83H
+			JR Z,L1458
+			CPB (var_IR_data),84H
+			JR Z,L1459
+L1454:
+			DB 021H,0 ; FAKE OP LDB A,0
+			JR L1460 ; reference (L1064)
+
+L1455:
+			LDB A,(var_IR_upper_byte_code_for_something)
+			JR L1460 ; reference (L1064)
+
+L1456:
+			LDB A,63H
+			JR L1460 ; reference (L1064)
+
+L1458:
+			DB 021H, 003H ; FAKE OP LDB A,03H
+			JR L1460 ; reference (L1064)
+
+L1459:
+			LDB A,(var_IR_high_result_byte)
+			JR L1460 ; reference (L1064)
+
+L1457:
+			LDB A,0DDH
+L1460:
+			SRLB 1,A
+			STCF 0,(XIX)
+			DEC 1,XIX
+			CP XIX,00001511H ; (var_IR_data)
+			JR NZ,L1460
+			DB 021H,0 ; FAKE OP LDB A,0
+			LDL XIX,var_IR_bit_array1
+L1461:
+			ADD A,(XIX)
+			ADD XIX,1
+			CP XIX,00001522H ; 001522H
+			JR C,L1461
+			LDL XIX,var_526_singleuse
+L1462:
+			SRLB 1,A
+			STCF 0,(XIX)
+			DEC 1,XIX
+			CP XIX,00001521H ; (var_end_of_IR_bit_array2)
+			JR NZ,L1462
+			RET ; reference (L1064)
+
+; ------------------------------
+
+
+L1329:
+			CPB (varNEW_19A),0FFH
+			JP Z,L1463
+			LDB (varNEW_Flag_Beacon85),0
+			LDB (varNEW_Flag_Beacon87),0
+			LDB (varNEW_Flag_Beacon89),0
+			CALL L1464
+			CALL L1465
+			CALL L1466
+			CALL L1467
+			CALL L1468
+			LDB (varNEW_19A),0FFH
+L1463:
+			RET ; reference (L1329)
+
+; ------------------------------
+
+
+L1464:
+			CPB (varNEW_direction_0),85H
+			JP Z,L1469
+			CPB (varNEW_direction_0),87H
+			JP Z,L1470
+			CPB (varNEW_direction_0),89H
+			JP Z,L1471
+			RET ; reference (L1464)
+
+; ------------------------------
+
+
+L1465:
+			CPB (varNEW_direction_1),85H
+			JP Z,L1469
+			CPB (varNEW_direction_1),87H
+			JP Z,L1470
+			CPB (varNEW_direction_1),89H
+			JP Z,L1471
+			RET ; reference (L1465)
+
+; ------------------------------
+
+
+L1466:
+			CPB (varNEW_direction_2),85H
+			JP Z,L1469
+			CPB (varNEW_direction_2),87H
+			JP Z,L1470
+			CPB (varNEW_direction_2),89H
+			JP Z,L1471
+			RET ; reference (L1466)
+
+; ------------------------------
+
+
+L1467:
+			CPB (varNEW_direction_3),85H
+			JP Z,L1469
+			CPB (varNEW_direction_3),87H
+			JP Z,L1470
+			CPB (varNEW_direction_3),89H
+			JP Z,L1471
+			RET ; reference (L1467)
+
+; ------------------------------
+
+
+L1468:
+			CPB (varNEW_direction_4),85H
+			JP Z,L1469
+			CPB (varNEW_direction_4),87H
+			JP Z,L1470
+			CPB (varNEW_direction_4),89H
+			JP Z,L1471
+			RET ; reference (L1468)
+
+; ------------------------------
+
+
+L1469:
+			LDB (varNEW_Flag_Beacon85),85H
+			RET ; reference (L1464)
+
+L1470:
+			LDB (varNEW_Flag_Beacon87),87H
+			RET ; reference (L1464)
+
+L1471:
+			LDB (varNEW_Flag_Beacon89),89H
+			RET ; reference (L1464)
+
+; ------------------------------
+
+
+d1440:
+	DB 80H,40H,20H
+d1378:
+	DB 10H,08H,04H,02H,1
+d1421:
+	DB 81H,0,03H,82H,82H,00H,09H,81H,53H,1,02H,40H,80H,02H,09H,81H
+	DB 10H,0,1,10H,50H,01H,02H,53H,40H,02H,03H,80H,44H,02H,03H,80H
+	DB 48H,02H,03H,80H,4CH,02H,03H,80H,50H,02H,03H,80H,54H,02H,03H,80H
+	DB 58H,02H,03H,80H,5CH,02H,03H,80H,60H,02H,03H,80H,64H,02H,03H,80H
+	DB 68H,02H,03H,80H,6CH,02H,03H,80H,70H,02H,03H,80H,74H,02H,03H,80H
+	DB 78H,02H,03H,80H,7CH,02H,03H,80H,8BH,0,0AH,9BH,8EH,0AH,0AH,9CH
+	DB 8CH,0AH,0,85H,8FH,0AH,0AH,9FH
+d1423:
+	DB 0FFH
+int22_vector_14a:
+	DD	d1472
+	DD	d1473
+	DD	d1474
+	DD	d1475
+	DD	d1476
+	DD	d1477
+	DD	d1478
+	DD	d1479
+	DD	d1479
+	DD	d1479
+	DD	d1480
+	DD	d1481
+	DD	d1482
+	DD	d1482
+int22_vector_14b:
+	DD	d1483
+	DD	d1484
+	DD	d1485
+	DD	d1486
+	DD	d1486
+	DD	d1487
+	DD	d1488
+	DD	d1485
+	DD	d1489
+	DD	d1490
+	DD	d1491
+	DD	d1491
+	DD	d1491
+	DD	d1492
+d1472:
+	DB 08H,30H,10H,04H,24H
+d1473:
+	DB 08H,30H,10H,04H,24H
+d1474:
+	DB 00H,0,00H,00H,00H
+d1475:
+	DB 24H,24H,24H,24H,24H
+d1476:
+	DB 04H,04H,04H,04H,04H
+d1477:
+	DB 30H,30H,30H,30H,30H
+d1478:
+	DB 10H,10H,10H,10H,10H
+d1479:
+	DB 08H,08H,08H,08H,08H
+d1480:
+	DB 08H,30H,10H,38H,18H
+d1481:
+	DB 00H,0,00H,38H,18H
+d1482:
+	DB 08H,30H,10H,38H,18H
+d1483:
+	DB 81H,85H,87H,89H,89H
+d1484:
+	DB 81H,85H,87H,89H,89H
+d1486:
+	DB 89H,89H,89H,89H,89H
+d1485:
+	DB 81H,81H,81H,81H,81H
+d1487:
+	DB 85H,85H,85H,85H,85H
+d1488:
+	DB 87H,87H,87H,87H,87H
+d1489:
+	DB 0A0H,0A0H,0A0H,0A0H,0A0H
+d1490:
+	DB 10H,10H,10H,10H,10H
+d1491:
+	DB 81H,85H,87H,9AH,9AH
+d1492:
+	DB 9CH,9CH,9CH,9CH,9CH
+int22_vector_8:
+	DD	d1493
+	DD	d1494
+	DD	d1495
+	DD	d1496
+	DD	d1497
+	DD	d1498
+	DD	d1499
+	DD	d1500
+d1493:
+	DB 00H,0,00H,00H,00H,00H,00H,00H
+d1494:
+	DB 20H,20H,20H,20H,40H,40H,80H,80H
+d1495:
+	DB 20H,40H,20H,40H,20H,40H,20H,20H
+d1496:
+	DB 20H,20H,20H,20H,80H,80H,20H,20H
+d1497:
+	DB 40H,40H,0,00H,40H,40H,40H,20H
+d1498:
+	DB 40H,40H,20H,20H,40H,40H,40H,40H
+d1499:
+	DB 00H,0,00H,00H,00H,00H,00H,80H
+d1500:
+	DB 20H,20H,20H,20H,40H,40H,80H,0
+
+ IFDEF EXACT
+    DB 20H,20H,20H,20H,40H,40H,80H,80H
+	DB 00H,0,00H,00H
+ ENDIF
+
+

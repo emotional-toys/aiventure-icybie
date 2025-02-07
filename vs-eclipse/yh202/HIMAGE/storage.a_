@@ -1,0 +1,231 @@
+L1051:
+			LDW DE,(wvar_reply_data)
+			LD (var_local_save_reply_data),DE
+			LDB A,(var_iwStorageToWrite)
+			LD (var_095),A
+			LDW DE,0
+			LD (wvar_reply_data),DE
+			LDB (var_iwStorageToWrite),3FH
+			CALL L1038
+			LDW DE,(var_local_save_reply_data)
+			LD (wvar_reply_data),DE
+			LDB A,(var_095)
+			LD (var_iwStorageToWrite),A
+			RET ; reference (L1051)
+
+; ------------------------------
+
+
+L1044:
+			LD (var_095),A
+			DB 021H,0 ; FAKE OP LDB A,0
+			CALL L1039
+			LDB A,(var_095)
+			RET ; reference (L1044)
+
+; ------------------------------
+
+
+Storage_UnProtect:
+			LDB (var_08C),0FFH
+			JR L1040 ; reference (Storage_UnProtect)
+
+; ------------------------------
+
+
+Storage_Protect:
+			NOP ; NOP timing
+			NOP
+			LDB (var_08C),0
+			NOP
+			NOP
+L1040:
+			CALL L1041
+			SCF
+			CALL L1042
+			RCF
+			CALL L1042
+			RCF
+			CALL L1042
+			LDB (var_08F),06H
+L1043:
+			LDB E,(var_08C)
+			SLLB 1,E
+			LD (var_08C),E
+			CALL L1042
+			DECB 1,(var_08F)
+			CPB (var_08F),0
+			JR NZ,L1043
+			RET ; reference (Storage_Protect)
+
+; ------------------------------
+
+
+Storage_Read:
+			CALL L1044
+L1039:
+			LD (var_iwStorageToWrite),A
+			CALL L1041
+			SCF
+			CALL L1042
+			SCF
+			CALL L1042
+			RCF
+			CALL L1042
+			LDB (var_08F),06H
+			LDB E,(var_iwStorageToWrite)
+			SLLB 2,E
+			LD (var_iwStorageToWrite),E
+L1045:
+			LDB (WDCR),4EH
+			LDB E,(var_iwStorageToWrite)
+			SLLB 1,E
+			LD (var_iwStorageToWrite),E
+			CALL L1042
+			DECB 1,(var_08F)
+			CPB (var_08F),0
+			JR NZ,L1045
+			LDB (var_08F),10H
+			LDW DE,0
+			LD (wvar_reply_data),DE
+			RCF
+L1049:
+			LDB (WDCR),4EH
+			CALL L1046
+			BIT 0,(P7)
+			JR NZ,L1047
+			RCF
+			JR L1048 ; reference (Storage_Read)
+
+L1047:
+			SCF
+L1048:
+			LDW DE,(wvar_reply_data)
+			RLW 1,DE
+			LD (wvar_reply_data),DE
+			DECB 1,(var_08F)
+			CPB (var_08F),0
+			JR NZ,L1049
+			CALL L1050
+			RET ; reference (Storage_Read)
+
+; ------------------------------
+
+
+Storage_Write:
+			CALL L1051
+L1038:
+			CALL Storage_UnProtect
+			CALL L1050
+			CALL L1041
+			SCF
+			CALL L1042
+			RCF
+			CALL L1042
+			SCF
+			CALL L1042
+			LDB (var_08F),06H
+			LDB E,(var_iwStorageToWrite)
+			SLLB 2,E
+			LD (var_iwStorageToWrite),E
+L1052:
+			LDB (WDCR),4EH
+			LDB E,(var_iwStorageToWrite)
+			SLLB 1,E
+			LD (var_iwStorageToWrite),E
+			CALL L1042
+			DECB 1,(var_08F)
+			CPB (var_08F),0
+			JR NZ,L1052
+			LDB (var_08F),10H
+L1053:
+			LDB (WDCR),4EH
+			LDW DE,(wvar_reply_data)
+			RLW 1,DE
+			LD (wvar_reply_data),DE
+			CALL L1042
+			DECB 1,(var_08F)
+			CPB (var_08F),0
+			JR NZ,L1053
+			CALL L1050
+			RCF
+			CALL L1042
+			LDW BC,4
+			CALL L1054
+			CALL L1041
+			LDW BC,2710H
+L1056:
+			BIT 0,(P7)
+			JR NZ,L1055
+			DJNZ BC,L1056
+			CALL L1050
+			CALL Storage_Protect
+			CALL L1050
+			SCF
+			RET ; reference (Storage_Write)
+
+L1055:
+			CALL L1050
+			CALL Storage_Protect
+			CALL L1050
+			RCF
+			RET ; reference (Storage_Write)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F0H,13H,0C8H,6EH,0AH
+ ENDIF
+
+L1041:
+			LDB W,(P5)
+			OR W,8
+			LD (P5),W
+			RET ; reference (L1041)
+
+; ------------------------------
+
+
+L1050:
+			LDB W,(P5)
+			AND W,0F7H
+			LD (P5),W
+			RET ; reference (L1050)
+
+; ------------------------------
+
+
+L1054:
+			DJNZ BC,L1054
+			RET ; reference (L1054)
+
+; ------------------------------
+
+
+L1042:
+			JR NC,L1057
+			LDB A,(P5)
+			SET 5,A
+			LD (P5),A
+			JR L1046 ; reference (L1042)
+
+L1057:
+			LDB A,(P5)
+			RES 5,A
+			LD (P5),A
+L1046:
+			LDB A,(P5)
+			SET 4,A
+			LD (P5),A
+			LDW BC,0014H
+			CALL L1054
+			LDB A,(P5)
+			RES 4,A
+			LD (P5),A
+			LDW BC,0014H
+			CALL L1054
+			RET ; reference (L1042)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

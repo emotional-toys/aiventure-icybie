@@ -1,0 +1,1 @@
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl.Tests\obj\Debug\GdbControl.Tests.csprojResolveAssemblyReference.cache

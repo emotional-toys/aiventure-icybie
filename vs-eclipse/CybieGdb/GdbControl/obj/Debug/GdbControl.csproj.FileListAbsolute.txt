@@ -1,0 +1,11 @@
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\bin\Debug\TestTools.dll
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\bin\Debug\TestTools.pdb
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\bin\Debug\Consonya.Tools.dll
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\obj\Debug\TestTools.dll
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\obj\Debug\TestTools.pdb
+G:\Nxp Projects\DESFireEV2_Testbench\GdbControl\obj\Debug\GdbControl.csprojResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\bin\Debug\GdbControl.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\bin\Debug\GdbControl.pdb
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\obj\Debug\ResolveAssemblyReference.cache
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\obj\Debug\GdbControl.dll
+c:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl\obj\Debug\GdbControl.pdb

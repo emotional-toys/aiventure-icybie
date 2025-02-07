@@ -1,0 +1,13 @@
+﻿Build started 24-Jun-13 20:07:16.
+     1>Project "C:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Sanity\GdbControl.Sanity.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+     1>InitializeBuildStatus:
+         Creating "Debug\GdbControl.Sanity.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       FinalizeBuildStatus:
+         Deleting file "Debug\GdbControl.Sanity.unsuccessfulbuild".
+         Touching "Debug\GdbControl.Sanity.lastbuildstate".
+     1>Done Building Project "C:\aeonWorkingDirectory\bph\cybie\vs\CybieGdb\GdbControl.Sanity\GdbControl.Sanity.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.01

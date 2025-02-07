@@ -1,0 +1,66 @@
+======================================================================
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+E2PROM - Storage
+================
+
+This note gives a quick overview of the E2PROM used to store ICybie settings.
+
+Please refer to specs for the 93LC46 E2PROM chip if you want more details
+on the actual chip.
+
+NOTE: the 93LC46 E2PROM chips is attached to the motherboard
+and is used by the main Toshiba CPU to store 64 words (128 bytes)
+of settings data. There is an additional 1024 bytes of E2PROM
+used by the voice recognition CPU (RSC-300) to store voice commands.
+
+For more details, see the source code to the ICLib2 (ICybie Library)
+In particular:
+	storage.c - for E2PROM access
+
+======================================================================
+
+Ports (see ports.txt)
+	P5.3: (O) E2PROM Storage (CS of 93LC46)
+	P5.4: (O) E2PROM Storage (CLK of 93LC46)
+	P5.5: (O) E2PROM Storage (DI of 93LC46)
+
+----------------------------------------------------------------------
+
+9 bit command word:
+
+        110aaaaaa - read storage
+        101aaaaaa dddddddd dddddddd - storage write
+        100aaaaaa 
+        See 93LC46 specs for more details
+    
+==========================================================
+Standard E2PROM storage usage:
+
+see "ic_storage.h"
+Be VERY careful if you want to store your own data in E2PROM
+since you can totally screw up the regular ICybie personality.
+
+Last mode/mood is stored in E2PROM
+	Moods:
+	    0 = Hyper
+	    1 = Happy
+	    2 = Sleepy
+	    3 = Sad
+	    4 = Sick
+	    5 = n/a
+	    6 = Guard mode (special)
+
+'Use Voice Commands' (10, 7, Large) is stored in E2PROM
+
+'Battery Low' is stored in E2PROM
+
+'Stay Mode' is not stored in E2PROM (guard or Remote 7)
+
+Auto Listen (10, 5, Large) is not stored in E2PROM (starts off)
+
+For walkup charger:
+    Enable look for station (10, 9, Large, 3, Large) is not stored in E2PROM
+
+==========================================================

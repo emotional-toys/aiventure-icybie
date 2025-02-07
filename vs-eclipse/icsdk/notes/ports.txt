@@ -1,0 +1,215 @@
+======================================================================
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+Toshiba CPU SFR I/O bits
+========================
+
+This note gives a short description of each of the I/O ports on
+the Toshiba CPU (ICybie's main CPU), and how it is used in ICybie.
+
+Please refer to the Toshiba (TMP91C815F) manual for details on how
+the SFR registers work.
+
+For more details, see the source code to the ICLib2 (ICybie Library)
+In particular:
+	motor.c - for all leg/head/neck/mouth/tail motor control bits
+	ir1.c - for strange encoding of IR bits
+    adc.c - for ADC converter multiplexing
+
+======================================================================
+
+UNKNOWN PORT BITS:
+P6.1: (O) ??
+PC.4: (O) used ??
+
+P8.4: (I-digital) used during halt/power down only ????
+P8.5: (I-x) - not used ??
+
+======================================================================
+// P2: (output)
+
+P2.0: (O-SPECIAL) A16 address bus
+P2.1: (O-SPECIAL) A17 address bus
+P2.2: (O)  > IR Transmit select
+P2.3: (O)  >
+P2.4: (O)  >
+P2.5: (O)  >
+P2.6: (O) adc select
+P2.7: (O) adc select
+
+    USAGE:
+    // not mirrored
+    // P2FC = 3
+    // init to 0x00
+    // P2 &= 3 during power down
+    // P2 = (P2 & 0x3F) | [0|0x40|0x80] during ADC select
+    // P2 &= xx????xx during int22
+    // P2.2 (main IR diode) in main as well
+
+======================================================================
+// P5: (output+special)
+
+P5.0: (SPECIAL) RDE bit (0 => pulse RD all the time, 1 => only external)
+    // REVIEW: why RDE low ??
+P5.1: (x) does not exist on 91C815
+
+P5.2: (O) adc select
+
+P5.3: (O) E2PROM Storage (CS of 93LC46)
+P5.4: (O) E2PROM Storage (CLK of 93LC46)
+P5.5: (O) E2PROM Storage (DI of 93LC46)
+P5.6: (O) clock for ? - gets diddled a lot (DiddleP5)
+P5.7: (x) does not exist on 91C815
+
+    USAGE:
+    // not mirrored
+    // init to 0x78 = x11110x0
+    // P5CR = 0x7C = x11111xx
+    // P5FC = 0 (no special pins)
+    // on power down &= 0xC3 = x100 00x1
+
+    // during ADC select
+        // &= 0xF8 = x111 10x0 => lower RDE, lower P5.2
+        // &= 0x78 = same as above
+        // &= 0xF8 | 4 => set P5.2
+
+======================================================================
+// P6: (output)
+
+P6.0: (O-SPECIAL) /CS0
+P6.1: (O) ??
+P6.2: (O-SPECIAL) /CS2
+P6.3: (O) leg10
+P6.4: (O) leg10
+P6.5: (O) leg11
+P6.6: (O) leg11
+P6.7: (O) neck down
+
+    USAGE:
+    // mirrored
+    // init to 0xFA = 11111x1x
+    // P6FC = 5, P6FC2 = 0
+    // on powerdown &= 0xFD = 1111 1101 (lower P6.1) ???
+
+    // P6.7 bit toggled a lot ???
+
+======================================================================
+// P7: (i/o)
+
+P7.0: (I) E2PROM Storage (DO of 93LC46) - ack and data
+P7.1: (O) neck up
+P7.2: (O) head turn R
+P7.3: (O) head turn L
+P7.4: (O) mouth open
+P7.5: (O) mouth close
+P7.6: (O) tail up
+P7.7: (O) tail down
+
+    USAGE:
+    // mirrored - but not always written immediately to port
+    // init to 0xFE = 1111111x, mirror to 0xFF
+    // P7CR = 0xFE (all output except P7.0)
+    // P7FC = P7FC2 = 0
+    // motor control 0=> motor on, 1=> motor off
+
+======================================================================
+// P8 (input, 8 A->D)
+
+P8.0: (I-ANALOG) ADC inputs for leg servo position - Left Front
+P8.1: (I-ANALOG) ADC inputs for leg servo position - Right Front
+P8.2: (I-ANALOG) ADC inputs for leg servo position - Left Rear/Hind
+P8.3: (I-ANALOG) ADC inputs for leg servo position - Right Rear/Hind
+P8.4: (I-digital) used during halt/power down only ????
+P8.5: (I-x) - not used ??
+P8.6: (I-ANALOG) - light level
+P8.7: (I-ANALOG) - battery level
+
+    USAGE:
+    // P8.0->P8.3 used in scan mode
+    // P8.6 and P8.7 used in fixed mode
+    // P8.4 only used as (digital) input during powerdown (tested after HALT)
+        // perhaps head switch ?
+
+======================================================================
+// P9: (input)
+
+P9.0: (I) ? other switch inputs
+P9.1: (I) - head horizontal. 1=>head to right of center, 0=>head to left
+P9.2: (I) - head vertical. 1=> head low, 0=> head up
+P9.3: (I) - tail position switch.
+P9.4: (I) SunPlus daughter CPU ack/data
+P9.5: (I) > clap - left front
+P9.6: (I) > clap - left rear
+P9.7: (I) > clap - right front (no right rear)
+
+    USAGE:
+    // P9FC = 0
+
+======================================================================
+// PA: (output) init=$FF, FC=0 (cmos)
+PA.0: (O) leg0
+PA.1: (O) leg0
+PA.2: (O) leg1
+PA.3: (O) leg1
+PA.4: (O) leg2
+PA.5: (O) leg2
+PA.6: (O) leg3
+PA.7: (O) leg3
+
+    USAGE:
+    // mirrored
+
+======================================================================
+// PB: (6 bit i/o)
+PB.0: (O) leg4
+PB.1: (O-SPECIAL) TA1OUT => TMRA1 using FlipFlop for IR modulation
+PB.2: (I) IR receive input (manually polled)
+PB.3: (O) leg4
+PB.4: (O) leg5
+PB.5: (O) leg5
+PB.6: (O) leg6
+PB.7: (x) does not exist on 91C815
+
+    USAGE:
+    // mirrored
+    // init to 0xFD = 111111x1
+    // PBCR = 0xFB = 11111011
+    // PBFC = 0x02
+
+======================================================================
+// PC: (6 bit i/o)
+
+PC.0: (O) TXD0 - not used normally
+PC.1: (O) RXD0 - not used normally
+PC.2: (O) /CTS0 - not used normally (toggled during power up)
+PC.3: (O) leg6
+PC.4: (O) used ??
+PC.5: (O) leg7
+PC.6: (x) does not exist on 91C815
+PC.7: (x) does not exist on 91C815
+
+    USAGE:
+    // mirrored
+    // init to 0x38 = xx111000 or 0x2F = xx101111
+    // PCCR=0x3F = xx111111
+    // PCFC=0
+
+======================================================================
+// PD: (output)
+
+PD.0: (O) leg7
+PD.1: (O) leg8
+PD.2: (O) leg8
+PD.3: (O) leg9
+PD.4: (O) leg9
+PD.5: (O) protocol to SunPlus daughter CPU (clock)
+PD.6: (O) protocol to SunPlus daughter CPU (data)
+PD.7: (O) protocol to SunPlus daughter CPU (data)
+
+    USAGE:
+    // mirrored
+    // init to 0x1F
+    // PDFC=0
+
+==========================================================

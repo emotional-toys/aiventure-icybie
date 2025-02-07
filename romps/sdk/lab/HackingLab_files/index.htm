@@ -1,0 +1,459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+
+
+
+
+<script language="javascript">
+function presence_frame()
+{
+if(!(parent.frames["leftFrame"] && parent.frames["mainFrame"]))
+{
+location.replace("index_icybie.html");
+}
+}
+
+<!--
+function mesure(_MesurePro, _page)
+{
+scr_w = screen.width;
+scr_h = screen.height;
+color = screen.colorDepth;
+ref = escape(window.document.referrer);
+
+document.write("<IMG src='http://www.direct-stats.com/cgi-bin/pro/stats/cyberdoll/marqueur.pl/"+ "?page="+ _page+ "&n="+ Math.round (Math.random () * 1000000000000000)+ "&reso_w="+ scr_w+ "&reso_h="+ scr_h+ "&color="+ color+ "&referer="+ ref+"' border=0>");
+}
+mesure("Mesure Pro", "I-Cybie");
+//-->
+</script></head><body onload="presence_frame();" bgcolor="#ffffff"><img src="index_data/a.htm" border="0"><title>Workshop VIDA 9</title>
+
+
+<link rel="SHORTCUT ICON" href="http://www.hackinglab.org/icybie/dog.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+  <style>
+<!--
+ /* Style Definitions */
+*{font-family: Verdana, Arial, Helvetica, sans-serif;
+	/*font-size: 10.0pt;*/
+	/*color:#00FF00;*/
+	}
+a:link
+	{color:#000000;
+	font-size:10.0pt;
+	font-weight:bold;
+	text-decoration:underline;
+	font-family: "Verdana";}
+a:visited
+	{color:#000000;
+	font-size:10.0pt;
+	font-weight:bold;
+	text-decoration:underline;
+	font-family: "Verdana";}
+a:active
+	{color:#000000;  
+	font-size:10.0pt;
+	font-weight:bold;
+	font-family: "Verdana";}
+a:hover 
+	{color: #FFFFFF;
+	font-family: "Verdana";
+	font-size:10.0pt;
+	font-weight:bold;
+	text-decoration:underline;
+	background: #FF0000}
+h1
+	{color: #FFFFFF;
+	font-family: "Verdana";
+	font-size:10.0pt;
+	font-weight:bold;
+	text-decoration:none;
+	background: #FF0000;
+	padding:2px; 
+	}
+</style>
+<div align="center"> 
+  <p><font color="#ff0000" size="4"><strong>"Teaching robotic dogs new tricks"<br>
+    .. or How to hack an I-Cybie<br>
+    </strong></font></p>
+  <p>&nbsp;</p>
+  <h1 align="left">Introduction</h1>
+  <p align="justify"><font size="2"><a href="http://www.cyber-doll.com/" target="_blank"><br>
+  France Cadet</a> performed surgery on several robotic dogs, customized their 
+  forms, and reprogrammed them with unusual behaviours.<br>
+  <br>
+  In <a href="http://cyberdoll.free.fr/cyberdoll/index_e_doglab01.html" target="_blank">Dog[LAB]01</a> 
+  her new dogs are genetically manipulated animal combinations, plastic chimeras. 
+  For instance, one is the “ultimate” domestic pet, a mixture of equal 
+  parts cat and dog. This earnest Frankenpet alternately wags its tail playfully, 
+  grooms itself, does feline stretches and, eventually, falls asleep and dreams 
+  dog dreams. Another is a cowdog - named “Dolly” after the famous 
+  cloned sheep - and as a result is prone to robotic BSE, twitching and collapsing 
+  while whining like a sad puppy. The results are constructions partially based 
+  on actual scientific and artistic experiments – an ironic demonstration 
+  of the potential consequences of cloning, eugenics and other contemporary experiments 
+  in biotechnology.<br>
+  <br>
+  In <a href="http://cyberdoll.free.fr/cyberdoll/index_e_doglab02.html" target="_blank">Dog[LAB]02</a> 
+  a whole pack of 20 of these “cloned” robotic cow-dogs will appear 
+  to suffer from BSE in unison.<br>
+  <br>
+  Some bugs deliberately added to the robots’ programs from <a href="http://cyberdoll.free.fr/cyberdoll/index_e_buglab01.html" target="_blank">Bug[LAB]01</a> 
+  will alter the normal behaviour of the dogs and appear randomly. They will remind 
+  us that the more life-like robots become, the more prone they’ll be to 
+  neurosis and illness and eventually they will end up hanging on a wall as Cadet’s 
+  “hunting trophies”.<br>
+  </font></p> 
+  <table border="0" width="98%">
+    <tbody><tr> 
+      <td><img src="index_data/aibo.jpg" height="190" width="174"></td>
+      <td width="44">&nbsp;</td>
+      <td><img src="index_data/i-cybie.jpg" height="200" width="200"></td>
+      <td width="45"> 
+        <div align="justify"></div><br>
+</td>
+      <td><div align="justify"><font size="2">All these strange animals have been 
+          obtained by modifying the shape ,the hardware and software of commercially 
+          available robotic dogs: the <a href="http://www.i-cybie.com/" target="_blank">I-Cybie</a> 
+          dogs from <a href="http://www.silverlit.com/product.htm" target="_blank">Silverlit</a>. 
+          These internal modifications are necessary because, unlike <a href="http://www.sonydigital-link.com/aibo/index.asp?language=en" target="_blank">Sony's 
+          AIBO</a>, I-Cybie hasn’t be designed to be reprogrammed. </font></div></td>
+    </tr>
+    <tr> 
+      <td><div align="center"><font size="2">AIBO from Sony</font></div></td>
+      <td><div align="center"></div><br>
+</td>
+      <td><div align="center"><font size="2">I-Cybie from Silverlit</font></div></td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody></table>
+  <br>
+  <br>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/hacking.jpg" height="100" width="451"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><div align="justify"><font size="2">An internal 2MB flash memory which 
+          contains the new programs must be added, and a bootloader must be installed 
+          to allow the robot to read the flash memory and to make it start on 
+          this new program instead of its original program, which is no longer 
+          used.<br>
+          <br>
+          </font><font size="2">A MAX232 chip must be soldered inside the robot 
+          to allow the communication with the serial port of a PC (as well as 
+          a plug and a switch on his back). The shell of the robot is fully removed, 
+          the electronics is modified, the shell is customized and then reassembled.<br>
+          </font></div></td>
+    </tr>
+  </tbody></table>
+  <p align="justify"><font size="2"><br>
+    </font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><img src="index_data/sensor.jpg" height="276" width="451"></td>
+      <td width="20">&nbsp;</td>
+      <td><p align="justify"><font size="2">Then all the movements of the robot 
+          have to be reprogrammed in C language on the computer, then compile 
+          and downloaded into the flash memory of the robot through the RS232 
+          port thanks to the C232 cable which has been adapted to the robot (mini 
+          jack et USB power). <a href="http://www.aibopet.com/icybie/icsdk.htm" target="_blank">ICSDK</a> 
+          (I-Cybie System Development Kit from <a href="http://www.aibopet.com/" target="_blank">aibopet</a>), 
+          <a href="http://www.context.cx/" target="_blank">Context</a> (freeware 
+          text programmers editor) and “<a href="http://www.hackinglab.org/icybie/Terminal.exe" target="_blank">Terminal</a>” 
+          (bray’s terminal indeed) are used to compile and download the 
+          C program into the robot via the serial port, and to communicate with 
+          it. Once the program downloaded, the robot can be disconnected from 
+          the PC, it is now autonomous and runs on its own new program.</font></p>
+        <p align="justify"><font size="2">We can control most of the motors and 
+          sensors of the robot: the 16 motor drive (12 real servo for the paws, 
+          and 4 cc motors: neck, head, mouse and tail), as well as the sounds 
+          (ADPCM format, 8bit, sample rate: 8KHz), the light of its eyes (green, 
+          yellow, red) and all the sensors (3 touch sensors, 1 light sensor, 2 
+          sound sensors,1 voice recognitions with 8 different commands, balance 
+          sensor (right, left, back, butt, face…).</font></p>
+</td>
+    </tr>
+  </tbody></table>
+  <br>
+    <br>
+  <br>
+  <br>
+  <br>
+</div>
+<h1><font size="2">Step 1: Taking I-Cybie apart</font></h1>
+<div align="justify"> 
+  <p><font size="2">You need to separate the two sides of I-Cybie's main body 
+    shell. For that you should first remove the four leg parts. </font> <font color="#ff0000" size="2"><strong><u><br>
+    <br>
+    1. Remove the four upper parts of the legs</u></strong></font> </p>
+  <table border="0" width="98%">
+    <tbody><tr> 
+      <td><font size="2"><img src="index_data/unscrew_leg_1.jpg" height="160" width="482"></font></td>
+      <td width="20"><font size="2">&nbsp; </font></td>
+      <td><font size="2">Each leg part has <strong>two large triangular </strong>screws 
+        and <strong>three small triangular</strong> screws holding it on. <br>
+        <br>
+        There are three small triangular screws holding a small round piece of 
+        plastic on the other side of the legs that you do not have to remove. 
+        <br>
+        </font></td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><strong> NOTE</strong>: Triangular screws can be removed by:<br>
+    - using the properly sized slot screwdriver and angling it into the triangular 
+    slot or<br>
+    - getting a piece of metal and filing it down the proper triangular shape 
+    or<br>
+    - using the special triangle screwdriver coming with a replacement shell.<br>
+    <br>
+    <font color="#ff0000"><strong><u>2. Remove the four lower parts of the legs</u></strong></font></font> 
+  </p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/unscrew_leg_2.jpg" height="160" width="345"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><font size="2">Each leg part has <strong>three Philips</strong> (cross 
+        shaped) screws inside. There are 4 inner parts and 4 outer parts. </font></td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><br>
+    <font color="#ff0000"><strong><u>3. Remove the body shell<br>
+    <br>
+    </u></strong></font></font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/remove_cartridge.jpg" height="200" width="160"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><font size="2">Before removing the body shell, you must remove the blank<strong> 
+        cartridge</strong> from the right side of the body shell. </font></td>
+    </tr>
+  </tbody></table>
+  <br>
+  <br>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/unscrew_boby.jpg" height="200" width="444"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><font size="2">Then you need to remove the <strong>seven Phillips</strong> 
+        screws holding the body together. On the dog's <strong>left side</strong>, 
+        there is only <strong>one screw</strong>. On the dog's <strong>right side</strong>, 
+        there are <strong>six</strong> (one for each hole).<br>
+        <br>
+        Three are visible. The other three are hidden under <strong>plastic caps</strong>.<br>
+        <br>
+        You must remove the plastic caps first ! 
+        <p>Put the special tool (sort of “T” shaped screwdriver) in 
+          the hole, fit in slot on screw cap, push it hard inside, then turn 90°, 
+          gently pull out the screw and the plastic cap should come out with it</p>
+        </font> </td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><strong>NOTE</strong>: there may be two plastic caps in the 
+    same hole. Then use a Phillips screwdriver like all the rest. <br>
+    <br>
+    The sides will easily move apart (if not you forgot a screw).<br>
+    </font>
+  </p><p>&nbsp;</p></div>
+<h1><font size="2">Step 2: Hardware modifications</font></h1>
+<div align="justify"> 
+  <p><font size="2"><font color="#ff0000"><strong><u>1. Add the serial connection</u><br>
+    <br>
+    </strong></font>Now you must add a serial connection to be able to communicate 
+    with the robot through the serial port of the PC. <br>
+    <br>
+    The standard signal voltage of the serial port of a computer (RS-232) is : 
+    –12 +12 volts.<br>
+    <br>
+    The standard UART signals voltage of most of the microprocessors (TTL), including 
+    I-Cybie’s main chip: is 0-5 volt.<br>
+    So you must use a TTL-RS232 converter which will convert the RS232 voltage 
+    (-12V +12V) to TTL voltage (0V +5V) and vice versa.<br>
+    <br>
+    <font color="#ff0000"><strong>Solution 1: using a MAX232</strong></font> </font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/C232-max232.jpg" height="240" width="409"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><div align="justify"><font size="2">The MAX232 chip is the most familiar 
+          chip used to build this electronic device. Here is the electronic diagram. 
+          The power supply is taken from the USB port of the computer to avoid 
+          an additional power supply. </font></div></td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><br>
+    <font color="#ff0000"><strong>Solution 2: using a Max 233</strong></font></font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/C232-max233.jpg" height="250" width="440"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><div align="justify"><font size="2">It is the same functioning as the 
+          MAX232 but it already includes the capacitors, no need to add external 
+          capacitors.</font></div></td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><strong></strong><font color="#ff0000"><strong>Solution 3: 
+    using transistors</strong></font></font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><img src="index_data/C232-transistor.jpg" height="264" width="390"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><div align="justify"><font size="2">The hardware modifications of the 
+          robot have been simplified by putting the electronic device needed (max 
+          232 chip + capacitors) inside the cable (inside the DB9 shell indeed) 
+          which will be used to download the programs and communicate with the 
+          PC. Thus no need any longer to add it inside the robot.</font></div></td>
+    </tr>
+  </tbody></table>
+  <br>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td height="222"><font size="2"><img src="index_data/C232-elec.jpg" height="220" width="181"><img src="index_data/C232.jpg" height="220" width="255"></font></td>
+      <td width="20">&nbsp;</td>
+      <td><div align="justify"><font size="2">Here is the used version which includes 
+          a SMD card (Surface Mounted Device).</font></div></td>
+    </tr>
+  </tbody></table>
+  <p><font size="2"><br>
+    Now you must solder the wires onto the motherboard to connect the<strong> 
+    stereo female mini-jack</strong> (serial connection to the PC) and add a <strong>bipolar 
+    switch</strong> to turn ON and turn OFF the robot.</font></p>
+  <div align="left"> 
+    <table border="0" width="98%">
+      <tbody><tr> 
+        <td><img src="index_data/PCB1.jpg" height="150" width="225"></td>
+        <td width="10">&nbsp;</td>
+        <td><img src="index_data/PCB2.jpg" height="150" width="225"></td>
+        <td width="20">&nbsp;</td>
+        <td><font size="2">You must solder <strong>3 wires</strong>:<br>
+          - a black wire for the ground (Ground of the jack)<br>
+          - a wire on the TX of the main chip (TX to the Tip of the jack)<br>
+          - a wire on the Rx of the main chip (Rx to the Ring of the jack)<br>
+          <br>
+          <strong>T</strong>x = <strong>T</strong>ransmitting = <strong>T</strong>ip 
+          of the jack<br>
+          <strong>R</strong>x = <strong>R</strong>eceiving = <strong>R</strong>ing 
+          of the jack.</font></td>
+      </tr>
+    </tbody></table>
+  </div>
+  <p align="left"><br>
+    <br>
+    <img src="index_data/jack.jpg" height="232" width="500"> <br>
+    <br>
+    <br>
+    <font size="2"><font color="#ff0000"><strong><u>2. Add an ON/OFF swicth</u></strong></font></font></p>
+  <table border="0" width="98%">
+    <tbody><tr>
+      <td><font size="2"><font color="#ff0000"><strong><u><img src="index_data/switch.jpg" height="370" width="364"></u></strong></font></font></td>
+      <td width="20">&nbsp;</td>
+      <td><br> <font size="2">The battery plug has 3 cables:<br>
+        - a red one: +12V<br>
+        - a yellow one: +6V<br>
+        - a black one: 0V<br>
+        <br>
+        <strong>Cut the red and the yellow</strong> cables and solder long cables 
+        to the bipolar switch as indicated on the picture<br>
+        <br>
+        Don’t forget to place heat shrink tube before soldering the cables.</font></td>
+    </tr>
+  </tbody></table>
+  <p>&nbsp;</p>
+  <h1><font size="2">Step 3: CROM install</font></h1>
+  <div align="justify"> 
+    <p><font size="2">Now w</font><font size="2">e must put the working 2MB cartridge 
+      which contains the right booloader in the right side of the dog.<br>
+      <br>
+      We will use the <a href="http://www.aibopet.com/icybie/icsdk.htm" target="_blank">ICSDK</a> 
+      (I-Cybie System Development Kit) from <a href="http://www.aibopet.com/" target="_blank">aibopet</a> 
+      to program the robot.<br>
+      <br>
+      All the technical details and steps for this are described on his website. 
+      See <a href="http://66.70.136.74/icybie/sic_rs232.htm" target="_blank">here</a>.<br>
+      For more general info see <a href="http://www.aibopet.com/icybie/" target="_blank">here</a>.<br>
+      </font>
+    </p><p>&nbsp;</p></div>
+  <h1 align="left"><font size="2">Step 4: Reassemble the dog</font></h1>
+  <div align="justify"><br>
+    <table border="0" width="98%">
+      <tbody><tr>
+        <td><img src="index_data/transparent_shell.jpg" height="350" width="354"></td>
+        <td width="20">&nbsp;</td>
+        <td><div align="left"><font size="2">Then drill two holes in the body 
+            shell:<br>
+            - a <strong>6mm </strong>diameter hole for the<strong> mini-jack</strong> 
+            on the right part<br>
+            - a <strong>5mm</strong> diameter hole for the<strong> switch</strong> 
+            on the left part<br>
+            <br>
+            Place the switch and the min-jack.<br>
+            Now you can reassemble the body shell and legs parts.</font></div></td>
+      </tr>
+    </tbody></table>
+    <p><br>
+    </p>
+    <h1><font size="2">Step 4: Program it</font></h1>
+    <div align="justify"> 
+      <p><font size="2">Now you can use your Super I-Cybie and program it with 
+        the <a href="http://www.aibopet.com/icybie/icsdk.htm" target="_blank">ICSDK</a> 
+        from <a href="http://www.aibopet.com/" target="_blank">aibopet</a>.<br>
+        See there for the instructions and Have Fun..!<br>
+        </font> 
+      </p><p><font size="2">You can have a look at the <a href="http://www.hackinglab.org/vida/index.html" target="_self">VIDA 
+        workshop</a> where some I-Cybies have been hacked in Madrid by some artists.</font> 
+      </p>
+<p><br>
+</p>
+
+    
+<h1><font size="2">Add Wireless communication to your dog<br>
+</font></h1>
+
+     
+      <font size="2"><br>
+The first step was to add a <span style="font-weight: bold; color: red;">RADIO communication </span>to the robots for <a href="http://www.cyber-doll.com/index_e_doglab02.html" target="_blank">Dog[LAB]02</a> project involving a <span style="font-weight: bold;">large group of robots</span>.<br>
+<br>
+<img style="width: 550px; height: 413px;" alt="" src="index_data/dogs_dolly.jpg"> <img style="width: 550px; height: 413px;" alt="" src="index_data/downloading.jpg"><br>
+<br>
+ <img style="width: 550px; height: 413px;" alt="" src="index_data/radio_dogs.jpg"></font> <font size="2"><img style="width: 310px; height: 413px;" alt="" src="index_data/radio_antenna.jpg"><br>
+</font><font size="2"><br>
+The <span style="font-weight: bold;">home made radio module.<br>
+</span></font><br>
+<font size="2"><img style="width: 400px; height: 300px;" alt="" src="index_data/transceiver.jpg"> <br>
+<span style="font-weight: bold;"></span><br>
+<br>
+Second step: add <span style="font-weight: bold; color: red;">WIFI </span>to the dog.<br>
+The robot with <span style="font-weight: bold;">PicoIp wifi version 1</span><br>
+<br>
+<img style="width: 417px; height: 375px;" alt="" src="index_data/wifi_dog2.jpg"><br>
+</font><font size="2">
+<br>
+Then a <a href="http://www.hackinglab.org/picoip_wifi/index.html">wifi version of picoIp</a> has been developped to fit inside the shell of the robot.<br>
+<br>
+<img style="width: 352px; height: 164px;" alt="" src="index_data/picoip_2.gif"><br>
+<br>
+ <img style="width: 352px; height: 287px;" alt="" src="index_data/picoip_3.gif"><br>
+<br>
+</font><font size="2"><img style="width: 600px; height: 450px;" alt="" src="index_data/dog_compact-flash.jpg"></font><br>
+<font size="2"><br><img style="width: 600px; height: 600px;" alt="" src="index_data/wifi_card_dog.jpg"><br><br><br><br>More info about I-Cybie modification: <br>
+<br>
+ </font><a href="http://www.dshed.net/studio/projects/doglab02/doglab02_journal.html#visit2" target="_blank">Link 1<br></a>
+<a href="http://76.74.242.190/%7Ecyber786/wifi_e_01.htm" target="_blank">Link 2<br></a>
+<a href="http://76.74.242.190/%7Ecyber786/wifi_e_02.htm" target="_blank">Link 3</a><br>
+<br>
+<br>
+</div>
+  </div>
+  <table border="0">
+    <tbody><tr> 
+      <td width="220"> <div align="left"><font size="2">All photos: some rights 
+          reserved</font></div></td>
+      <td><font size="2"><img src="index_data/by.png" height="18" width="18"><img src="index_data/nc.png" height="18" width="18"><img src="index_data/sa.png" height="18" width="18"></font></td>
+    </tr>
+  </tbody></table><br>
+
+  <p><font size="2"><br>
+    </font></p>
+</div>
+</body></html>

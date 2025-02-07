@@ -1,0 +1,9 @@
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\bin\Debug\CybieCommunicator.exe
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\bin\Debug\CybieCommunicator.pdb
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\CybieCommunicator.Properties.Resources.resources
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\CybieCommunicator.exe
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\CybieCommunicator.pdb
+C:\aeonWorkingDirectory\bph\cybie\vs\CybieCommunicator\obj\x86\Debug\CybieCommunicator.MainForm.resources

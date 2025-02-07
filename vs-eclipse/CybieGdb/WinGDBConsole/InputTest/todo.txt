@@ -1,0 +1,6 @@
+﻿01.11.2012:
+	List of things remaining todo for next sprint.
+
+	1. Close sprint backlog list using this project.
+	2. Mimick the testbench GDB code.
+

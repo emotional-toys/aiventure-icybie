@@ -1,0 +1,30 @@
+======================================================================
+ICSDK2: Implementation Notes (C) 2002 ICybiePet
+======================================================================
+
+RSC-300 Chip interface
+======================
+
+This note describes the interface to the RSC-300 CPU in ICybie's
+head, used for voice recognition.
+
+The RSC-300 CPU has 1KB of E2PROM for storing recorded voice commands.
+
+The interface to the RSC-300 uses 16 bits of data to and from the
+main Toshiba CPU, using the same format as the standard IR protocol
+(but not sent through the IR transmitters).
+
+This makes the RSC-300 control intimately tied to the IR logic.
+
+For more details, see the source code to the ICLib2 (ICybie Library)
+In particular:
+	ir1.c - for low-level IR
+	ir2.c - for mid-level IR
+    voice.c - for voice training and other functions
+
+======================================================================
+
+????REVIEW: document control codes and replies here
+    or put in ircodes.txt ??? (or put a reference from ircodes.txt to here)
+
+======================================================================

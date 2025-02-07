@@ -1,0 +1,852 @@
+
+ IFDEF EXACT
+    ; dead code for stand-alone startup
+
+	DB 00H,0,00H,00H,00H,06H,07H,47H,0FFH,2FH,00H,00H,0F1H,00H,03H,00H
+	DB 0E2H,0F1H,1,03H,0,4EH,08H,0CCH,0FCH,08H,0CDH,07H,08H,0C2H,0C3H,08H
+	DB 0C8H,20H,08H,0C9H,1FH,08H,0C0H,83H,08H,15H,05H,08H,1BH,0,08H,12H
+	DB 0FAH,0C0H,0E2H,21H,0C9H,0CEH,30H,0F0H,0E2H,41H,0F0H,0E0H,0BEH,0F0H,0E0H,0BAH
+	DB 0F1H,1,03H,0,4EH,0F0H,0E0H,0CAH,6EH,0F6H,0F0H,0E1H,0BBH,0F0H,0E0H,0B7H
+	DB 08H,0E1H,08H,0,00H,00H,0F0H,0E0H,0B1H,0F0H,0E0H,0B0H,0F0H,0E3H,0B0H,0F0H
+	DB 0E3H,0B1H,0C0H,0E2H,21H,0C9H,0CEH,40H,0C9H,0CEH,20H,0C9H,0CCH,0EFH,0F0H,0E2H
+	DB 41H,0F0H,0E0H,0BFH,0F0H,0E0H,0BAH,0F0H,0E0H,0CAH,6EH,0FBH,0F0H,0E1H,0B3H,0
+	DB 21H,0BH,0F0H,0E9H,41H,08H,0E8H,40H,0F0H,0E8H,0CDH,6EH,0FBH,08H,0E8H,80H
+	DB 0F1H,0,1,00H,00H,0F1H,04H,01H,00H,05H,0F1H,03H,01H,00H,2CH,0F1H
+	DB 05H,1,0,0BH,08H,24H,0FBH,08H,25H,02H,08H,22H,0FDH,0F1H,02H,01H
+	DB 00H,69H,08H,95H,04H,0F1H,0,1,00H,05H,0F1H,08H,01H,00H,00H,0F1H
+	DB 0CH,1,0,0BH,0F1H,0AH,01H,00H,0D2H,0F1H,0BH,01H,00H,3CH,08H,96H
+	DB 44H,0F1H,08H,1,0,07H,08H,09H,03H,08H,06H,00H,08H,0AH,7CH,08H
+	DB 0BH,0,08H,0DH,78H,08H,16H,0FEH,08H,17H,00H,08H,1CH,00H,08H,13H
+	DB 0FEH,08H,1DH,0,08H,21H,00H,08H,1EH,0FFH,08H,26H,3FH,08H,27H,00H
+	DB 08H,28H,0,08H,23H,38H,08H,2AH,00H,08H,29H,1FH,0F1H,31H,03H,00H
+	DB 0C0H,08H,93H,44H,08H,94H,44H,08H,92H,40H,0F1H,34H,03H,0,00H,08H
+	DB 90H,50H
+ ENDIF
+
+REAL_CART_STARTUP:
+			LDB (B2CS),0C3H
+			LDB (B0CS),83H
+			CALL L1058
+ IFDEF SERIAL
+		    LDB (PCCR),3DH ; RxD0 in
+		    LDB (PCFC),5 ; TxD0 and RxD0 enabled
+ ELSE
+			LDB (PCCR),3FH
+			LDB (PCFC),0
+ ENDIF
+			LDB (PCODE),0
+			LDB (PC),2FH
+			CALL L1059
+			CALL L1060
+			CALL L1061
+			CALL L1062
+			CALL L1063
+			LDB (g_bExpansionRom),0A5H
+			LDB (var_IR_upper_byte_code_for_something),33H
+			LDB (varNEW_1A3),0D8H
+			LDB (var_IR_data),81H
+			CALL L1064
+			LDB (var_504_singleuse),13H
+			LDB (wvar_508),1
+			LDB (var_boolEnable5SecIRTimer),0
+			LDB (var_209_singleuse),0FFH
+			LDB A,(ADREG04L)
+			LDB A,(ADREG15L)
+			LDB A,(ADREG26L)
+			LDB A,(ADREG37L)
+			LDB (var_54E_singleuse),1
+			LDB (ALMINT),1FH
+			LDB A,0FFH
+			LD (mirrorPA),A
+			LD (mirrorPB),A
+			LD (mirrorP6),A
+			LD (mirrorP7),A
+			LDB A,1FH
+			LD (mirrorPD),A
+			LDB A,2FH
+			LD (mirrorPC),A
+			CALL L0138
+			LDB (g_adcMode),03H
+			CALL L1065 ; SetAdcCaptureMode
+			EI 07H
+			CALL L1066 ; ClearLegWhat
+			EI 00H
+
+ IFDEF SERIAL
+; enable serial port for output
+    LDB (SC0MOD0),29H
+	LDB (SC0CR),40H
+
+    ;; 38.4kbps (proper values)
+	LDB (BR0CR),4AH ; 38.4
+    LDB (BR0ADD),4
+	LDB (SC0MOD1),40H
+
+    LDB (boolSending),0
+    LDB (INTES0),60H ; TX priority 6 - higher than other interrupts
+                    ; receive disabled
+    LDB A,(SC0BUF) ; flush old
+
+    CALL printf
+	    DB 13,10
+	    DB " HIMAGE: Hacked ICybie ROM.", 13, 10
+	    DB "  Original firmware (c) Silverlit Toys Manufactory Ltd.", 13, 10
+	    DB "  Hacks (c) 2002-2003 ICybiePet", 13, 10
+	    DB "  Additional thanks to WadeT", 13, 10
+	    DB "  Serial tracing on", 13, 10
+	    DB 13,10
+	    DB " Cartridge Image info:", 13, 10
+	    DB 0
+	
+        CALL printf
+			DB "  ", 0
+	    LD XIX,YD_name
+	    CALL printf_string
+        CALL printf
+			DB " based on ", 0
+	    LD XIX,YD_basename
+	    CALL printf_string
+	    CALL printf_eol
+
+        CALL printf
+			DB "  ", 0
+	    LD XIX,YD_yict_id
+	    CALL printf_string
+	    CALL printf_eol
+
+        CALL printf
+			DB "  ", 0
+	    LD XIX,YD_copyright
+	    CALL printf_string
+	    CALL printf_eol
+
+    CALL printf_eol
+
+ ENDIF
+
+ IFDEF NEWFEAT ; newvars init
+    LD (byteWagTailUpperCount),0
+	LDW (wSslSkipCounter),0
+    LD (boolStartupPerformed),0
+
+	LDB A,(YD_boolDisableCharger_INIT)
+	LDB (varNEW_bDisableCharger),A
+
+	LDB A,(YD_boolMute_INIT)
+	LDB (var_boolMute),A
+ ENDIF
+
+			CALL DiddleP5 ; DiddleP5
+			CALL L1068 ; ResetOtherCPU_Maybe
+			CALL PollInputs ; PollInputs
+			LDB (var_591_alwayszero),0
+
+        SEND_EYES 25H ; RED
+			CALL L0684 ; Load_Mode
+			CALL L1070 ; Load scramble
+			CALL L1071 ; load boolVoiceCommands
+
+ IFDEF SERIAL_VERBOSE
+            CALL ReportDogStatus
+ ENDIF
+
+			LDB A,1FH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LD (svar_battery_threshold),A ; old style thresholds
+			EI 07H
+			LDB A,20H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data) ; new semi-mirror
+			EI 00H
+			CP W,A
+			JR NZ,InitThresholds_1
+			PUSH WA
+			EI 07H
+			LDB A,1CH
+			CALL Storage_Read
+			LDW BC,(wvar_reply_data)
+			EI 00H
+			POP WA
+			CP WA,BC
+			JR NZ,InitThresholds_2
+			CP A,0D4H
+			JR NC,InitThresholds_3
+			CP A,98H
+			JR C,InitThresholds_4
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,7EH
+			DIV WA,7CH
+			LDB C,A
+			INC 1,C
+			POP A
+			CP (svar_battery_threshold),C
+			JR NC,InitThresholds_5
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,79H
+			DIV WA,7CH
+			CP (svar_battery_threshold),A
+			JR NC,L1072
+ IFDEF SERIAL_VERBOSE
+InitThresholds_1:
+            LD A,1
+            JR InitThresholds_Report
+InitThresholds_2:
+            LD A,2
+            JR InitThresholds_Report
+InitThresholds_3:
+            LD A,3
+            JR InitThresholds_Report
+InitThresholds_4:
+            LD A,4
+            JR InitThresholds_Report
+InitThresholds_5:
+            LD A,5
+            ;; JR InitThresholds_Report
+InitThresholds_Report:
+            CALL printf
+	            DB  "InitThresholds(", PRINTF_A_DECIMAL, ")", 13, 10, 0
+ ELSE
+InitThresholds_1:
+InitThresholds_2:
+InitThresholds_3:
+InitThresholds_4:
+InitThresholds_5:
+ ENDIF
+InitThresholds: ; init to known state
+			LDB (var_iSoundToPlay_1based),1 ;; beep if re-initing
+			CALL L0807
+L1073:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L1073
+			CALL DiddleP5
+			EI 07H
+			LDB A,1FH
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB W,A
+			PUSH WA
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),1CH
+			CALL Storage_Write
+			POP WA
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),20H
+			CALL Storage_Write
+			EI 00H
+L1072:
+			EI 07H
+			LDB A,20H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			EI 00H
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,8FH
+			DIV WA,7CH
+			LD (varNEW_1AD),A
+			POP A
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,79H
+			DIV WA,7CH
+			LD (varNEW_1AF),A
+			POP A
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,7EH
+			DIV WA,7CH
+			LD (varNEW_1AE),A
+			POP A
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,73H
+			DIV WA,7CH
+			LD (varNEW_1C5),A
+			POP A
+			LDB C,7EH
+L1075:
+			PUSH A
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			CP (svar_battery_threshold),A
+			JR NC,L1074
+			CP C,79H
+			JR Z,L1074
+			POP A
+			DEC 1,C
+			JR L1075 ; reference (CART_STARTUP)
+
+L1074:
+			POP A
+			INC 2,C
+			DB 020H,0 ; FAKE OP LDB W,0
+			MUL WA,C
+			DIV WA,7CH
+			LD (varNEW_1A1),A
+			CALL L0652
+        SEND_EYES 2AH ; GREEN
+			JP WaitForBatteryDoorClose ; reference (CART_STARTUP)
+
+; ------------------------------
+
+
+L0652:
+			EI 07H
+			LDW (wvar_wLegGainSum_NOTUSED),0
+			LDB (var_iStorageProcessing),0
+L1079:
+			CPB (var_iStorageProcessing),12H
+			JR NC,L1078
+			LDB A,(var_iStorageProcessing)
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			ADD (wvar_wLegGainSum_NOTUSED),WA
+			LDL XIX,svar_legx0_start_of_stored
+			LDB C,(var_iStorageProcessing)
+			SLLB 1,C
+			LD (XIX+C),WA
+			INCB 1,(var_iStorageProcessing)
+			JR L1079 ; reference (L0652)
+
+L1078:
+			EI 00H
+			RET ; reference (L0652)
+
+; ------------------------------
+
+
+L0681:
+			EI 00H
+			CALL DiddleP5
+		WAIT_1SEC
+        SEND_EYES 25H ; RED
+		WAIT_1SEC
+
+			EI 07H
+			LDB (var_iStorageProcessing),0
+			LDL XIX,svar_legx0_start_of_stored
+L1086:
+			CPB (var_iStorageProcessing),12H
+			JR NC,L1083
+			CALL L1084
+			LDW WA,(XIX)
+			LD (wvar_reply_data),WA
+			LDB C,(var_iStorageProcessing)
+			LD (var_iwStorageToWrite),C
+			PUSH XIX
+			CALL Storage_Write
+			POP XIX
+			INC 2,XIX
+			INCB 1,(var_iStorageProcessing)
+			CALL L1085
+			JR L1086 ; reference (L0681)
+
+L1083:
+			EI 00H
+			CALL DiddleP5
+		WAIT_1SEC
+        SEND_EYES 2AH ; GREEN
+			RET ; reference (L0681)
+
+; ------------------------------
+
+
+L1084:
+			PUSH XIX
+			LDB A,(var_iStorageProcessing)
+			CALL Storage_Read
+			LDB (var_iwStorageToWrite),21H
+			CALL Storage_Write
+			LDB A,22H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			LDB A,(var_iStorageProcessing)
+			OR A,80H
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),22H
+			CALL Storage_Write
+			POP XIX
+			RET ; reference (L1084)
+
+; ------------------------------
+
+
+L1085:
+			PUSH XIX
+			LDB A,22H
+			CALL Storage_Read
+			LDW WA,(wvar_reply_data)
+			DB 021H,0 ; FAKE OP LDB A,0
+			LD (wvar_reply_data),WA
+			LDB (var_iwStorageToWrite),22H
+			CALL Storage_Write
+			POP XIX
+			RET ; reference (L1085)
+
+; ------------------------------
+
+
+WaitForBatteryDoorClose:
+ IFDEF SERIAL
+    CALL printf
+        DB "++Battery Door...", 0
+ ENDIF
+			CALL PollInputs
+			BIT 4,(var_bInputs0)
+			JR NZ,MainInit
+			LDB (var_LEDMode),26H
+L1090:
+			CALL L0646
+			CALL PollInputs
+			BIT 4,(var_bInputs0)
+			JR NZ,MainInit
+			JR L1090 ; reference (CART_STARTUP)
+
+MainInit:
+ IFDEF SERIAL
+    CALL printf
+        DB "Closed", 13, 10, 0
+ ENDIF
+			LDB (var_bEdgeDet2),0
+			LDB (var_bAfterAction5bitcontrol),0
+			LDB (var_5B8),0
+			LDB (var_5B9),0
+			LDB (var_5BA_alwayszero),0
+			LDB (var_boolIRWhatever),0
+			LDB (var_iSoundToPlay),1
+			LDB (var_594),1
+			LDB (var_593),0
+			LDB (var_077),0
+			LDB (var_594),7
+			LDB (var_5BB_singleuse),100
+			LDB (var_5BC),100
+			LDB (countdown590_2Hz),3
+			LDBB var_5CC,var_5CD
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_bWalkingSpeed),12
+			LDB (var_boolIRWhatever),1
+			LDB (var_5F0),0DH
+			LDB (var_5F1),0
+			LDB (var_5F2_singleuse),0
+			LDB (var_bTenureCountdownSeconds),60
+			LDB (var_bIdleTimeout),15
+ IFDEF NEWFEAT
+            CALL ResetIdleTimer
+ ELSE
+			LDBB var_bIdleTimer,var_bIdleTimeout
+ ENDIF
+			LDB (var_5F9),1EH
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDW (var_wEdge3),0
+			LDB (countdown590_2Hz),0EH
+			LDB (var_iRemoteButton_1based),0
+			LDB (var_2CD),0
+			LDB (var_bSomethingCountdownSeconds),2
+			LDB (var_posture),1 ; stand
+			LDB (var_25B),1
+			LDB (var_iMetaCommand),0
+			LDB (var_timer64_b),0
+
+
+        SEND_EYES 2AH ; GREEN
+			CALL L1092
+			CALL L1093
+			CALL L1094
+			CPB (svar_boolBattLow),1
+			JR NZ,L1095
+			LDB (svar_boolBattLow),0
+  IFDEF SERIAL
+			JP RegularStartup
+  ELSE
+			JR RegularStartup ; reference (CART_STARTUP)
+  ENDIF
+
+L1095: ; battery is not low
+ IFDEF SERIAL
+    CALL printf
+        DB "++Press Head (nose for builtin, back for calibrate)...", 0
+ ENDIF
+wait_head_press:
+			LDB (varNEW_1C0),1
+			CPB (varNEW_1C4),1
+			JR Z,RegularStartup
+			CALL L0790
+			CALL Check_SmallButton
+			CALL PollInputs
+ IFDEF NEWFEAT ; smart boot
+			BIT 7,(var_bInputs0)
+			JP NZ,Smart_Boot_Nose_Press
+			BIT 0,(var_bInputs1)
+			JP NZ,Smart_Boot_Back_Press
+ ENDIF
+			BIT 3,(var_bInputs0)
+			JR Z,wait_head_press
+
+ IFDEF SERIAL
+    CALL printf
+        DB "Ouch my head!", 13, 10, 0
+ ENDIF
+
+L1097:
+			CALL L0790
+			CALL Check_SmallButton
+			CALL PollInputs
+			BIT 3,(var_bInputs0)
+			JR NZ,L1097 ; wait for head press
+RegularStartup:
+			LDB (varNEW_1C0),0
+
+ IFDEF NEWFEAT ; different eyes
+        SEND_EYES 2CH ; 1100 - OFF + YELLOW
+ ELSE
+		SEND_EYES 2EH ; 1101 - OFF + GREEN
+ ENDIF
+
+ IFNDEF NEWFEAT ; skipping init code
+    ; REVIEW: is it ok to skip all these ?
+		WAIT_1SEC
+
+			CALL L1068 ; reset head CPU
+			EI 07H
+			LDL XIX,067199H ; kill time loop
+L1100:
+			LDB (WDCR),4EH
+			SUB XIX,1
+			JR NZ,L1100 ; kill time
+			EI 00H
+ ELSE
+        ;; head CPU already reset
+ ENDIF
+
+			CALL LoadRecordedVoiceCommands ; load voice command info from head CPU
+			CPB (var_251),1
+			JR Z,_have_voice
+			LDB (svar_boolUseVoiceCmds),0
+ IFDEF SERIAL_VERBOSE
+        CALL printf
+            DB "WARNING: No voice commands recorded", 13, 10, 0
+ ENDIF
+
+
+_have_voice:
+        SEND_EYES 2AH ; GREEN
+			CPB (varNEW_1C4),1
+			JR Z,L1104
+			CALL L1105
+
+			CALL StretchIt_Head
+			CALL StretchIt_Neck
+			CALL StretchIt_Mouth
+			CALL StretchIt_Tail
+L1104:
+			CALL L1106 ; stretch check
+			LDB (varNEW_1BF),0
+			LDB (var_IR_result_byte),0
+			LDB (varNEW_1BE),0
+			LDB (var_275),02H
+			LDB (var_b2_5SecCountdown_HalfSec),05H
+			LDBB var_bModeCountdownSeconds,var_5F9
+ IFDEF NEWFEAT
+            CALL ResetIdleTimer
+ ELSE
+			LDBB var_bIdleTimer,var_bIdleTimeout
+ ENDIF
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+
+L1143:
+			CALL L0790
+			CALL Check_SmallButton
+			CPB (var_2D6),1
+			JR NZ,L1107
+			CPB (var_iMetaCommand),1
+			JP Z,L1108
+			CPB (var_iRemoteButton_1based),0CH
+			JR NZ,L1107
+			LDB (var_iRemoteButton_1based),0
+			JP L1108 ; reference (CART_STARTUP)
+
+L1107:
+			CPB (var_bPlayingSound),0
+			JP NZ,L1109
+			CPB (var_258),0
+			JP NZ,L1109
+			CPB (var_077),0
+			JP NZ,L1109
+			CPB (var_2CD),1
+			JR NZ,L1110
+			RES 1,(var_260)
+L1111:
+			CALL PollInputs
+			BIT 0,(var_bInputs1)
+			JR NZ,L1111
+		WAIT_1SEC
+			LDB (var_2CD),0
+			LDB A,(g_bMode)
+			LDL XIX,mpMode_Countdown
+			LDB W,(XIX+A)
+			LD (var_bModeCountdownSeconds),W
+			JP L1113 ; reference (CART_STARTUP)
+
+L1110:
+			CPB (var_iRemoteButton_1based),0
+			JR Z,L1114
+			CPB (var_iRemoteButton_1based),9
+			JP Z,L1115
+			JR NC,L1116
+			LDB A,(var_iRemoteButton_1based)
+			ADD A,13H
+			LD (var_iMetaCommand),A
+			JP L1109 ; reference (CART_STARTUP)
+
+L1116:
+			CPB (var_iRemoteButton_1based),0AH
+			JR NZ,L1117
+			CALL L1118
+			CPB (var_2D2),1
+			JR Z,L1119
+L1117:
+			CPB (var_iRemoteButton_1based),0BH
+			JR NZ,L1114
+			LDB (var_iRemoteButton_1based),0
+L1119:
+			LDB (var_24E),1
+			LDB (var_26F),02H
+			LDL_ACTION XIX,STDACTION_200,66
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1120:
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L1120
+			JP L1121 ; reference (CART_STARTUP)
+
+L1114:
+			CPB (var_2D6),1
+			JR Z,L1122
+			CPB (var_boolAutoListen),1
+			JP NZ,L1115
+			CPB (var_boolStayMode),1
+			JP Z,L1115
+			LDB A,(g_bMode)
+			LDL XIX,mpMode_Countdown
+			LDB W,(XIX+A)
+			CP (var_bModeCountdownSeconds),W
+			JP NC,L1115
+L1113:
+			CPB (var_bModeCountdownSeconds),0
+			JP Z,L1123
+L1122:
+			LDL_ACTION XIX,STDACTION_200,67
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1124:
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L1124
+		WAIT_1SEC
+			LDB (var_iSkit2),0
+			LDB (var_iMetaCommand),0
+			CPB (var_2D6),1
+			JR Z,L1126
+			CPB (svar_boolUseVoiceCmds),1
+			JP Z,L1127
+L1126:
+			LDB A,20H
+			CALL SendToDaugtherAndWait1Sec
+L1133:
+			CALL Check_SmallButton
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL DoWalk
+			CALL CheckClap
+			LDW WA,(var_wEdge3)
+			AND W,1FH
+			JR NZ,L1130
+			BIT 2,(var_17A)
+			JR NZ,L1131
+			CPB (var_2D6),1
+			JR NZ,L1132
+			CPB (var_iMetaCommand),1
+			JR Z,L1108
+			CPB (var_iRemoteButton_1based),0CH
+			JR NZ,L1132
+			LDB (var_iRemoteButton_1based),0
+L1108:
+			LDB (var_2D6),0
+			CALL L0803
+			LDB (var_iSkit),24H
+			LDB (var_275),1
+			JP L1123 ; reference (CART_STARTUP)
+
+L1132:
+			CPB (var_bClapHi),0
+			JR NZ,L1133
+			CPB (var_2D6),1
+			JR NZ,L1134
+			CPB (var_b30SecCountdown),0
+			JR Z,L1108
+L1134:
+			CPB (var_iMetaCommand),0
+			JR Z,L1135
+L1130:
+			CALL L0803
+			JP L1136 ; reference (CART_STARTUP)
+
+L1135:
+			CPB (var_bModeCountdownSeconds),0
+			JP NZ,L1133
+			CALL L0803
+			JP L1123 ; reference (CART_STARTUP)
+
+L1131:
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_5F3),30H
+			LDB (var_bSomethingCountdownSeconds),02H
+			LDB (var_2CD),0
+			LDB A,(var_iClapDetected)
+			LD (var_iClapDetectedLast),A
+			CALL L0803
+			CPB (var_2D6),1
+			JP NZ,L1137
+			CALL L1138
+			JP L1123 ; reference (CART_STARTUP)
+
+L1127:
+			LDB (var_24E),0
+			LDB (var_26F),1
+L1121:
+			LDB (var_iClapDetectedLast),0FFH
+			LDB (var_voice_enable),1
+L1141:
+			CALL Check_SmallButton
+			CALL L1139
+			CPB (var_26F),0FFH
+			JR Z,L1140
+			CPB (var_24E),0
+			JR NZ,L1141
+			CALL PollInputs
+			CALL CheckTiltEtc
+			CALL L0843
+			LDW WA,(var_wEdge3)
+			AND W,1FH
+			JR NZ,L1142
+			CPB (var_iMetaCommand),0
+			JR Z,L1141
+L1142:
+			LDB (var_26F),0FFH
+			LDB (var_voice_datain),0
+			LDB (var_voice_enable),0
+			LDB (var_timer64_c_up),20H
+			JP L1136 ; reference (CART_STARTUP)
+
+L1140:
+			LDB (var_voice_enable),0
+			LDB (var_iMetaCommand),0
+			LDB (var_iSkit2),0
+			LDB (var_5F3),30H
+			LDB (var_bSomethingCountdownSeconds),02H
+			LDB (var_2CD),0
+L1137:
+			LDB A,(var_iClapDetectedLast)
+			CP A,0FFH
+			JP Z,L1143
+			CP A,0FEH
+			JR Z,L1144
+			CP A,8
+			JR C,L1145
+L1144:
+        SEND_EYES 25H ; RED
+		WAIT_1SEC
+			LDB (var_iSkit),1CH
+			JR L1148 ; reference (CART_STARTUP)
+
+L1145:
+			CPB (svar_boolUseVoiceCmds),1
+			JR Z,L1149
+			CALL L0800
+L1149:
+			INC 1,A
+			AND A,0FH
+			XOR A,0FH
+			OR A,20H
+L1150:
+			CALL SendAudioByteToDaughter
+			JR NC,L1150
+		WAIT_1SEC
+			LDB A,(var_iClapDetectedLast)
+			LDL XIX,d1152
+			LDB C,(XIX+A)
+			EXTS BC
+			ADD (rgw_mood_array),BC
+			LDW BC,(rgw_mood_array)
+			BIT 7,B
+			JR Z,L1153
+			LDW (rgw_mood_array),0
+L1153:
+			LDB A,(var_iClapDetectedLast)
+			ADD A,0CH
+			LD (var_iSkit),A
+			CP A,0FH
+			JR NZ,L1148
+			LDB (var_b30SecCountdown),30
+			LDB (var_2D6),1
+L1123:
+			LDBB var_bModeCountdownSeconds,var_5F9
+L1148:
+			CPB (var_iSkit),0
+			JR Z,L1154
+			LDL_ACTION XIX,STDACTION_196,68
+			LD (var_pAction),XIX
+			LDB (var_258),1
+L1155:
+			CALL L0649
+			CALL L0616
+			CPB (var_258),0
+			JR NZ,L1155
+			LDB (var_275),1
+			JR L1109 ; reference (CART_STARTUP)
+
+L1154:
+			LDB (var_275),02H
+L1109:
+			LDB (var_iRemoteButton_1based),0
+L1115:
+			LDB (var_24F),0
+			CALL L0831
+			CALL L1156
+			CALL L0844
+			CALL L1157
+			CALL L0644
+			CALL L0645
+			CALL L0646
+			CALL PollInputs
+			CALL L0643
+			CALL CheckTiltEtc
+			CALL L0843
+			CALL L1158
+L1136:
+			CALL L1159
+			CALL L0649
+			CALL L0650
+			CALL L0616
+			CALL L1160
+			CALL L0791
+			CALL L0792
+			CALL L1161
+			CALL DoWalk
+			CALL L1162
+			CALL L1163
+			JP L1143 ; reference (CART_STARTUP)
+
+;;;;;;;;;;;;;;;;;;
+

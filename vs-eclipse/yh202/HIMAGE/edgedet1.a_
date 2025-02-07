@@ -1,0 +1,254 @@
+L0650:
+			BIT 0,(var_5BD)
+			JR Z,L1501
+			CPB (var_bMisc1CountUp_HalfSec),4
+			JR C,L1501
+			LDB (var_5BD),0
+			JP L1502 ; reference (L0650)
+
+L1501:
+			CPW (var_wEdge3),0
+			JR NZ,L1503
+			RET ; reference (L0650)
+
+L1503:
+			BIT 7,(var_wEdge3_H)
+			JP Z,L1504
+			LDW (var_wEdge3),0
+			LDB (var_bEdgeDet1),0
+			LDB (var_5B2),0
+			LDB (var_5B6),0
+			LDB (var_5BD),0
+			INCW 1,(wMood_9_Edge2)
+			CALL L0633
+			CALL L0138
+			PUSHB (var_LEDMode)
+			LDB (countdown590_2Hz),14H
+			LDB (var_LEDMode),1FH
+L1505:
+			CALL L0057
+			CPB (countdown590_2Hz),0
+			JR NZ,L1505
+			POPB (var_LEDMode)
+			INCB 1,(var_2CF)
+			CPB (var_2CF),1
+			JR Z,L1506
+			CPB (var_2CF),2
+			JR Z,L1507
+			JR L1508 ; reference (L0650)
+
+L1506:
+			CPB (var_5B2),1
+			JR Z,L1509
+			CALL L1510
+L1509:
+			LDW (var_wMotionFromAction),0024H
+			LDB (var_077),1
+			LDB (var_594),1
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDB (var_bEdgeDet2),0
+			LDB (var_bSomethingCountdownSeconds),02H
+			LDB (var_posture),1 ; stand
+			LDB (var_25B),1
+			RET ; reference (L0650)
+
+L1507:
+			LDW (var_wMotionFromAction),0445H
+			LDB (var_077),1
+			LDB (var_594),1
+			LDB (var_bAfterAction5bitcontrol),1FH
+			LDB (var_bEdgeDet2),0
+			LDB (var_bSomethingCountdownSeconds),02H
+			LDB (var_posture),1 ; stand
+			LDB (var_25B),1
+			RET ; reference (L0650)
+
+L1508:
+			DB 021H, 003H ; FAKE OP LDB A,03H
+L1512:
+			PUSH A
+			LDB (var_iSoundToPlay_1based),1EH
+			CALL L0807
+L1511:
+			CALL L0792
+			CPB (var_bPlayingSound),0
+			JR NZ,L1511
+			POP A
+			DJNZ A,L1512
+			CALL PowerDown
+			RET ; reference (L0650)
+
+L1504:
+			LDL XIX,d1513
+			LDB A,(var_bEdgeDet1)
+			PUSH A
+			AND A,0FH
+			CP A,4
+			JP NZ,L1514
+			LDB (varNEW_1BA_station),0
+			LDB (varNEW_whereStation),0
+			LDB (varNEW_1BC),1
+L1514:
+			POP A
+			LDB (var_bEdgeDet1),0
+			LDB C,(XIX+A)
+			LDL XIY,vector_4
+			LDL XIX,(XIY+C)
+			LDB A,(XIX+)
+L1519:
+			LDW BC,(var_wEdge3)
+			LDW HL,(XIX+)
+			LDL XIY,(XIX)
+			INC 4,XIX
+			LD (var_pRamMood_NOTUSED_OVERLAP),XIY
+			LDW DE,(XIX+)
+			LD (var_2D8),DE
+			LDW DE,(XIX+)
+			CPB (varNEW_1C6),0FFH
+			JR NZ,L1515
+			CP DE,03EAH
+			JR Z,L1516
+			CP DE,03EBH
+			JR Z,L1516
+			CP DE,044BH
+			JR NZ,L1515
+L1516:
+			CPB (varNEW_whereStationOld),0
+			JR NZ,L1517
+			CPB (varNEW_whereStationVeryOld),0
+			JR NZ,L1517
+			LDW DE,044BH
+			JR L1515 ; reference (L0650)
+
+L1517:
+			LDW DE,0486H
+L1515:
+			LD (var_5BE),DE
+			AND BC,HL
+			CP BC,HL
+			JR Z,L1518
+			DEC 1,A
+			JR NZ,L1519
+			RET ; reference (L0650)
+
+L1518:
+			CP (var_5B6),E
+			JR NZ,L1520
+			RET ; reference (L0650)
+
+L1520:
+			LDB (var_5B9),0
+			LD (var_5B6),E
+			CPB (var_5B2),1
+			JR Z,L1521
+			CALL L1510
+L1521:
+			BIT 2,(var_077)
+			JR NZ,L1502
+			BIT 1,(var_077)
+			JR NZ,L1522
+L1502:
+			LDW WA,(var_5BE)
+			LD (var_wMotionFromAction),WA
+			INCW 1,(wMood_7_What)
+			LDW WA,(var_2D8)
+			LD (var_bAfterAction5bitcontrol),A
+			LD (var_bEdgeDet2),W
+			LDB (var_077),1
+			LDB (var_5B8),0
+			LDB (var_5B2),1
+			LDW (var_wEdge3),0
+			RET ; reference (L0650)
+
+L1522:
+			LDB (var_bMisc1CountUp_HalfSec),0
+			LDB (var_5BD),1
+			RET ; reference (L0650)
+
+; ------------------------------
+
+
+d1513:
+	DB 04H,0,04H,00H,08H,00H,04H,00H,0CH,0CH,0CH,0CH,0CH,0CH,0CH,0CH
+
+vector_4:
+	DD	d1523
+	DD	d1524
+	DD	d1525
+	DD	d1526
+
+d1523:
+	DB 05H,0,1,4EH,11H,00H,00H,1EH,00H,0BBH,00H,00H,02H,4EH,11H,00H
+	DB 00H,1DH,0,0E8H,03H,00H,04H,4EH,11H,00H,00H,1BH,00H,72H,00H,00H
+	DB 08H,4EH,11H,0,00H,17H,00H,73H,00H,00H,10H,4EH,11H,00H,00H,0FH
+	DB 00H,3DH,04H
+d1526:
+	DB 01H,0,80H,58H,11H,00H,00H,1FH,00H,0EEH,03H
+d1524:
+	DB 03H,03H,0,3AH,11H,00H,00H,1FH,00H,0E9H,03H,1,00H,3AH,11H,00H
+	DB 00H,1FH,0,0EDH,03H,02H,00H,3AH,11H,00H,00H,1FH,00H,0ECH,03H
+d1525:
+	DB 04H,0CH,0,44H,11H,00H,00H,1FH,00H,4BH,04H,04H,00H,44H,11H,00H
+	DB 00H,1FH,0,0EBH,03H,08H,00H,44H,11H,00H,00H,1FH,00H,0EAH,03H,00H
+	DB 80H,58H,11H,0,00H,1FH,00H,0EEH,03H
+CheckTiltEtc:
+			BIT 4,(var_bAfterAction5bitcontrol)
+			JR Z,L1527
+			BIT 0,(var_bInputs0)
+			JR NZ,L1528
+L1527:
+			BIT 1,(var_bAfterAction5bitcontrol)
+			JR Z,L1529
+			BIT 2,(var_bInputs0)
+			JR NZ,L1530
+L1529:
+			BIT 3,(var_bAfterAction5bitcontrol)
+			JR Z,L1531
+			BIT 5,(var_bInputs0)
+			JR NZ,L1532
+L1531:
+			BIT 2,(var_bAfterAction5bitcontrol)
+			JR Z,L1533
+			BIT 6,(var_bInputs0)
+			JR NZ,L1534
+L1533:
+			BIT 0,(var_bAfterAction5bitcontrol)
+			JR Z,L1535
+			BIT 1,(var_bInputs1)
+			JR NZ,L1536
+L1535:
+			RET ; reference (CheckTiltEtc)
+
+L1528:
+			ANDB (var_wEdge3_H),1FH
+			ORB (var_wEdge3_H),10H
+			INCW 1,(wMood_8_Edge)
+			JR L1537 ; reference (CheckTiltEtc)
+
+L1530:
+			ANDB (var_wEdge3_H),1FH
+			ORB (var_wEdge3_H),2
+			INCW 1,(wMood_8_Edge)
+			JR L1537 ; reference (CheckTiltEtc)
+
+L1532:
+			ANDB (var_wEdge3_H),1FH
+			ORB (var_wEdge3_H),8
+			INCW 1,(wMood_8_Edge)
+			JR L1537 ; reference (CheckTiltEtc)
+
+L1534:
+			ANDB (var_wEdge3_H),1FH
+			ORB (var_wEdge3_H),4
+			INCW 1,(wMood_8_Edge)
+			JR L1537 ; reference (CheckTiltEtc)
+
+L1536:
+			ANDB (var_wEdge3_H),1FH
+			ORB (var_wEdge3_H),1
+			INCW 1,(wMood_8_Edge)
+L1537:
+			SET 0,(var_bEdgeDet1)
+			RET ; reference (CheckTiltEtc)
+
+; ------------------------------

@@ -1,0 +1,94 @@
+/* Very tricky linking configuration for ICybie Cartridge */
+/* Do not change unless you *REALLY* know what you are doing */
+
+/* version .03: 64KB bank for code, 132KB bank for ro-data */
+
+memory
+{
+    /* io(RW)  : org=0x000000, len=0x001000 -- '__io' directive not used */
+    ram_bank0(RW) : org=0x001000, len=0x000500
+        /* 1500 -> 1FFF is untouchable */
+        /* 1500 magic value, 1501->1EFF is stack, 1Fxx for CROM */
+    ram(RW) : org=0x002000, len=0x001000 /* for normal globals */
+
+    /* all of Cartridge ROM - with special cases for startup and interrupts */
+    rom(RX) : org=0x200000, len=0x040000
+}
+
+/*
+    uninitialized (zero) data goes into 'f_area'
+        RAM is zero'd out at startup
+    initialized (non-zero) data goes into 'f_data'
+        f_data gets placed into ROM area 'rom_user_roinit'
+        and is copied to RAM at startup
+*/
+
+sections
+{
+    /**** RAM ****/
+
+    ram_lib_data addr=0x1000
+        : {*(f_libarea)} /* library data (zero init) */
+
+        /*
+        ram_lib_data2 addr=addr(ram_lib_data)+sizeof(ram_lib_data)
+        : {*(f_libarea2)}
+        */
+
+    ram_user_data addr=0x2000
+        : {*(f_area)} /* user data (zero init) */
+
+    /**** ROM ****/
+
+    cart_bank0 addr=0x200000 : {*(f_cart_bank0)}
+
+	    rom_user_roaudio0 addr=addr(cart_bank0)+sizeof(cart_bank0) 
+        : {*(f_audio0)} /* user read-only sound data */
+
+        rom_lib_code  addr=addr(rom_user_roaudio0)+sizeof(rom_user_roaudio0)
+        : {*(f_libcode)} /* library code */
+
+        rom_lib_rodata addr=addr(rom_lib_code)+sizeof(rom_lib_code)
+        : {*(f_libconst)} /* library read-only data */
+
+        rom_user_code addr=addr(rom_lib_rodata)+sizeof(rom_lib_rodata)
+        : {*(f_code)} /* user code */
+
+    cart_startup addr=0x20FFFE : {*(f_cart_start)}
+
+	    rom_user_roaudio1 addr=addr(cart_startup)+sizeof(cart_startup) 
+        : {*(f_audio1)} /* user read-only sound data */
+
+	    rom_user_rodata addr=addr(rom_user_roaudio1)+sizeof(rom_user_roaudio1) 
+        : {*(f_const)} /* user read-only data */
+
+	    rom_user_roinit /* initialization of non-zero RAM variables */
+                org=org(rom_user_rodata)+sizeof(rom_user_rodata)
+                addr=org(ram_user_data)+sizeof(ram_user_data)
+        : {*(f_data)}
+	    __DataRAM = addr(rom_user_roinit);
+
+    /*************************************************************************/
+    /* cartridge interrupt locations are hard coded in system ROM - wasteful */
+    /* cartridge interrupt are loaded in place - tricky */
+
+    /* ONLY commonly used ones are included here - living dangerously -
+        which wastes about 36K instead of all 64K */
+    cart_int14 addr=0x231000 : {*(f_cart_int14)}
+    cart_int15 addr=0x231800 : {*(f_cart_int15)}
+    cart_int16 addr=0x232000 : {*(f_cart_int16)}
+    cart_int17 addr=0x232800 : {*(f_cart_int17)}
+    cart_int18 addr=0x233000 : {*(f_cart_int18)}
+    cart_int19 addr=0x234000 : {*(f_cart_int19)}
+    cart_int20 addr=0x235000 : {*(f_cart_int20)}
+    cart_int21 addr=0x235800 : {*(f_cart_int21)}
+    cart_int22 addr=0x236000 : {*(f_cart_int22)}
+    cart_int23 addr=0x237000 : {*(f_cart_int23)}
+    cart_int24 addr=0x238000 : {*(f_cart_int24)}
+    cart_int25 addr=0x239000 : {*(f_cart_int25)}
+    cart_int26 addr=0x239800 : {*(f_cart_int26)}
+	cart_int27 addr=0x23A000 : {*(f_cart_int27)}
+	cart_int28 addr=0x23B000 : {*(f_cart_int28)} /* INTKEY */
+        cart_gap1 addr=addr(cart_int28)+sizeof(cart_int28) : {*(f_cart_gap1)}
+}
+

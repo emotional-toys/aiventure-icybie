@@ -1,0 +1,13 @@
+--------------------------------------------------------------------------------
+EM1016 (PL-2303) Software and Drivers
+--------------------------------------------------------------------------------
+Date:    2007/3/22
+Version: v2.0.0.19 for Win98SE/ME
+         v2.0.2.1 for Win2K/XP/2003 (XP Logo Certified)
+Size:    1471 KB
+
+Chipset: PL-2303 (H, HX, X chip version)
+
+For Prolific USB VID_067B&PID_2303 Only
+(for Mobile Phone, GPS, Modem, IrDA USB Serial Cable)
+

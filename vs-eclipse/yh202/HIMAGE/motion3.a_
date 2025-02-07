@@ -1,0 +1,456 @@
+ ;; Head/Tail/... stretch
+
+StretchIt_Neck:
+			LDB (var_585),1
+			LDB A,(mirrorP7)
+			OR A,2
+			LD (mirrorP7),A
+			LDB A,(mirrorP6)
+			AND A,7FH
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB (countdown590_2Hz),03H
+L1238:
+			CPB (countdown590_2Hz),0
+			JR NZ,L1238
+			LDB (var_FutzControl),11H ; neck
+			LDB A,(mirrorP6)
+			OR A,80H
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB A,(mirrorP7)
+			AND A,0FDH
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),05H
+L1240:
+			CPB (countdown590_2Hz),0
+			JR Z,L1239
+			BIT 0,(P9)
+			JR Z,L1240
+L1239:
+			LDB (var_FutzControl),0
+			LDB A,(mirrorP7)
+			OR A,2
+			LD (mirrorP7),A
+			LDB A,(mirrorP6)
+			AND A,7FH
+			LD (mirrorP6),A
+			LD (P6),A
+			EI 07H
+			LDW BC,8AACH
+L1241:
+			DJNZ BC,L1241
+			EI 00H
+			LDB A,(mirrorP7)
+			OR A,2
+			LD (mirrorP7),A
+			LDB A,(mirrorP6)
+			OR A,80H
+			LD (mirrorP6),A
+			LD (P6),A
+			LDB (var_neckValA),0
+			LDB (var_585),0
+			RET ; reference (---)
+
+; ------------------------------
+
+
+StretchIt_Head:
+			LDB (var_585),1
+			BIT 1,(P9)
+			JR Z,L1242
+    ; right of center
+			LDB (var_59C),3CH ; 64Hz count down
+			JR L1243 ; reference (StretchIt_Head)
+
+L1242: ; left of center
+			LDB (var_59C),1EH
+L1243:
+			LDB A,(mirrorP7)
+			OR A,4
+			AND A,~8
+			LD (mirrorP7),A
+L1244:
+			CPB (var_59C),80H
+			JR C,L1244
+
+			LDB A,(mirrorP7)
+			OR A,0CH ; off
+			LD (mirrorP7),A
+			LDB (var_FutzControl),21H ; head
+
+			LDB A,(mirrorP7)
+			OR A,8
+			AND A,~4
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),05H
+L1246:
+			CPB (countdown590_2Hz),0
+			JR Z,L1245
+			BIT 1,(P9) ; bit detect
+			JR Z,L1246
+L1245:
+			LDB (var_FutzControl),0
+			LDB (var_2EF),1
+			LDB A,(mirrorP7)
+			OR A,4
+			AND A,0F7H
+			LD (mirrorP7),A
+			LD (P7),A
+			EI 07H
+			LDW BC,0AAE6H
+L1247:
+			NOP ;; NOP timing
+			NOP
+			NOP
+			NOP
+			NOP
+			NOP
+			NOP
+			NOP
+			NOP
+			DJNZ BC,L1247
+
+			EI 00H
+			LDB A,(mirrorP7)
+			OR A,0CH ; head off
+			LD (mirrorP7),A
+			LD (P7),A
+
+			LDB (var_2EF),0
+			LDB A,(var_HeadFutz)
+			LD (var_headValA),A
+			DB 020H,0 ; FAKE OP LDB W,0
+			DIV WA,2
+			LD (var_5D5),A
+			LDB (var_585),0
+			RET ; reference (StretchIt_Head)
+
+; ------------------------------
+
+
+StretchIt_Mouth:
+			LDB (var_585),1
+			LDB A,(mirrorP7)
+			OR A,20H
+			AND A,0EFH
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),03H
+L1248:
+			CPB (countdown590_2Hz),0
+			JR NZ,L1248
+			LDB (var_FutzControl),41H ; mouth
+			LDB A,(mirrorP7)
+			OR A,10H
+			AND A,0DFH
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),05H
+L1250:
+			CPB (countdown590_2Hz),0
+			JR Z,L1249
+			BIT 2,(P9)
+			JR Z,L1250
+L1249:
+			LDB (var_FutzControl),0
+			LDB (var_2F0),1
+			LDB A,(mirrorP7)
+			OR A,20H
+			AND A,0EFH
+			LD (mirrorP7),A
+			LD (P7),A
+			EI 07H
+			LDW BC,8AACH
+L1251:
+			DJNZ BC,L1251
+			EI 00H
+			LDB A,(mirrorP7)
+			OR A,30H
+			LD (mirrorP7),A
+			LD (P7),A
+			LDB (var_2F0),0
+			LDB (var_mouthValA),0
+			LDB (var_585),0
+			RET ; reference (StretchIt_Mouth)
+
+; ------------------------------
+
+
+StretchIt_Tail:
+			LDB A,(mirrorP7)
+			OR A,80H
+			AND A,0BFH
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),03H
+L1252:
+			CPB (countdown590_2Hz),0
+			JR NZ,L1252
+			LDB (var_FutzControl),81H ; tail
+			LDB A,(mirrorP7)
+			OR A,40H
+			AND A,7FH
+			LD (mirrorP7),A
+			LDB (countdown590_2Hz),05H
+L1254:
+			CPB (countdown590_2Hz),0
+			JR Z,L1253
+			BIT 3,(P9)
+			JR Z,L1254
+L1253:
+			LDB (var_FutzControl),0
+			LDB A,(mirrorP7)
+			OR A,80H
+			AND A,0BFH
+			LD (mirrorP7),A
+			EI 07H
+			LDW BC,8AACH
+L1255:
+			DJNZ BC,L1255
+			EI 00H
+			LDB A,(mirrorP7)
+			OR A,0C0H
+			LD (mirrorP7),A
+			LDBB var_tailValA,var_TailFutz
+			LDB (var_585),0
+			RET ; reference (StretchIt_Tail)
+
+; ------------------------------
+
+
+L1671:
+			BIT 3,(var_583)
+			JP Z,L1256
+			LDB A,(var_neckValB)
+			CP A,0FFH
+			JP Z,L1256
+			CP (var_neckValA),A
+			JR Z,L1257
+			JR NC,L1258
+			LDB W,(mirrorP7)
+			OR W,2
+			LD (mirrorP7),W
+			LDB W,(mirrorP6)
+			AND W,7FH
+			LD (mirrorP6),W
+			LD (P6),W
+			INCB 1,(var_neckValA)
+			CP (var_neckValA),A
+			JR Z,L1257
+			JR L1256 ; reference (L1671)
+
+L1258:
+			LDB W,(mirrorP6)
+			OR W,80H
+			LD (mirrorP6),W
+			LD (P6),W
+			LDB W,(mirrorP7)
+			AND W,0FDH
+			LD (mirrorP7),W
+			DECB 1,(var_neckValA)
+			CP (var_neckValA),A
+			JR NZ,L1256
+L1257:
+			LDB W,(mirrorP7)
+			OR W,2
+			LD (mirrorP7),W
+			LDB W,(mirrorP6)
+			OR W,80H
+			LD (mirrorP6),W
+			LD (P6),W
+			ANDB (var_585),0FCH
+			RES 3,(var_583)
+			LDB (var_neckValB),0FFH
+			RES 0,(var_585)
+			LDB (var_5A5),02H
+			JR L1256 ; reference (L1671)
+
+L1256:
+			BIT 2,(var_583)
+			JP Z,L1259
+			LDB A,(var_headValB)
+			CP A,0FFH
+			JP Z,L1259
+			CP (var_headValA),A
+			JR Z,L1260
+			LDB W,(var_57D)
+			LD (tmp_57E),W
+			LDB W,(P9)
+			AND W,2
+			LD (var_57D),W
+			CP (tmp_57E),W
+			JR Z,L1261
+			LDBB var_headValA,var_HeadFutz
+L1261:
+			CP (var_headValA),A
+			JR Z,L1260
+			JR C,L1262
+			LDB (var_5D9),0
+			LDB W,(mirrorP7)
+			OR W,4
+			AND W,0F7H
+			LD (mirrorP7),W
+			DECB 1,(var_headValA)
+			CP (var_headValA),A
+			JR Z,L1260
+			JP L1259 ; reference (L1671)
+
+L1262:
+			LDB (var_5D9),1
+			LDB W,(mirrorP7)
+			OR W,8
+			AND W,0FBH
+			LD (mirrorP7),W
+			INCB 1,(var_headValA)
+			CP (var_headValA),A
+			JP NZ,L1259
+L1260:
+			CPB (var_5D8),0
+			JR Z,L1263
+			CPB (var_5D8),3
+			JR C,L1264
+			JR L1265 ; reference (L1671)
+
+L1263:
+			INCB 1,(var_5D8)
+			LDB W,(mirrorP7)
+			OR W,0CH
+			LD (mirrorP7),W
+			JR L1259 ; reference (L1671)
+
+L1264:
+			INCB 1,(var_5D8)
+			CPB (var_5D9),0
+			JR NZ,L1266
+			LDB W,(mirrorP7)
+			OR W,8
+			AND W,0FBH
+			LD (mirrorP7),W
+			JR L1259 ; reference (L1671)
+
+L1266:
+			LDB W,(mirrorP7)
+			OR W,4
+			AND W,0F7H
+			LD (mirrorP7),W
+			JR L1259 ; reference (L1671)
+
+L1265:
+			LDB (var_5D8),0
+			LDB W,(mirrorP7)
+			OR W,0CH
+			LD (mirrorP7),W
+			ANDB (var_585),0FCH
+			RES 2,(var_583)
+			LDB (var_headValB),0FFH
+			RES 0,(var_585)
+			LDB (var_5A4),02H
+			JR L1259 ; reference (L1671)
+
+L1259:
+			BIT 1,(var_583)
+			JP Z,L1267
+			LDB A,(var_mouthValB)
+			CP A,0FFH
+			JP Z,L1267
+			CP (var_mouthValA),A
+			JR Z,L1268
+			JR C,L1269
+			LDB W,(mirrorP7)
+			OR W,10H
+			AND W,0DFH
+			LD (mirrorP7),W
+			DECB 1,(var_mouthValA)
+			CP (var_mouthValA),A
+			JR Z,L1268
+			JP L1267 ; reference (L1671)
+
+L1269:
+			LDB W,(mirrorP7)
+			OR W,20H
+			AND W,0EFH
+			LD (mirrorP7),W
+			INCB 1,(var_mouthValA)
+			CP (var_mouthValA),A
+			JP NZ,L1267
+L1268:
+			LDB W,(mirrorP7)
+			OR W,30H
+			LD (mirrorP7),W
+			ANDB (var_585),0FCH
+			RES 1,(var_583)
+			LDB (var_mouthValB),0FFH
+			RES 0,(var_585)
+			LDB (var_5A3),02H
+			JP L1267 ; reference (L1671)
+
+L1267:
+			BIT 0,(var_583)
+			JP Z,L1270
+			LDB A,(var_tailValB)
+			CP A,0FFH
+			JP Z,L1270
+			CP (var_tailValA),A
+			JR Z,L1271
+			JR C,L1272
+			LDB W,(mirrorP7)
+			OR W,80H
+			AND W,0BFH
+			LD (mirrorP7),W
+			DECB 1,(var_tailValA)
+			CP (var_tailValA),A
+			JR Z,L1271
+			JP L1270 ; reference (L1671)
+
+L1272:
+			LDB W,(mirrorP7)
+			OR W,40H
+			AND W,7FH
+			LD (mirrorP7),W
+			INCB 1,(var_tailValA)
+			CP (var_tailValA),A
+			JP NZ,L1270
+L1271:
+			LDB W,(mirrorP7)
+			OR W,0C0H
+			LD (mirrorP7),W
+			ANDB (var_585),0FCH
+			RES 0,(var_583)
+			LDB (var_tailValB),0FFH
+			RES 0,(var_585)
+			LDB (var_5A6),02H
+L1270:
+			RET ; reference (L1671)
+
+; ------------------------------
+
+
+ IFDEF EXACT
+	DB 0F1H,85H,15H,0,1,0F0H,19H,0C8H,66H,2DH,0C1H,11H,10H,21H,0C9H,0CEH
+	DB 02H,0F1H,11H,10H,41H,0C1H,10H,10H,21H,0C9H,0CCH,7FH,0F1H,10H,10H,41H
+	DB 0F0H,12H,41H,0F1H,90H,15H,0,14H,0C1H,90H,15H,3FH,00H,0F2H,0B4H,0C4H
+	DB 22H,0D6H,0F0H,19H,0C8H,6EH,0F1H,0C1H,10H,10H,21H,0C9H,0CEH,80H,0F1H,10H
+	DB 10H,41H,0F0H,12H,41H,0C1H,11H,10H,21H,0C9H,0CCH,0FDH,0F1H,11H,10H,41H
+	DB 0F1H,90H,15H,0,14H,0C1H,90H,15H,3FH,00H,0F2H,0B4H,0C4H,22H,0D6H,0F0H
+	DB 19H,0C8H,66H,0F1H,0C1H,11H,10H,21H,0C9H,0CEH,02H,0F1H,11H,10H,41H,0C1H
+	DB 10H,10H,21H,0C9H,0CEH,80H,0F1H,10H,10H,41H,0F0H,12H,41H,0F1H,79H,15H
+	DB 00H,0,0F1H,85H,15H,00H,00H,10H,0EH,0F1H,85H,15H,00H,1,0F0H,19H
+	DB 0C9H,66H,22H,0C1H,11H,10H,21H,0C9H,0CEH,04H,0C9H,0CCH,0F7H,0F1H,11H,10H
+	DB 41H,0F1H,90H,15H,0,0AH,0C1H,90H,15H,3FH,00H,0F2H,0B4H,0C4H,22H,0D6H
+	DB 0F0H,19H,0C9H,6EH,0F1H,0C1H,11H,10H,21H,0C9H,0CEH,08H,0C9H,0CCH,0FBH,0F1H
+	DB 11H,10H,41H,0F1H,90H,15H,0,0AH,0C1H,90H,15H,3FH,00H,0F2H,0B4H,0C4H
+	DB 22H,0D6H,0F0H,19H,0C9H,66H,0F1H,0C1H,11H,10H,21H,0C9H,0CEH,0CH,0F1H,11H
+	DB 10H,41H,0F1H,7BH,15H,0,10H,0F1H,85H,15H,00H,00H,10H,0EH,0F1H,85H
+	DB 15H,0,1,0F0H,19H,0CAH,66H,22H,0C1H,11H,10H,21H,0C9H,0CEH,20H,0C9H
+	DB 0CCH,0EFH,0F1H,11H,10H,41H,0F1H,90H,15H,0,0AH,0C1H,90H,15H,3FH,00H
+	DB 0F2H,0B4H,0C4H,22H,0D6H,0F0H,19H,0CAH,6EH,0F1H,0C1H,11H,10H,21H,0C9H,0CEH
+	DB 10H,0C9H,0CCH,0DFH,0F1H,11H,10H,41H,0F1H,90H,15H,0,0AH,0C1H,90H,15H
+	DB 3FH,0,0F2H,0B4H,0C4H,22H,0D6H,0F0H,19H,0CAH,66H,0F1H,0C1H,11H,10H,21H
+	DB 0C9H,0CEH,30H,0F1H,11H,10H,41H,0F1H,7FH,15H,0,00H,0F1H,85H,15H,00H
+	DB 00H,10H,0EH,0C1H,11H,10H,21H,0C9H,0CEH,80H,0C9H,0CCH,0BFH,0F1H,11H,10H
+	DB 41H,0F1H,90H,15H,0,03H,0C1H,90H,15H,3FH,00H,66H,07H,0F0H,19H,0CBH
+	DB 66H,0F4H,68H,1FH,0C1H,11H,10H,21H,0C9H,0CEH,40H,0C9H,0CCH,7FH,0F1H,11H
+	DB 10H,41H,0F1H,90H,15H,0,0AH,0C1H,90H,15H,3FH,00H,66H,1CH,0F0H,19H
+	DB 0CBH,66H,0F4H,0C1H,11H,10H,21H,0C9H,0CEH,0C0H,0F1H,11H,10H,41H,0F1H,81H
+	DB 15H,0,10H,0F1H,85H,15H,00H,00H,10H,0EH,11H,0EH
+
+ ENDIF
+
